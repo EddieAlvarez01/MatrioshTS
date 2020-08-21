@@ -80,7 +80,8 @@ LSENTENCES
     |   SENTENCE { $$ = new ParseNode(null, null, 'SENTENCES', 'SENTENCES', null); $$.addChild($1); };
 
 SENTENCE
-    :   DECLARATION { $$ = $1; };
+    :   DECLARATION { $$ = $1; }
+    |   ASSIGNMENT { $$ = $1; };
 
 DECLARATION
     :   VARLET { $$ = $1; }
@@ -107,14 +108,17 @@ VARLET
 
 VARCONST
     :   CONST IDENTIFIER EQUAL EXPL SEMICOLON { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, true); $$.addChild($4); }
+    |   CONST IDENTIFIER EQUAL LBRACKET RBRACKET SEMICOLON { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, true); $$.childs = [null]; }
     |   CONST IDENTIFIER EQUAL LBRACKET LEXPL RBRACKET SEMICOLON { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, true); $$.childs = $9; }
     |   CONST IDENTIFIER COLON DATATYPE EQUAL EXPL SEMICOLON { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, $4, true); $$.addChild($6); }
-    |   CONST IDENTIFIER COLON DATATYPE LBRACKET RBRACKET EQUAL LBRACKET LEXPL RBRACKET SEMICOLON { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, $4, true); $$.childs = $9; };
+    |   CONST IDENTIFIER COLON DATATYPE LBRACKET RBRACKET EQUAL LBRACKET LEXPL RBRACKET SEMICOLON { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, $4, true); $$.childs = $9; }
+    |   CONST IDENTIFIER COLON DATATYPE LBRACKET RBRACKET EQUAL LBRACKET RBRACKET SEMICOLON { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, $4, true); $$.childs = [null]; };
 
 ENDLET
     :   SEMICOLON { $$ = null; }
     |   EQUAL EXPL SEMICOLON { $$ = new ParseNode(null, null, null, $2, util.literal.dataTypes.ANY, false, true); }
     |   EQUAL LBRACKET LEXPL RBRACKET SEMICOLON { $$ = new ParseNode(null, null, null, $3, util.literal.dataTypes.ANY, false, true); }
+    |   EQUAL LBRACKET RBRACKET SEMICOLON { $$ = new ParseNode(null, null, null, [null], util.literal.dataTypes.ANY, false, true); }
     |   COLON DATATYPE ENDDECLARATION { $$ = new ParseNode(null, null, null, $3, $2, false, false); };
 
 DATATYPE
@@ -127,7 +131,13 @@ DATATYPE
 ENDDECLARATION
     :   SEMICOLON { $$ = null; }
     |   LBRACKET RBRACKET EQUAL LBRACKET LEXPL RBRACKET SEMICOLON { $$ = $5; }
+    |   LBRACKET RBRACKET EQUAL LBRACKET RBRACKET SEMICOLON { $$ = [null]; }
     |   EQUAL EXPL SEMICOLON { $$ = $2; };
+
+ASSIGNMENT
+    :   IDENTIFIER EQUAL EXPL SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ASSIGNMENT, $1); $$.addChild($3); }
+    |   IDENTIFIER EQUAL LBRACKET LEXPL RBRACKET SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ASSIGNMENT, $1); $$.childs = $4; }
+    |   IDENTIFIER EQUAL LBRACKET RBRACKET SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ASSIGNMENT, $1); $$.childs = [null]; };
 
 LEXPL
     :   LEXPL COMMA EXPL { $1.push($3); $$ = $1; }

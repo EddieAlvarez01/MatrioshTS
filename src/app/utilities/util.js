@@ -19,6 +19,7 @@ export const literal = {
         DIVISION: 'division',
         MODULUS: 'modulus',
         DECLARATION: 'declaration',
+        ASSIGNMENT: 'assignment',
         OTHER_THAN: 'other_than',
         JUST_AS: 'just_as',
         GREATER_THAN_OR_EQUAL_TO: 'greater_than_or_equal_to',
