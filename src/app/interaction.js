@@ -1,5 +1,20 @@
+//CSS PROJECT
 import '../css/style.css';
 
-import './codemirror';
+//CODE IMPOIRTS
+import {editor} from './codemirror';
+import { traduction } from './app';
 
-console.log(5);
+const btnTraduction = document.querySelector('#btnTraduction');
+
+//LISTENER
+btnTraduction.addEventListener('click', traductionTxt);
+
+//TRANSLATE LANGUAGE
+function traductionTxt(){
+    if(editor.getValue() != ''){
+        traduction(editor.getValue());
+    }else{
+        console.log('NO TEXT PROVIDED');
+    }
+}

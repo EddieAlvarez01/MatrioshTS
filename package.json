@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "traduction": "jison ./src/app/analysis/parser.jison -o ./src/app/analysis/parser.js"
   },
   "keywords": [],
   "author": "",
