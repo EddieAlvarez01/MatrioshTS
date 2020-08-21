@@ -162,6 +162,33 @@ break;
 case 25:
  this.$ = []; this.$.push($$[$0]); 
 break;
+case 26:
+ this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.OR, util.literal.operation.OR, null); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
+break;
+case 27:
+ this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.AND, util.literal.operation.AND, null); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
+break;
+case 28:
+ this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.NOT, util.literal.operation.NOT, null); this.$.addChild($$[$0]); 
+break;
+case 30:
+ this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.LESS_THAN, util.literal.operation.LESS_THAN, null); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
+break;
+case 31:
+ this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.GREATER_THAN, util.literal.operation.GREATER_THAN, null); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
+break;
+case 32:
+ this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.LESS_THAN_OR_EQUAL_TO, util.literal.operation.LESS_THAN_OR_EQUAL_TO, null); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
+break;
+case 33:
+ this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.GREATER_THAN_OR_EQUAL_TO, util.literal.operation.GREATER_THAN_OR_EQUAL_TO, null); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
+break;
+case 34:
+ this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.JUST_AS, util.literal.operation.JUST_AS, null); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
+break;
+case 35:
+ this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.OTHER_THAN, util.literal.operation.OTHER_THAN, null); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
+break;
 case 37:
  this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.MODULUS, util.literal.operation.MODULUS, null); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
 break;

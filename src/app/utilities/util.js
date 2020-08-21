@@ -18,7 +18,16 @@ export const literal = {
         MULTIPLICATION: 'multiplication',
         DIVISION: 'division',
         MODULUS: 'modulus',
-        DECLARATION: 'declaration'
+        DECLARATION: 'declaration',
+        OTHER_THAN: 'other_than',
+        JUST_AS: 'just_as',
+        GREATER_THAN_OR_EQUAL_TO: 'greater_than_or_equal_to',
+        LESS_THAN_OR_EQUAL_TO: 'less_than_or_equal_to',
+        GREATER_THAN: 'greater_than',
+        LESS_THAN: 'less_than',
+        NOT: 'not',
+        AND: 'and',
+        OR: 'or'
     }
 
 };

@@ -134,18 +134,18 @@ LEXPL
     |   EXPL { $$ = []; $$.push($1); };
 
 EXPL
-    :   EXPL OR EXPL
-    |   EXPL AND EXPL
-    |   NOT EXPL
+    :   EXPL OR EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.OR, util.literal.operation.OR, null); $$.addChild($1); $$.addChild($3); }
+    |   EXPL AND EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.AND, util.literal.operation.AND, null); $$.addChild($1); $$.addChild($3); }
+    |   NOT EXPL { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.NOT, util.literal.operation.NOT, null); $$.addChild($2); }
     |   EXPR { $$ = $1; };
 
 EXPR
-    :   EXPR LESSTHAN EXPR
-    |   EXPR GREATERTHAN EXPR
-    |   EXPR LESSTHANOREQUALTO EXPR
-    |   EXPR GREATERTHANOREQUALTO EXPR
-    |   EXPR JUSTAS EXPR
-    |   EXPR OTHERTHAN EXPR
+    :   EXPR LESSTHAN EXPR { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.LESS_THAN, util.literal.operation.LESS_THAN, null); $$.addChild($1); $$.addChild($3); }
+    |   EXPR GREATERTHAN EXPR { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.GREATER_THAN, util.literal.operation.GREATER_THAN, null); $$.addChild($1); $$.addChild($3); }
+    |   EXPR LESSTHANOREQUALTO EXPR { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.LESS_THAN_OR_EQUAL_TO, util.literal.operation.LESS_THAN_OR_EQUAL_TO, null); $$.addChild($1); $$.addChild($3); }
+    |   EXPR GREATERTHANOREQUALTO EXPR { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.GREATER_THAN_OR_EQUAL_TO, util.literal.operation.GREATER_THAN_OR_EQUAL_TO, null); $$.addChild($1); $$.addChild($3); }
+    |   EXPR JUSTAS EXPR { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.JUST_AS, util.literal.operation.JUST_AS, null); $$.addChild($1); $$.addChild($3); }
+    |   EXPR OTHERTHAN EXPR { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.OTHER_THAN, util.literal.operation.OTHER_THAN, null); $$.addChild($1); $$.addChild($3); }
     |   EXP { $$ = $1; };
 
 EXP
