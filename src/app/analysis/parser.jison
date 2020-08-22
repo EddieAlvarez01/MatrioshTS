@@ -32,6 +32,7 @@
 ","                   return 'COMMA';
 ";"                   return 'SEMICOLON';
 "."                   return 'POINT';
+"**"                  return 'POW';
 "*"                   return 'PORSIGN';
 "/"                   return 'DIVISIONSIGN';
 "-"                   return 'MINUSSIGN';
@@ -39,6 +40,7 @@
 "++"                  return 'INCREMENTSIGN';
 "--"                  return 'DECREMENTSIGN';
 "%"                   return 'MODULUSSIGN';
+"?"                   return 'QUESTIONINGSIGN';
 "<"                   return 'LESSTHAN';
 ">"                   return 'GREATERTHAN';
 "<="                  return 'LESSTHANOREQUALTO';
@@ -60,6 +62,7 @@
 
 /* operator associations and precedence */
 
+%right 'QUESTIONINGSIGN'
 %left 'OR'
 %left 'AND'
 %left 'JUSTAS' 'OTHERTHAN'
@@ -67,6 +70,7 @@
 %left 'PLUSSIGN' 'MINUSSIGN'
 %left 'PORSIGN' 'DIVISIONSIGN' 'MODULUSSIGN'
 %right 'NOT'
+%right 'POW'
 
 %start expressions
 
@@ -147,6 +151,7 @@ EXPL
     :   EXPL OR EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.OR, util.literal.operation.OR, null); $$.addChild($1); $$.addChild($3); }
     |   EXPL AND EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.AND, util.literal.operation.AND, null); $$.addChild($1); $$.addChild($3); }
     |   NOT EXPL { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.NOT, util.literal.operation.NOT, null); $$.addChild($2); }
+    |   TERNARY { $$ = $1; }
     |   EXPR { $$ = $1; };
 
 EXPR
@@ -159,7 +164,8 @@ EXPR
     |   EXP { $$ = $1; };
 
 EXP
-    :   EXP MODULUSSIGN EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.MODULUS, util.literal.operation.MODULUS, null); $$.addChild($1); $$.addChild($3); }
+    :   EXP POW EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.POW, util.literal.operation.POW, null); $$.addChild($1); $$.addChild($3); }
+    |   EXP MODULUSSIGN EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.MODULUS, util.literal.operation.MODULUS, null); $$.addChild($1); $$.addChild($3); }
     |   EXP DIVISIONSIGN EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DIVISION, util.literal.operation.DIVISION, null); $$.addChild($1); $$.addChild($3); }
     |   EXP PORSIGN EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.MULTIPLICATION, util.literal.operation.MULTIPLICATION, null); $$.addChild($1); $$.addChild($3); }
     |   EXP MINUSSIGN EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.SUBTRACTION, util.literal.operation.SUBTRACTION, null); $$.addChild($1); $$.addChild($3); }
@@ -168,3 +174,6 @@ EXP
     |   CHAIN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.STRING, $1, null); }
     |   NUMBER  { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.NUMBER, Number($1), null); }
     |   BOOLEAN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.BOOLEAN, ($1 === 'true'), null); };
+
+TERNARY
+    :   EXPL QUESTIONINGSIGN EXPL COLON EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.TERNARY_OPERATOR, util.literal.operation.TERNARY_OPERATOR); $$.addChild($1); $$.addChild($3); $$.addChild($5); };
