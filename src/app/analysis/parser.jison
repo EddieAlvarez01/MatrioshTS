@@ -13,6 +13,7 @@
 "//"[^\n]+            /* SKIP COMMENT */
 "/*"("*"(?!\/)|[^*])*"*/"   /* SKIP COMMENT */
 "let"                 return 'LET';
+"type"                return 'TYPE';
 "const"               return 'CONST';
 "console"             return 'CONSOLE';
 "log"                 return 'LOG';
@@ -26,6 +27,8 @@
 "="                   return 'EQUAL';
 "("                   return 'LPAREN';
 ")"                   return 'RPAREN';
+"{"                   return 'LBRACE';
+"}"                   return 'RBRACE';
 "["                   return 'LBRACKET';
 "]"                   return 'RBRACKET';
 ":"                   return 'COLON';
@@ -85,7 +88,8 @@ LSENTENCES
 
 SENTENCE
     :   DECLARATION { $$ = $1; }
-    |   ASSIGNMENT { $$ = $1; };
+    |   ASSIGNMENT { $$ = $1; }
+    |   TYPE_DECLARATION {  };
 
 DECLARATION
     :   VARLET { $$ = $1; }
@@ -177,3 +181,16 @@ EXP
 
 TERNARY
     :   EXPL QUESTIONINGSIGN EXPL COLON EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.TERNARY_OPERATOR, util.literal.operation.TERNARY_OPERATOR); $$.addChild($1); $$.addChild($3); $$.addChild($5); };
+
+TYPE_DECLARATION
+    :   TYPE IDENTIFIER EQUAL LBRACE RBRACE;
+
+LPARAMETERS
+    :   LPARAMETERS COMMA PARAMETERS
+    |   PARAMETERS;
+
+PARAMETERS
+    :   IDENTIFIER COLON DATATYPE
+    |   IDENTIFIER COLON DATATYPE LBRACKET RBRACKET
+    |   IDENTIFIER;
+
