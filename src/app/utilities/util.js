@@ -11,7 +11,7 @@ export const literal = {
         ARRAY_BOOLEAN: 'array_boolean',
         ARRAY_ANY: 'array_any',
         OBJECT: 'object',
-        IDENTIFIER: 'identifier'
+        VARIABLE: 'variable'
     },
 
     operation: {
@@ -32,6 +32,11 @@ export const literal = {
         SWITCH: 'switch',
         LCASES: 'lcases',
         OTHER_THAN: 'other_than',
+        WHILE: 'while',
+        DO_WHILE: 'do_while',
+        INCREMENT: 'increment',
+        DECREMENT: 'decrement',
+        FOR: 'for',
         JUST_AS: 'just_as',
         GREATER_THAN_OR_EQUAL_TO: 'greater_than_or_equal_to',
         LESS_THAN_OR_EQUAL_TO: 'less_than_or_equal_to',

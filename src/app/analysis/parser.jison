@@ -21,6 +21,9 @@
 "switch"              return 'SWITCH';
 "case"                return 'CASE';
 "default"             return 'DEFAULT';
+"while"               return 'WHILE';
+"do"                  return 'DO';
+"for"                 return 'FOR';
 "log"                 return 'LOG';
 "string"              return 'TSTRING';
 "number"              return 'TNUMBER';
@@ -29,6 +32,12 @@
 ("true"|"false")      return 'BOOLEAN';
 ([a-zA-Z]|"_")([a-zA-Z]|[0-9]|"_")*    return 'IDENTIFIER';
 [0-9]+"."?[0-9]*      return 'NUMBER';
+"=="                  return 'JUSTAS';
+"!="                  return 'OTHERTHAN';
+"<="                  return 'LESSTHANOREQUALTO';
+">="                  return 'GREATERTHANOREQUALTO';
+"++"                  return 'INCREMENTSIGN';
+"--"                  return 'DECREMENTSIGN';
 "="                   return 'EQUAL';
 "("                   return 'LPAREN';
 ")"                   return 'RPAREN';
@@ -45,16 +54,10 @@
 "/"                   return 'DIVISIONSIGN';
 "-"                   return 'MINUSSIGN';
 "+"                   return 'PLUSSIGN';
-"++"                  return 'INCREMENTSIGN';
-"--"                  return 'DECREMENTSIGN';
 "%"                   return 'MODULUSSIGN';
 "?"                   return 'QUESTIONINGSIGN';
 "<"                   return 'LESSTHAN';
 ">"                   return 'GREATERTHAN';
-"<="                  return 'LESSTHANOREQUALTO';
-">="                  return 'GREATERTHANOREQUALTO';
-"=="                  return 'JUSTAS';
-"!="                  return 'OTHERTHAN';
 "&&"                  return 'AND';
 "||"                  return 'OR';
 "!"                   return 'NOT';
@@ -79,6 +82,7 @@
 %left 'PORSIGN' 'DIVISIONSIGN' 'MODULUSSIGN'
 %right 'NOT'
 %right 'POW'
+%nonassoc 'INCREMENTSIGN' 'DECREMENTSIGN'
 
 %start expressions
 
@@ -96,7 +100,12 @@ SENTENCE
     |   ASSIGNMENT { $$ = $1; }
     |   TYPE_DECLARATION { $$ = $1; }
     |   STATEMENT_IF { $$ = $1; }
-    |   STATEMENT_SWITCH { $$ = $1; };
+    |   STATEMENT_SWITCH { $$ = $1; }
+    |   STATEMENT_WHILE { $$ = $1; }
+    |   DO_WHILE { $$ = $1; }
+    |   STATEMENT_FOR { $$ = $1; }
+    |   INCREMENT SEMICOLON { $$ = $1; }
+    |   DECREMENT SEMICOLON { $$ = $1; };
 
 DECLARATION
     :   VARLET { $$ = $1; }
@@ -182,10 +191,18 @@ EXP
     |   EXP MINUSSIGN EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.SUBTRACTION, util.literal.operation.SUBTRACTION, null); $$.addChild($1); $$.addChild($3); }
     |   EXP PLUSSIGN EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.ADDITION, util.literal.operation.ADDITION, null); $$.addChild($1); $$.addChild($3); }
     |   LPAREN EXPL RPAREN { $$ = $2; }
-    |   IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.IDENTIFIER, $1, null); }
+    |   INCREMENT { $$ = $1; }
+    |   DECREMENT { $$ = $1; }
+    |   IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.VARIABLE, $1, null); }
     |   CHAIN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.STRING, $1, null); }
     |   NUMBER  { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.NUMBER, Number($1), null); }
     |   BOOLEAN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.BOOLEAN, ($1 === 'true'), null); };
+
+INCREMENT
+    :   EXP INCREMENTSIGN { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.INCREMENT, util.literal.operation.INCREMENT); $$.addChild($1); };
+
+DECREMENT
+    :   EXP DECREMENTSIGN { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECREMENT, util.literal.operation.DECREMENT); $$.addChild($1); };
 
 TERNARY
     :   EXPL QUESTIONINGSIGN EXPL COLON EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.TERNARY_OPERATOR, util.literal.operation.TERNARY_OPERATOR); $$.addChild($1); $$.addChild($3); $$.addChild($5); };
@@ -223,4 +240,22 @@ CASES
     :   CASE EXPL COLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CASE, util.literal.operation.CASE); }
     |   CASE EXPL COLON LSENTENCES { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CASE, util.literal.operation.CASE); $$.addChild($4); }
     |   DEFAULT COLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFAULT, util.literal.operation.DEFAULT); }
-    |   DEFAULT COLON LSENTENCES { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFAULT, util.literal.operation.DEFAULT); $$.addChild($3); };   
+    |   DEFAULT COLON LSENTENCES { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFAULT, util.literal.operation.DEFAULT); $$.addChild($3); };
+
+STATEMENT_WHILE
+    :   WHILE LPAREN EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.WHILE, util.literal.operation.WHILE); $$.addChild($3); }
+    |   WHILE LPAREN EXPL RPAREN LBRACE LSENTENCES RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.WHILE, util.literal.operation.WHILE); $$.addChild($3); $$.addChild($6); };
+
+DO_WHILE
+    :   DO LBRACE RBRACE WHILE LPAREN EXPL RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DO_WHILE, util.literal.operation.DO_WHILE); $$.addChild($6); }
+    |   DO LBRACE LSENTENCES RBRACE WHILE LPAREN EXPL RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DO_WHILE, util.literal.operation.DO_WHILE); $$.addChild($3); $$.addChild($7); };
+
+STATEMENT_FOR
+    :   FOR LPAREN FOR_PARAMETER1 EXPL SEMICOLON INCREMENT RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR, util.literal.operation.FOR); $$.addChild($3); $$.addChild($4); $$.addChild($6); }
+    |   FOR LPAREN FOR_PARAMETER1 EXPL SEMICOLON DECREMENT RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR, util.literal.operation.FOR); $$.addChild($3); $$.addChild($4); $$.addChild($6); }
+    |   FOR LPAREN FOR_PARAMETER1 EXPL SEMICOLON INCREMENT RPAREN LBRACE LSENTENCES RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR, util.literal.operation.FOR); $$.addChild($3); $$.addChild($4); $$.addChild($6); $$.addChild($9); }
+    |   FOR LPAREN FOR_PARAMETER1 EXPL SEMICOLON DECREMENT RPAREN LBRACE LSENTENCES RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR, util.literal.operation.FOR); $$.addChild($3); $$.addChild($4); $$.addChild($6); $$.addChild($9); }; 
+
+FOR_PARAMETER1
+    :   DECLARATION { $$ = $1; }
+    |   ASSIGNMENT { $$ = $1; };
