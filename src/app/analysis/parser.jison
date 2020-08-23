@@ -16,6 +16,11 @@
 "type"                return 'TYPE';
 "const"               return 'CONST';
 "console"             return 'CONSOLE';
+"if"                  return 'IF';
+"else"                return 'ELSE';
+"switch"              return 'SWITCH';
+"case"                return 'CASE';
+"default"             return 'DEFAULT';
 "log"                 return 'LOG';
 "string"              return 'TSTRING';
 "number"              return 'TNUMBER';
@@ -89,7 +94,9 @@ LSENTENCES
 SENTENCE
     :   DECLARATION { $$ = $1; }
     |   ASSIGNMENT { $$ = $1; }
-    |   TYPE_DECLARATION {  };
+    |   TYPE_DECLARATION { $$ = $1; }
+    |   STATEMENT_IF { $$ = $1; }
+    |   STATEMENT_SWITCH { $$ = $1; };
 
 DECLARATION
     :   VARLET { $$ = $1; }
@@ -175,6 +182,7 @@ EXP
     |   EXP MINUSSIGN EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.SUBTRACTION, util.literal.operation.SUBTRACTION, null); $$.addChild($1); $$.addChild($3); }
     |   EXP PLUSSIGN EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.ADDITION, util.literal.operation.ADDITION, null); $$.addChild($1); $$.addChild($3); }
     |   LPAREN EXPL RPAREN { $$ = $2; }
+    |   IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.IDENTIFIER, $1, null); }
     |   CHAIN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.STRING, $1, null); }
     |   NUMBER  { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.NUMBER, Number($1), null); }
     |   BOOLEAN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.BOOLEAN, ($1 === 'true'), null); };
@@ -183,14 +191,36 @@ TERNARY
     :   EXPL QUESTIONINGSIGN EXPL COLON EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.TERNARY_OPERATOR, util.literal.operation.TERNARY_OPERATOR); $$.addChild($1); $$.addChild($3); $$.addChild($5); };
 
 TYPE_DECLARATION
-    :   TYPE IDENTIFIER EQUAL LBRACE RBRACE;
+    :   TYPE IDENTIFIER EQUAL LBRACE LPARAMETERS RBRACE { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.TYPE_DECLARATION, $2, util.literal.dataTypes.OBJECT); $$.childs = $5; };
 
 LPARAMETERS
-    :   LPARAMETERS COMMA PARAMETERS
-    |   PARAMETERS;
+    :   LPARAMETERS COMMA PARAMETERS { $1.push($3); $$ = $1; }
+    |   PARAMETERS { $$ = []; $$.push($1); };
 
 PARAMETERS
-    :   IDENTIFIER COLON DATATYPE
-    |   IDENTIFIER COLON DATATYPE LBRACKET RBRACKET
-    |   IDENTIFIER;
+    :   IDENTIFIER COLON DATATYPE { $$ = new ParseNode(@1.first_line, @1.first_column, null, $1, $3, false, false); }
+    |   IDENTIFIER COLON DATATYPE LBRACKET RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, null, $1, $3, false, false); }
+    |   IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, null, $1, util.literal.operation.ANY, false, true); };
 
+STATEMENT_IF
+    :   IF LPAREN EXPL RPAREN BODY_IF { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.IF, util.literal.operation.IF); $$.addChild($3); if($5 != null){ $$.addChild($5); } }
+    |   IF LPAREN EXPL RPAREN BODY_IF ELSE BODY_IF { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.IF, util.literal.operation.IF); $$.addChild($3); if($5 != null){ $$.addChild($5); } let elseNode = new ParseNode(@6.first_line, @6.first_column, util.literal.operation.ELSE, util.literal.operation.ELSE); if($7 != null){ elseNode.addChild($7); $$.addChild(elseNode); } }
+    |   IF LPAREN EXPL RPAREN BODY_IF ELSE STATEMENT_IF { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.IF, util.literal.operation.IF); $$.addChild($3); if($5 != null){ $$.addChild($5); } let elseNode2 = new ParseNode(@6.first_line, @6.first_column, util.literal.operation.ELSE, util.literal.operation.ELSE); $$.addChild(elseNode2); $$.addChild($7); };
+
+BODY_IF
+    :   LBRACE RBRACE { $$ = null; }
+    |   LBRACE LSENTENCES RBRACE { $$ = $2; };
+
+STATEMENT_SWITCH
+    :   SWITCH LPAREN EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.SWITCH, util.literal.operation.SWITCH); $$.addChild($3); }
+    |   SWITCH LPAREN EXPL RPAREN LBRACE LCASES RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.SWITCH, util.literal.operation.SWITCH); $$.addChild($3); $$.addChild($6); };
+
+LCASES
+    :   LCASES CASES { $1.addChild($2); $$ = $1; }
+    |   CASES { $$ = new ParseNode(null, null, util.literal.operation.LCASES, util.literal.operation.LCASES); $$.addChild($1); };
+
+CASES
+    :   CASE EXPL COLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CASE, util.literal.operation.CASE); }
+    |   CASE EXPL COLON LSENTENCES { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CASE, util.literal.operation.CASE); $$.addChild($4); }
+    |   DEFAULT COLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFAULT, util.literal.operation.DEFAULT); }
+    |   DEFAULT COLON LSENTENCES { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFAULT, util.literal.operation.DEFAULT); $$.addChild($3); };   

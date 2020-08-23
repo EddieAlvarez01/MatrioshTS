@@ -9,7 +9,9 @@ export const literal = {
         ARRAY_STRING: 'array_string',
         ARRAY_NUMBER: 'array_number',
         ARRAY_BOOLEAN: 'array_boolean',
-        ARRAY_ANY: 'array_any'
+        ARRAY_ANY: 'array_any',
+        OBJECT: 'object',
+        IDENTIFIER: 'identifier'
     },
 
     operation: {
@@ -22,6 +24,13 @@ export const literal = {
         DECLARATION: 'declaration',
         ASSIGNMENT: 'assignment',
         TERNARY_OPERATOR: 'ternary_operator',
+        TYPE_DECLARATION: 'type_declaration',
+        IF: 'if',
+        ELSE: 'else',
+        DEFAULT: 'default',
+        CASE: 'case',
+        SWITCH: 'switch',
+        LCASES: 'lcases',
         OTHER_THAN: 'other_than',
         JUST_AS: 'just_as',
         GREATER_THAN_OR_EQUAL_TO: 'greater_than_or_equal_to',
