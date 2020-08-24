@@ -23,8 +23,11 @@
 "default"             return 'DEFAULT';
 "while"               return 'WHILE';
 "do"                  return 'DO';
+"graficar_ts"         return 'GRAPH';
 "for"                 return 'FOR';
 "log"                 return 'LOG';
+"in"                  return 'IN';
+"of"                  return 'OF';
 "string"              return 'TSTRING';
 "number"              return 'TNUMBER';
 "boolean"             return 'TBOOLEAN';
@@ -83,6 +86,7 @@
 %right 'NOT'
 %right 'POW'
 %nonassoc 'INCREMENTSIGN' 'DECREMENTSIGN'
+%left 'POINT'
 
 %start expressions
 
@@ -105,7 +109,12 @@ SENTENCE
     |   DO_WHILE { $$ = $1; }
     |   STATEMENT_FOR { $$ = $1; }
     |   INCREMENT SEMICOLON { $$ = $1; }
-    |   DECREMENT SEMICOLON { $$ = $1; };
+    |   DECREMENT SEMICOLON { $$ = $1; }
+    |   FOR_IN { $$ = $1; }
+    |   FOR_OF { $$ = $1; }
+    |   FUNCTION_CALL SEMICOLON { $$ = $1; }
+    |   PRINT { $$ = $1; }
+    |   GRAPH_TS { $$ = $1; };
 
 DECLARATION
     :   VARLET { $$ = $1; }
@@ -161,7 +170,10 @@ ENDDECLARATION
 ASSIGNMENT
     :   IDENTIFIER EQUAL EXPL SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ASSIGNMENT, $1); $$.addChild($3); }
     |   IDENTIFIER EQUAL LBRACKET LEXPL RBRACKET SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ASSIGNMENT, $1); $$.childs = $4; }
-    |   IDENTIFIER EQUAL LBRACKET RBRACKET SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ASSIGNMENT, $1); $$.childs = [null]; };
+    |   IDENTIFIER EQUAL LBRACKET RBRACKET SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ASSIGNMENT, $1); $$.childs = [null]; }
+    |   PROPERTY_ACCESS EQUAL EXPL SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ASSIGNMENT, util.literal.operation.ASSIGNMENT); $$.addChild($1); $$.addChild($3); }
+    |   PROPERTY_ACCESS EQUAL LBRACKET LEXPL RBRACKET SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ASSIGNMENT, $1); const lexpl = new ParseNode(null, null, util.literal.operation.LEXPL, util.literal.operation.LEXPL); lexpl.childs = $4; $$.addChild($1); $$.addChild(lexpl); }
+    |   PROPERTY_ACCESS EQUAL LBRACKET RBRACKET SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ASSIGNMENT, util.literal.operation.ASSIGNMENT); $$.addChild($1); };
 
 LEXPL
     :   LEXPL COMMA EXPL { $1.push($3); $$ = $1; }
@@ -172,6 +184,7 @@ EXPL
     |   EXPL AND EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.AND, util.literal.operation.AND, null); $$.addChild($1); $$.addChild($3); }
     |   NOT EXPL { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.NOT, util.literal.operation.NOT, null); $$.addChild($2); }
     |   TERNARY { $$ = $1; }
+    |   PROPERTY_ACCESS { $$ = $1; }
     |   EXPR { $$ = $1; };
 
 EXPR
@@ -193,6 +206,8 @@ EXP
     |   LPAREN EXPL RPAREN { $$ = $2; }
     |   INCREMENT { $$ = $1; }
     |   DECREMENT { $$ = $1; }
+    |   ARRAY_ACCESS { $$ = $1; }
+    |   FUNCTION_CALL { $$ = $1; }
     |   IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.VARIABLE, $1, null); }
     |   CHAIN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.STRING, $1, null); }
     |   NUMBER  { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.NUMBER, Number($1), null); }
@@ -259,3 +274,27 @@ STATEMENT_FOR
 FOR_PARAMETER1
     :   DECLARATION { $$ = $1; }
     |   ASSIGNMENT { $$ = $1; };
+
+FOR_IN
+    :   FOR LPAREN LET IDENTIFIER IN EXPL RPAREN LBRACE LSENTENCES RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN); $$.addChild(new ParseNode(@4.first_line, @4.first_column, util.literal.operation.DECLARATION, $4)); $$.addChild($6); $$.addChild($9); }
+    |   FOR LPAREN LET IDENTIFIER IN EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN); $$.addChild(new ParseNode(@4.first_line, @4.first_column, util.literal.operation.DECLARATION, $4)); $$.addChild($6); };
+
+FOR_OF
+    :   FOR LPAREN LET IDENTIFIER OF EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF); $$.addChild(new ParseNode(@4.first_line, @4.first_column, util.literal.operation.DECLARATION, $4)); $$.addChild($6); }
+    |   FOR LPAREN LET IDENTIFIER OF EXPL RPAREN LBRACE LSENTENCES RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF); $$.addChild(new ParseNode(@4.first_line, @4.first_column, util.literal.operation.DECLARATION, $4)); $$.addChild($6); $$.addChild($9); };
+
+ARRAY_ACCESS
+    :   IDENTIFIER LBRACKET EXP RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ARRAY_ACCESS, $1); $$.addChild($3); };
+
+FUNCTION_CALL
+    :   IDENTIFIER LPAREN RPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FUNCTION_CALL, $1); }
+    |   IDENTIFIER LPAREN LEXPL RPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FUNCTION_CALL, $1); $$.childs = $3; };
+
+PROPERTY_ACCESS
+    :   EXPL POINT EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.PROPERTY_ACCESS, util.literal.operation.PROPERTY_ACCESS); $$.addChild($1); $$.addChild($3); };
+
+PRINT
+    :   CONSOLE POINT LOG LPAREN EXPL RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PRINT, util.literal.operation.PRINT); $$.addChild($5); };
+
+GRAPH_TS
+    :   GRAPH LPAREN RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.GRAPH_TS, util.literal.operation.GRAPH_TS); };
