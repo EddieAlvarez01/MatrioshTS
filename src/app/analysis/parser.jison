@@ -28,6 +28,9 @@
 "log"                 return 'LOG';
 "in"                  return 'IN';
 "of"                  return 'OF';
+"break"               return 'BREAK';
+"continue"            return 'CONTINUE';
+"return"              return 'RETURN';
 "string"              return 'TSTRING';
 "number"              return 'TNUMBER';
 "boolean"             return 'TBOOLEAN';
@@ -114,7 +117,10 @@ SENTENCE
     |   FOR_OF { $$ = $1; }
     |   FUNCTION_CALL SEMICOLON { $$ = $1; }
     |   PRINT { $$ = $1; }
-    |   GRAPH_TS { $$ = $1; };
+    |   GRAPH_TS { $$ = $1; }
+    |   STATEMENT_BREAK { $$ = $1; }
+    |   STATEMENT_CONTINUE { $$ = $1; }
+    |   STATEMENT_RETURN { $$ = $1; };
 
 DECLARATION
     :   VARLET { $$ = $1; }
@@ -298,3 +304,13 @@ PRINT
 
 GRAPH_TS
     :   GRAPH LPAREN RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.GRAPH_TS, util.literal.operation.GRAPH_TS); };
+
+STATEMENT_BREAK
+    :   BREAK SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.BREAK, util.literal.operation.BREAK); };
+
+STATEMENT_CONTINUE
+    :   CONTINUE SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CONTINUE, util.literal.operation.CONTINUE); };
+
+STATEMENT_RETURN
+    :   RETURN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.RETURN, util.literal.operation.RETURN); }
+    |   RETURN EXPL SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.RETURN, util.literal.operation.RETURN); $$.addChild($2); };
