@@ -11,7 +11,8 @@ export const literal = {
         ARRAY_BOOLEAN: 'array_boolean',
         ARRAY_ANY: 'array_any',
         OBJECT: 'object',
-        VARIABLE: 'variable'
+        VARIABLE: 'variable',
+        NULL: 'null'
     },
 
     operation: {
@@ -49,6 +50,12 @@ export const literal = {
         BREAK: 'break',
         CONTINUE: 'continue',
         RETURN: 'return',
+        PROPERTY_DECLARATION: 'property_declaration',
+        ARRAY: 'array',
+        DEFINITION: 'definition',
+        LENGTH: 'length',
+        POP: 'pop',
+        PUSH: 'push',
         GREATER_THAN_OR_EQUAL_TO: 'greater_than_or_equal_to',
         LESS_THAN_OR_EQUAL_TO: 'less_than_or_equal_to',
         GREATER_THAN: 'greater_than',

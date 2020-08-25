@@ -1,0 +1,8 @@
+LVALUES COMMA IDENTIFIER COLON VALUE { const decl4 = new ParseNode(@3.first_line, @3.first_column, util.literal.operation.PROPERTY_DECLARATION, $3); decl4.addChild($5); $1.addChild(decl4); $$ = $1; }
+    |   LVALUES COMMA IDENTIFIER COLON LBRACKET RBRACKET { const decl7 = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PROPERTY_DECLARATION, $3); decl7.addChild(null); $$.push(decl7); $$ = $1; }
+    |   LVALUES COMMA IDENTIFIER COLON LBRACKET LEXPL RBRACKET { const decl8 = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PROPERTY_DECLARATION, $3); decl8.childs = $6; $$.push(decl8); $$ =$1; }
+    |   LVALUES COMMA IDENTIFIER COLON DEFINITION { const decl3 = new ParseNode(@3.first_line, @3.first_column, util.literal.operation.PROPERTY_DECLARATION, $3); decl3.addChild($5); $1.push(decl3); $$ = $1; }
+    |   IDENTIFIER COLON EXPL { $$ = []; const decl2 = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PROPERTY_DECLARATION, $1); decl2.addChild($3); $$.push(decl2]); }
+    |   IDENTIFIER COLON DEFINITION { $$ = []; const decl1 = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PROPERTY_DECLARATION, $1); decl1.addChild($3); $$.push(decl1); }
+    |   IDENTIFIER COLON LBRACKET RBRACKET { $$ = []; const decl5 = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PROPERTY_DECLARATION, $1); decl5.addChild(null); $$.push(decl5); } 
+    |   IDENTIFIER COLON LBRACKET LEXPL RBRACKET { $$ = []; const decl6 = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PROPERTY_DECLARATION, $1); decl6.childs = $4; $$.push(decl6); };
