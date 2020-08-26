@@ -42,14 +42,34 @@ function graphTree(data){
         bottom: 50,
         left: 90
     };
-    const width = 660 - margin.right - margin.left;
+    const width = 960 - margin.right - margin.left;
     const height = 500 - margin.top - margin.bottom;
-    const tree = d3.tree().size([width, height]);
+    var nodeWidth = 80;
+    var nodeHeight = 75;
+    var horizontalSeparationBetweenNodes = 50;
+    var verticalSeparationBetweenNodes = 5;
+    const tree = d3.tree().size([width, height]).nodeSize([nodeWidth + horizontalSeparationBetweenNodes, nodeHeight + verticalSeparationBetweenNodes])
+                    .separation(function(a, b) {
+                        return a.parent == b.parent ? 1 : 1.25;});
+    let zoom = d3.zoom().scaleExtent([0.3,2]).on("zoom", zoomed);
+
     let nodes = d3.hierarchy(data);
     nodes = tree(nodes);
-    const svg = d3.select("#imgTreeTraduction").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
-    const g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    const link = g.selectAll(".link").data(nodes.descendants().slice(1))
+
+    const svg = d3.select("#imgTreeTraduction").append("svg")
+                                                .attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
+    
+    let zoomer = svg.append("rect")
+                .attr("width", width)
+                .attr("height", height)
+                .style("fill", "none")
+                .style("pointer-events", "all")
+                .call(zoom);
+
+                                                
+    const g = svg.append("g");
+    zoomer.call(zoom.transform, d3.zoomIdentity.translate(150, 0));
+    g.selectAll(".link").data(nodes.descendants().slice(1))
                     .enter().append("path")
                     .attr("class", "link")
                     .attr("d", d => {
@@ -58,6 +78,7 @@ function graphTree(data){
                                 + " " + d.parent.x + "," + (d.y + d.parent.y) / 2
                                 + " " + d.parent.x + "," + d.parent.y;
                     });
+   // nodes.descendants().forEach((d) => {d.y = d.depth * 180; });
     const node = g.selectAll(".node").data(nodes.descendants())
                 .enter().append("g")
                 .attr("class", d => {
@@ -66,9 +87,30 @@ function graphTree(data){
                 .attr("transform", d => "translate(" + d.x + "," + d.y + ")");
     node.append("circle").attr("r", 10);
     node.append("text").attr("dy", ".35em")
-        .attr("y", d => {
-            return d.children ? -20 : 20;
-        })
-        .style("text-anchor", "middle")
-        .text(d => d.data.name);
+                                        .attr("y", d => {
+                                            return d.children ? -20 : 20;
+                                        })
+                                        .style("text-anchor", "middle")
+                                        .text(d => d.data.name);
+    
+    data.x0 = 100;
+    centerNode(data);
+    
+    function zoomed() {
+        g.attr("transform", d3.event.transform);//The zoom and panning is affecting my G element which is a child of SVG
+    }
+
+    function centerNode(source){
+
+        let t = d3.zoomTransform(zoomer.node());
+        let x =  t.x;
+        let y = source.x0;
+        y = -y *t.k + height / 2;
+    
+        g.transition()
+         .duration(750)
+         .attr("transform", "translate(" + x + "," + y + ")scale(" + t.k + ")")
+         .on("end", function(){ zoomer.call(zoom.transform, d3.zoomIdentity.translate(x,y).scale(t.k))});
+    }
+
 }

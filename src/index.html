@@ -14,7 +14,7 @@
 </head>
 <body>
     <div class="container-fluid">
-        <div class="row">
+        <div class="row w-100 h-100">
             <div class="col-6">
                 <div class="container mt-4">
                     <h1>MatrioshTS</h1>
@@ -33,8 +33,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="container mt-4">
+            <div class="col-6 w-100 h-100">
+                <div class="container mt-4 w-100 h-100">
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item" role="presentation">
                             <a class="nav-link active" id="traduction-tab" data-toggle="tab" href="#traduction" role="tab" aria-controls="traduction" aria-selected="true">
@@ -47,10 +47,14 @@
                             </a>
                         </li>
                     </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="traduction" role="tabpanel" aria-labelledby="traduction-tab">
-                            <div id="imgTreeTraduction" class="overflow-auto">
+                    <div class="tab-content w-100 h-100">
+                        <div class="tab-pane fade show active w-100" id="traduction" role="tabpanel" aria-labelledby="traduction-tab">
+                            <h5>Árbol:</h5>
+                            <div id="imgTreeTraduction" class="overflow-hidden w-100">
 
+                            </div>
+                            <div>
+                                <h5>Simbolos</h5>
                             </div>
                         </div>
                         <div class="tab-pane fade" id="execute" role="tabpanel" aria-labelledby="execute-tab">
