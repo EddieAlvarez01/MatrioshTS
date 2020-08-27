@@ -1,6 +1,9 @@
 %{
     const ParseNode = require('../models/ParseNode').default;
+    const ErrorClass = require('../models/Error').default;
     const util = require('../utilities/util');
+    const errors = [];
+    exports.errors = errors;
 %}
 
 /* lexical grammar */
@@ -79,6 +82,9 @@
 <chain_simp>[']       this.popState();
 <<EOF>>               return 'EOF';
 
+.                     {
+                        errors.push(new ErrorClass(util.literal.errorType.LEXICAL, `No se reconoce el token: "${yytext}"`, yylloc.first_line, yylloc.first_column));
+                    }
 /lex
 
 /* operator associations and precedence */
@@ -103,8 +109,8 @@ expressions
     :   LSENTENCES EOF { return $1 };
 
 LSENTENCES
-    :   LSENTENCES SENTENCE { $1.addChild($2); $$ = $1; }
-    |   SENTENCE { $$ = new ParseNode(null, null, 'SENTENCES', 'SENTENCES', null); $$.addChild($1); };
+    :   LSENTENCES SENTENCE { if($2){ $1.addChild($2); } $$ = $1; }
+    |   SENTENCE { $$ = new ParseNode(null, null, 'SENTENCES', 'SENTENCES', null); if($1){ $$.addChild($1); } };
 
 SENTENCE
     :   DECLARATION { $$ = $1; }
@@ -148,7 +154,8 @@ VARLET
         }else{
             $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true);
         } 
-    };
+    }
+    |   error { console.log(`Error ${yytext}`); $$ = null; };
 
 VARCONST
     :   CONST IDENTIFIER EQUAL EXPL SEMICOLON { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, true); $$.addChild($4); }

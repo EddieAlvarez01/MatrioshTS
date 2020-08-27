@@ -63,6 +63,12 @@ export const literal = {
         NOT: 'not',
         AND: 'and',
         OR: 'or'
+    },
+
+    errorType: {
+        SYNTACTIC: 'Sintáctico',
+        SEMANTIC: 'Semántico',
+        LEXICAL: 'Léxico'
     }
 
 };
