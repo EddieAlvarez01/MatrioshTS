@@ -2,7 +2,7 @@
 import '../css/style.css';
 
 //CODE IMPOIRTS
-import {editor} from './codemirror';
+import { editor, consoleOutput } from './codemirror';
 import * as d3 from 'd3';
 import { traduction } from './app';
 
@@ -17,6 +17,7 @@ function traductionTxt(){
         const root = traduction(editor.getValue());
         const data = establishHierarchy(root, {});
         graphTree(data);
+        consoleOutput.setValue(root.traduction);
     }else{
         console.log('NO TEXT PROVIDED');
     }

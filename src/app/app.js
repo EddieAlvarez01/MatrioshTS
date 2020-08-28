@@ -7,7 +7,6 @@ export function traduction(txt) {
         console.log(error);
     }
     const result = parserTraduction.parse(txt);
-    const errors = parserTraduction.errors;
-    console.log(result);
+    result.errors = parserTraduction.errors;
     return result;
 }
