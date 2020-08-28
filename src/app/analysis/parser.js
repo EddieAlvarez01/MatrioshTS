@@ -95,8 +95,11 @@ break;
 case 4: case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 14: case 15: case 17: case 18: case 19: case 20: case 21: case 24: case 25: case 37: case 48: case 49: case 50: case 57: case 65: case 66: case 67: case 68: case 69: case 75: case 106: case 107: case 115:
  this.$ = $$[$0]; 
 break;
-case 12: case 13: case 16: case 22: case 89:
+case 12: case 13: case 16: case 89:
  this.$ = $$[$0-1]; 
+break;
+case 22:
+ this.$.traduction += ';'; this.$ = $$[$0-1]; 
 break;
 case 23:
  if(yytext != ';'){ errors.push(new ErrorClass(util.literal.errorType.SEMANTIC, `Error de sintaxis '${yytext}'`, this._$.first_line, this._$.first_column)); } this.$ = null; 
@@ -238,7 +241,7 @@ case 77:
  this.$ = new ParseNode(_$[$0].first_line, _$[$0].first_column, util.literal.operation.DECREMENT, util.literal.operation.DECREMENT, null, null, null, `${$$[$0-1].traduction}--`); this.$.addChild($$[$0-1]); 
 break;
 case 78:
- this.$ = new ParseNode(_$[$0-3].first_line, _$[$0-3].first_column, util.literal.operation.TERNARY_OPERATOR, util.literal.operation.TERNARY_OPERATOR); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
+ this.$ = new ParseNode(_$[$0-3].first_line, _$[$0-3].first_column, util.literal.operation.TERNARY_OPERATOR, util.literal.operation.TERNARY_OPERATOR, null, null, null, `${$$[$0-4].traduction} ? ${$$[$0-2].traduction} : ${$$[$0].traduction}`); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
 break;
 case 79:
  this.$ = new ParseNode(_$[$0-4].first_line, _$[$0-4].first_column, util.literal.operation.TYPE_DECLARATION, $$[$0-4], util.literal.dataTypes.OBJECT); this.$.childs = $$[$0-1]; 
@@ -328,7 +331,7 @@ case 114:
  this.$ = new ParseNode(_$[$0-3].first_line, _$[$0-3].first_column, util.literal.operation.FUNCTION_CALL, $$[$0-3], null, null, null, `${$$[$0-3]}(${ConcatInstructions($$[$0-1])})`); this.$.childs = $$[$0-1]; 
 break;
 case 116:
- this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.PROPERTY_ACCESS, util.literal.operation.PROPERTY_ACCESS); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
+ this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.PROPERTY_ACCESS, util.literal.operation.PROPERTY_ACCESS, null, null, null, `${$$[$0-2].traduction}.${$$[$0].traduction}`); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
 break;
 case 117:
  this.$ = new ParseNode(_$[$0-6].first_line, _$[$0-6].first_column, util.literal.operation.PRINT, util.literal.operation.PRINT); this.$.addChild($$[$0-2]); 
@@ -364,13 +367,13 @@ case 127:
  this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.ARRAY, util.literal.operation.ARRAY, null, null, null, `[${ConcatInstructions($$[$0-1])}]`); this.$.childs = $$[$0-1]; 
 break;
 case 128:
- this.$ = new ParseNode(_$[$0-5].first_line, _$[$0-5].first_column, util.literal.operation.PUSH, util.literal.operation.PUSH); this.$.addChild($$[$0-5]); this.$.addChild($$[$0-1]); 
+ this.$ = new ParseNode(_$[$0-5].first_line, _$[$0-5].first_column, util.literal.operation.PUSH, util.literal.operation.PUSH, null, null, null, `${$$[$0-5].traduction}.Push(${$$[$0-1].traduction})`); this.$.addChild($$[$0-5]); this.$.addChild($$[$0-1]); 
 break;
 case 129:
- this.$ = new ParseNode(_$[$0-4].first_line, _$[$0-4].first_column, util.literal.operation.POP, util.literal.operation.POP); this.$.addChild($$[$0-4]); 
+ this.$ = new ParseNode(_$[$0-4].first_line, _$[$0-4].first_column, util.literal.operation.POP, util.literal.operation.POP, null, null, null, `${$$[$0-4].traduction}.Pop()`); this.$.addChild($$[$0-4]); 
 break;
 case 130:
- this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.LENGTH, util.literal.operation.LENGTH); this.$.addChild($$[$0-2]); 
+ this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.LENGTH, util.literal.operation.LENGTH, null, null, null, `${$$[$0-2].traduction}.Length`); this.$.addChild($$[$0-2]); 
 break;
 }
 },
