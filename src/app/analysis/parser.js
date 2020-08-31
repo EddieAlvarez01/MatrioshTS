@@ -99,7 +99,7 @@ case 12: case 13:
  $$[$0-1].traduction += ';'; this.$ = $$[$0-1]; 
 break;
 case 16:
- this.$ = $$[$0-1]; 
+ this.$ = $$[$0-1]; this.$.traduction += ';'; 
 break;
 case 22:
  this.$.traduction += ';'; this.$ = $$[$0-1]; 
@@ -373,22 +373,22 @@ case 126:
  this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.PROPERTY_ACCESS, util.literal.operation.PROPERTY_ACCESS, null, null, null, `${$$[$0-2].traduction}.${$$[$0].traduction}`); this.$.addChild($$[$0-2]); this.$.addChild($$[$0]); 
 break;
 case 127:
- this.$ = new ParseNode(_$[$0-6].first_line, _$[$0-6].first_column, util.literal.operation.PRINT, util.literal.operation.PRINT); this.$.addChild($$[$0-2]); 
+ this.$ = new ParseNode(_$[$0-6].first_line, _$[$0-6].first_column, util.literal.operation.PRINT, util.literal.operation.PRINT, null, null, null, `console.log(${$$[$0-2].traduction});`); this.$.addChild($$[$0-2]); 
 break;
 case 128:
- this.$ = new ParseNode(_$[$0-3].first_line, _$[$0-3].first_column, util.literal.operation.GRAPH_TS, util.literal.operation.GRAPH_TS); 
+ this.$ = new ParseNode(_$[$0-3].first_line, _$[$0-3].first_column, util.literal.operation.GRAPH_TS, util.literal.operation.GRAPH_TS, null, null, null, `graficar_ts();`); 
 break;
 case 129:
- this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.BREAK, util.literal.operation.BREAK); 
+ this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.BREAK, util.literal.operation.BREAK, null, null, null, `break;`); 
 break;
 case 130:
- this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.CONTINUE, util.literal.operation.CONTINUE); 
+ this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.CONTINUE, util.literal.operation.CONTINUE, null, null, null, `continue`); 
 break;
 case 131:
- this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.RETURN, util.literal.operation.RETURN); 
+ this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.RETURN, util.literal.operation.RETURN, null, null, null, `return;`); 
 break;
 case 132:
- this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.RETURN, util.literal.operation.RETURN); this.$.addChild($$[$0-1]); 
+ this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.RETURN, util.literal.operation.RETURN, null, null, null, `return ${$$[$0-1].traduction};`); this.$.addChild($$[$0-1]); 
 break;
 case 133:
  this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.DEFINITION, util.literal.operation.DEFINITION, null, null, null, `{\n${ConcatInstructions($$[$0-1])}\n}`); this.$.childs = $$[$0-1]; 

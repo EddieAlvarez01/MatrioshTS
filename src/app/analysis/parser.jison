@@ -135,7 +135,7 @@ SENTENCE
     |   DECREMENT SEMICOLON { $1.traduction += ';'; $$ = $1; }
     |   FOR_IN { $$ = $1; }
     |   FOR_OF { $$ = $1; }
-    |   FUNCTION_CALL SEMICOLON { $$ = $1; }
+    |   FUNCTION_CALL SEMICOLON { $$ = $1; $$.traduction += ';'; }
     |   PRINT { $$ = $1; }
     |   GRAPH_TS { $$ = $1; }
     |   STATEMENT_BREAK { $$ = $1; }
@@ -328,20 +328,20 @@ PROPERTY_ACCESS
     |   EXPL POINT EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.PROPERTY_ACCESS, util.literal.operation.PROPERTY_ACCESS, null, null, null, `${$1.traduction}.${$3.traduction}`); $$.addChild($1); $$.addChild($3); };
 
 PRINT
-    :   CONSOLE POINT LOG LPAREN EXPL RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PRINT, util.literal.operation.PRINT); $$.addChild($5); };
+    :   CONSOLE POINT LOG LPAREN EXPL RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PRINT, util.literal.operation.PRINT, null, null, null, `console.log(${$5.traduction});`); $$.addChild($5); };
 
 GRAPH_TS
-    :   GRAPH LPAREN RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.GRAPH_TS, util.literal.operation.GRAPH_TS); };
+    :   GRAPH LPAREN RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.GRAPH_TS, util.literal.operation.GRAPH_TS, null, null, null, `graficar_ts();`); };
 
 STATEMENT_BREAK
-    :   BREAK SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.BREAK, util.literal.operation.BREAK); };
+    :   BREAK SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.BREAK, util.literal.operation.BREAK, null, null, null, `break;`); };
 
 STATEMENT_CONTINUE
-    :   CONTINUE SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CONTINUE, util.literal.operation.CONTINUE); };
+    :   CONTINUE SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CONTINUE, util.literal.operation.CONTINUE, null, null, null, `continue`); };
 
 STATEMENT_RETURN
-    :   RETURN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.RETURN, util.literal.operation.RETURN); }
-    |   RETURN EXPL SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.RETURN, util.literal.operation.RETURN); $$.addChild($2); };
+    :   RETURN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.RETURN, util.literal.operation.RETURN, null, null, null, `return;`); }
+    |   RETURN EXPL SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.RETURN, util.literal.operation.RETURN, null, null, null, `return ${$2.traduction};`); $$.addChild($2); };
 
 DEFINITION
     :   LBRACE LVALUES RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFINITION, util.literal.operation.DEFINITION, null, null, null, `{\n${ConcatInstructions($2)}\n}`); $$.childs = $2; };
