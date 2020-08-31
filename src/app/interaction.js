@@ -5,6 +5,7 @@ import '../css/style.css';
 import { editor, consoleOutput } from './codemirror';
 import * as d3 from 'd3';
 import { traduction } from './app';
+import { literal } from './utilities/util';
 
 const btnTraduction = document.querySelector('#btnTraduction');
 
@@ -17,6 +18,7 @@ function traductionTxt(){
         const root = traduction(editor.getValue());
         const data = establishHierarchy(root, {});
         graphTree(data);
+        literal.graphTable(root.errors, 1);
         consoleOutput.setValue(root.traduction);
     }else{
         console.log('NO TEXT PROVIDED');
@@ -37,6 +39,7 @@ function establishHierarchy(root, data){
 
 //GRAPH TREE
 function graphTree(data){
+    clearTreeDiv();
     const margin = {
         top: 40,
         right: 90,
@@ -114,4 +117,9 @@ function graphTree(data){
          .on("end", function(){ zoomer.call(zoom.transform, d3.zoomIdentity.translate(x,y).scale(t.k))});
     }
 
+}
+
+//CLEAR TREE DIV
+function clearTreeDiv(){
+    document.querySelector('#imgTreeTraduction').innerHTML = '';
 }

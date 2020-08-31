@@ -53,8 +53,43 @@
                             <div id="imgTreeTraduction" class="overflow-hidden w-100 border border-dark">
 
                             </div>
-                            <div>
-                                <h5>Simbolos</h5>
+                            <h5>Simbolos:</h5>
+                            <div id="divSt" class="w-100 border error-div overflow-auto">
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Nombre</th>
+                                            <th scope="col">Tipo</th>
+                                            <th scope="col">Ámbito</th>
+                                            <th scope="col">Fila</th>
+                                            <th scope="col">Columna</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Sintactico</td>
+                                            <td>Error de sintaxis '='</td>
+                                            <td>112</td>
+                                            <td>20</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Lexico</td>
+                                            <td>Token desconocido</td>
+                                            <td>55</td>
+                                            <td>100</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Semantico</td>
+                                            <td>No se puede restar un tipo STRING con un tipo NUMBER</td>
+                                            <td>112</td>
+                                            <td>80</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <h5>Errores:</h5>
+                            <div id="divError" class="w-100 error-div overflow-auto border">
+                                
                             </div>
                         </div>
                         <div class="tab-pane fade" id="execute" role="tabpanel" aria-labelledby="execute-tab">
