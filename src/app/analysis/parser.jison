@@ -52,6 +52,7 @@
 "boolean"             return 'TBOOLEAN';
 "void"                return 'TVOID';
 "null"                return 'NULL';
+"function"            return 'FUNCTION';
 ("true"|"false")      return 'BOOLEAN';
 ([a-zA-Z]|"_")([a-zA-Z]|[0-9]|"_")*    return 'IDENTIFIER';
 [0-9]+"."?[0-9]*      return 'NUMBER';
@@ -142,7 +143,8 @@ SENTENCE
     |   STATEMENT_CONTINUE { $$ = $1; }
     |   STATEMENT_RETURN { $$ = $1; }
     |   ARRAY_FUNCTIONS SEMICOLON { $$.traduction += ';'; $$ = $1; }
-    |   error { if(yytext != ';'){ errors.push(new ErrorClass(util.literal.errorType.SEMANTIC, `Error de sintaxis '${yytext}'`, this._$.first_line, this._$.first_column)); } $$ = null; };
+    |   FUNCTIONS { $$ = $1; }
+    |   error { if(yytext != ';'){ errors.push(new ErrorClass(util.literal.errorType.SYNTACTIC, `Error de sintaxis '${yytext}'`, this._$.first_line, this._$.first_column)); } $$ = null; };
 
 DECLARATION
     :   VARLET { $$ = $1; }
@@ -357,4 +359,54 @@ ARRAY
 ARRAY_FUNCTIONS
     :   EXPL POINT PUSH LPAREN EXPL RPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PUSH, util.literal.operation.PUSH, null, null, null, `${$1.traduction}.Push(${$5.traduction})`); $$.addChild($1); $$.addChild($5); }
     |   EXPL POINT POP LPAREN RPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.POP, util.literal.operation.POP, null, null, null, `${$1.traduction}.Pop()`); $$.addChild($1); }
-    |   EXPL POINT LENGTH { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.LENGTH, util.literal.operation.LENGTH, null, null, null, `${$1.traduction}.Length`); $$.addChild($1); }; 
+    |   EXPL POINT LENGTH { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.LENGTH, util.literal.operation.LENGTH, null, null, null, `${$1.traduction}.Length`); $$.addChild($1); };
+
+FUNCTIONS
+    :   FUNCTIONS_DEFINITIONS FUNCTION_NT2 { let stack = eval('$$'); $$ = stack[1]; };
+
+FUNCTIONS_DEFINITIONS
+    :   FUNCTION IDENTIFIER LPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FUNCTION, util.literal.operation.FUNCTION, null, null, null, `function ${$2}(`); $$.addChild(new ParseNode(@2.first_line, @2.first_column, util.literal.dataTypes.VARIABLE, $2)); };
+
+FUNCTION_NT2
+    :   RPAREN FUNCTION_NT3
+    |   LPARAMETERS_DES RPAREN FUNCTION_NT7;
+
+FUNCTION_NT7
+    :   COLON DATATYPE FUNCTION_NT5;
+
+FUNCTION_NT3
+    :   LBRACE FUNCTION_NT4;
+
+FUNCTION_NT4
+    :   RBRACE
+    |   LSENTENCES RBRACE;
+
+FUNCTION_NT5
+    :   LBRACE FUNCTION_NT6
+    |   LBRACKET RBRACKET LBRACE FUNCTION_NT8;
+
+FUNCTION_NT6
+    :   RBRACE
+    |   LSENTENCES RBRACE;
+
+FUNCTION_NT8
+    :   RBRACE
+    |   LSENTENCES RBRACE;
+
+LPARAMETERS_DES
+    : PARAMETER_DES LPARAMETERS_DES_R;
+
+LPARAMETERS_DES_R
+    :   COMMA PARAMETER_DES LPARAMETERS_DES_R
+    |   /* empty */;
+
+PARAMETER_DES
+    :   IDENTIFIER PARAMETER_DES_N1;
+
+PARAMETER_DES_N1
+    :   COLON DATATYPE PARAMETER_DES_N2
+    |   /* empty */;
+
+PARAMETER_DES_N2
+    :   LBRACKET RBRACKET
+    |   /* empty */;
