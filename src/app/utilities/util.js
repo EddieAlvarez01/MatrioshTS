@@ -12,7 +12,8 @@ export const literal = {
         ARRAY_ANY: 'array_any',
         OBJECT: 'object',
         VARIABLE: 'variable',
-        NULL: 'null'
+        NULL: 'null',
+        EPSILON: 'epsilon'
     },
 
     operation: {
@@ -74,7 +75,6 @@ export const literal = {
 
     //GRAPH ERROR TABLE AND SYMBOLS   TYPE == 0 GRAPH SYMBOL TABLE      TYPE == 1 GRAPH ERRORS TABLE
     graphTable: (list, type) => {
-        console.log(list);
         if(type){
             graphErrors(list);
             return;

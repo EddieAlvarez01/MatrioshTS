@@ -143,7 +143,7 @@ SENTENCE
     |   STATEMENT_CONTINUE { $$ = $1; }
     |   STATEMENT_RETURN { $$ = $1; }
     |   ARRAY_FUNCTIONS SEMICOLON { $$.traduction += ';'; $$ = $1; }
-    |   FUNCTIONS { $$ = $1; }
+    |   FUNCTIONS { let stack4 = eval('$$'); console.log(stack4); $$ = $1; }
     |   error { if(yytext != ';'){ errors.push(new ErrorClass(util.literal.errorType.SYNTACTIC, `Error de sintaxis '${yytext}'`, this._$.first_line, this._$.first_column)); } $$ = null; };
 
 DECLARATION
@@ -362,7 +362,7 @@ ARRAY_FUNCTIONS
     |   EXPL POINT LENGTH { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.LENGTH, util.literal.operation.LENGTH, null, null, null, `${$1.traduction}.Length`); $$.addChild($1); };
 
 FUNCTIONS
-    :   FUNCTIONS_DEFINITIONS FUNCTION_NT2 { let stack = eval('$$'); $$ = stack[1]; };
+    :   FUNCTIONS_DEFINITIONS FUNCTION_NT2 { let stack = eval('$$'); $$ = stack[stack.length - 2]; };
 
 FUNCTIONS_DEFINITIONS
     :   FUNCTION IDENTIFIER LPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FUNCTION, util.literal.operation.FUNCTION, null, null, null, `function ${$2}(`); $$.addChild(new ParseNode(@2.first_line, @2.first_column, util.literal.dataTypes.VARIABLE, $2)); };
@@ -372,41 +372,59 @@ FUNCTION_NT2
     |   LPARAMETERS_DES RPAREN FUNCTION_NT7;
 
 FUNCTION_NT7
-    :   COLON DATATYPE FUNCTION_NT5;
+    :   COLON DATATYPE FUNCTION_NT10
+    |   LBRACE FUNCTION_NT9;
+
+FUNCTION_NT10
+    :   LBRACKET RBRACKET LBRACE FUNCTION_NT12
+    |   LBRACE FUNCTION_NT11;
+
+FUNCTION_NT11
+    :   RBRACE { let stack15 = eval('$$'); stack15[stack15.length - 7].traduction = `${stack15[stack15.length - 7].traduction}${stack15[stack15.length - 6].childs[0].traduction}): ${stack15[stack15.length - 3]}{\n}`; stack15[stack15.length - 7].type =  stack15[stack15.length - 3]; stack15[stack15.length - 7].array = false; stack15[stack15.length - 7].addChild(stack15[stack15.length - 6]); }
+    |   LSENTENCES RBRACE { let stack16 = eval('$$'); stack16[stack16.length - 8].traduction = `${stack16[stack16.length - 8].traduction}${stack16[stack16.length - 7].childs[0].traduction}): ${stack16[stack16.length - 4]}{\n${$1.traduction}\n}`; stack16[stack16.length - 8].type =  stack16[stack16.length - 4]; stack16[stack16.length - 8].array = false; stack16[stack16.length - 8].addChild(stack16[stack16.length - 7]); stack16[stack16.length - 8].addChild($1); };
+
+FUNCTION_NT12
+    :   RBRACE { let stack18 = eval('$$'); stack18[stack18.length - 9].traduction = `${stack18[stack18.length - 9].traduction}${stack18[stack18.length - 8].childs[0].traduction}): ${stack18[stack18.length - 5]}[]{\n}`; stack18[stack18.length - 9].type = stack18[stack18.length - 5]; stack18[stack18.length - 9].array = true; stack18[stack18.length - 9].addChild(stack18[stack18.length - 8]); }
+    |   LSENTENCES RBRACE { let stack19 = eval('$$'); stack19[stack19.length - 10].traduction = `${stack19[stack19.length - 10].traduction}${stack19[stack19.length - 9].childs[0].traduction}): ${stack19[stack19.length - 6]}[]{\n${$1.traduction}\n}`; stack19[stack19.length - 10].type = stack19[stack19.length - 6]; stack19[stack19.length - 10].array = true; stack19[stack19.length - 10].addChild(stack19[stack19.length - 9]); stack19[stack19.length - 10].addChild($1); };
+
+FUNCTION_NT9
+    :   RBRACE { let stack11 = eval('$$'); stack11[stack11.length - 5].traduction = `${stack11[stack11.length - 5].traduction}${stack11[stack11.length - 4].childs[0].traduction}){\n}`; stack11[stack11.length - 5].type = util.literal.dataTypes.ANY; stack11[stack11.length - 5].addChild(stack11[stack11.length - 4]); }
+    |   LSENTENCES RBRACE { let stack17 = eval('$$'); stack17[stack17.length - 6].traduction = `${stack17[stack17.length - 6].traduction}${stack17[stack17.length - 5].childs[0].traduction}){\n${$1.traduction}\n}`; stack17[stack17.length - 6].type = util.literal.dataTypes.ANY; stack17[stack17.length - 6].addChild(stack17[stack17.length - 5]); stack17[stack17.length - 6].addChild($1); };
 
 FUNCTION_NT3
-    :   LBRACE FUNCTION_NT4;
+    :   LBRACE FUNCTION_NT4
+    |   COLON DATATYPE FUNCTION_NT5;
 
 FUNCTION_NT4
-    :   RBRACE
-    |   LSENTENCES RBRACE;
+    :   RBRACE { let stack2 = eval('$$'); stack2[stack2.length - 4].traduction = `${stack2[stack2.length - 4].traduction}){\n}`; stack2[stack2.length - 4].type = util.literal.dataTypes.ANY; }
+    |   LSENTENCES RBRACE { let stack3 = eval('$$'); stack3[stack3.length - 5].traduction = `${stack3[stack3.length - 5].traduction}){\n${$1.traduction}\n}`; stack3[stack3.length - 5].addChild($1); stack3[stack3.length - 5].type = util.literal.dataTypes.ANY; };
 
 FUNCTION_NT5
     :   LBRACE FUNCTION_NT6
     |   LBRACKET RBRACKET LBRACE FUNCTION_NT8;
 
 FUNCTION_NT6
-    :   RBRACE
-    |   LSENTENCES RBRACE;
+    :   RBRACE { let stack6 = eval('$$'); stack6[stack6.length - 6].traduction = `${stack6[stack6.length - 6].traduction}): ${stack6[stack6.length - 3]}{\n}`; stack6[stack6.length - 6].type = stack6[stack6.length - 3]; stack6[stack6.length - 6].array = false; }
+    |   LSENTENCES RBRACE { let stack7 = eval('$$'); stack7[stack7.length - 7].traduction = `${stack7[stack7.length - 7].traduction}): ${stack7[stack7.length - 4]}{\n${$1.traduction}\n}`; stack7[stack7.length - 7].type = stack7[stack7.length - 4]; stack7[stack7.length - 7].array = false; stack7[stack7.length - 7].addChild($1); };
 
 FUNCTION_NT8
-    :   RBRACE
-    |   LSENTENCES RBRACE;
+    :   RBRACE { let stack8 = eval('$$'); stack8[stack8.length - 8].traduction = `${stack8[stack8.length - 8].traduction}): ${stack8[stack8.length - 5]}[]{\n}`; stack8[stack8.length - 8].type = stack8[stack8.length - 5]; stack8[stack8.length - 8].array = true; }
+    |   LSENTENCES RBRACE { let stack9 = eval('$$'); stack9[stack9.length - 9].traduction = `${stack9[stack9.length - 9].traduction}): ${stack9[stack9.length - 6]}[]{\n${$1.traduction}\n}`; stack9[stack9.length - 9].type = stack9[stack9.length - 6]; stack9[stack9.length - 9].array = true; stack9[stack9.length - 9].addChild($1); };
 
 LPARAMETERS_DES
-    : PARAMETER_DES LPARAMETERS_DES_R;
+    : PARAMETER_DES LPARAMETERS_DES_R { $$ = new ParseNode(0, 0, 'LPARAMETERS', 'LPARAMETERS'); $1.traduction = `${$1.traduction}${$2.childs[0].traduction}`; $$.addChild($1); $$.addChild($2); };
 
 LPARAMETERS_DES_R
-    :   COMMA PARAMETER_DES LPARAMETERS_DES_R
-    |   /* empty */;
+    :   COMMA PARAMETER_DES LPARAMETERS_DES_R { $$  = new ParseNode(0, 0, 'LPARAMETERS', 'LPARAMETERS'); $2.traduction = `, ${$2.traduction}${$3.childs[0].traduction}`; $$.addChild($2); $$.addChild($3); }
+    |   /* empty */ { $$ = new ParseNode(0, 0, 'LPARAMETERS', 'LPARAMETERS'); $$.addChild(new ParseNode(0, 0, null, util.literal.dataTypes.EPSILON, null, null, null, '')); };
 
 PARAMETER_DES
-    :   IDENTIFIER PARAMETER_DES_N1;
+    :   IDENTIFIER PARAMETER_DES_N1 { $$ = $2; };
 
 PARAMETER_DES_N1
-    :   COLON DATATYPE PARAMETER_DES_N2
-    |   /* empty */;
+    :   COLON DATATYPE PARAMETER_DES_N2 { $$ = $3; }
+    |   /* empty */ { let stack10 = eval('$$'); $$ = new ParseNode(@1.first_line, @1.first_column, null, `${stack10[stack10.length - 1]}`, util.literal.dataTypes.ANY, false, true, `${stack10[stack10.length - 1]}`); };
 
 PARAMETER_DES_N2
-    :   LBRACKET RBRACKET
-    |   /* empty */;
+    :   LBRACKET RBRACKET { let stack14 =  eval('$$'); $$ = new ParseNode(@1.first_line, @1.first_column, null, `${stack14[stack14.length - 5]}`, `${stack14[stack14.length - 3]}`, false, false, `${stack14[stack14.length - 5]}: ${stack14[stack14.length - 3]}[]`, true); }
+    |   /* empty */ { let stack13 =  eval('$$'); $$ = new ParseNode(@1.first_line, @1.first_column, null, `${stack13[stack13.length - 3]}`, `${stack13[stack13.length - 1]}`, false, false, `${stack13[stack13.length - 3]}: ${stack13[stack13.length - 1]}`, false); };
