@@ -1,6 +1,6 @@
 class ParseNode{
 
-    constructor(row, column, operation, value, type, constant, dynamic, traduction, array){
+    constructor(row, column, operation, value, type, constant, dynamic, traduction, array, her){
         this.row = row;
         this.column = column;
         this.operation = operation;
@@ -12,6 +12,7 @@ class ParseNode{
         this.dynamic = dynamic;
         this.traduction = traduction;
         this.array = array;
+        this.her = her;
     }
 
     //ADD CHILDS

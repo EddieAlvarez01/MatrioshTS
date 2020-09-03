@@ -87,10 +87,10 @@ case 1:
  return $$[$0-1] 
 break;
 case 2:
- if($$[$0]){ $$[$0-1].addChild($$[$0]); $$[$0-1].traduction += `\n${$$[$0].traduction}`; } this.$ = $$[$0-1]; 
+ if($$[$0]){ $$[$0-1].addChild($$[$0]); $$[$0-1].traduction += `\n${$$[$0].traduction}`; if($$[$0].her != undefined){ $$[$0-1].her += `\n${$$[$0].her}`; } } this.$ = $$[$0-1]; 
 break;
 case 3:
- this.$ = new ParseNode(null, null, 'SENTENCES', 'SENTENCES', null, null, null, ''); if($$[$0]){ this.$.addChild($$[$0]); this.$.traduction = $$[$0].traduction } 
+ this.$ = new ParseNode(null, null, 'SENTENCES', 'SENTENCES', null, null, null, '', null, ''); if($$[$0]){ this.$.addChild($$[$0]); this.$.traduction = $$[$0].traduction; if($$[$0].her != undefined){ this.$.her = $$[$0].her; } } 
 break;
 case 4: case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 14: case 15: case 17: case 18: case 19: case 20: case 21: case 25: case 26: case 38: case 49: case 50: case 51: case 58: case 66: case 67: case 68: case 69: case 70: case 76: case 107: case 108: case 126: case 169: case 170:
  this.$ = $$[$0]; 
@@ -105,7 +105,7 @@ case 22:
  this.$.traduction += ';'; this.$ = $$[$0-1]; 
 break;
 case 23:
- let stack4 = eval('$$'); console.log(stack4); this.$ = $$[$0]; 
+ if(her.length > 0){ $$[$0].her = $$[$0].traduction; $$[$0].traduction = ''; } this.$ = $$[$0]; 
 break;
 case 24:
  if(yytext != ';'){ errors.push(new ErrorClass(util.literal.errorType.SYNTACTIC, `Error de sintaxis '${yytext}'`, this._$.first_line, this._$.first_column)); } this.$ = null; 
@@ -421,43 +421,102 @@ case 142:
  let stack = eval('$$'); this.$ = stack[stack.length - 2]; 
 break;
 case 143:
- this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.FUNCTION, util.literal.operation.FUNCTION, null, null, null, `function ${$$[$0-1]}(`); this.$.addChild(new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.dataTypes.VARIABLE, $$[$0-1])); 
+ let nameFunction = FatherName($$[$0-1]); this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.FUNCTION, util.literal.operation.FUNCTION, null, null, null, `function ${nameFunction}(`); this.$.addChild(new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.dataTypes.VARIABLE, `${nameFunction}`)); console.log(this.$); 
 break;
 case 150:
- let stack15 = eval('$$'); stack15[stack15.length - 7].traduction = `${stack15[stack15.length - 7].traduction}${stack15[stack15.length - 6].childs[0].traduction}): ${stack15[stack15.length - 3]}{\n}`; stack15[stack15.length - 7].type =  stack15[stack15.length - 3]; stack15[stack15.length - 7].array = false; stack15[stack15.length - 7].addChild(stack15[stack15.length - 6]); 
+ let stack15 = eval('$$'); stack15[stack15.length - 7].traduction = `${stack15[stack15.length - 7].traduction}${stack15[stack15.length - 6].childs[0].traduction}): ${stack15[stack15.length - 3]}{\n}`; stack15[stack15.length - 7].type =  stack15[stack15.length - 3]; stack15[stack15.length - 7].array = false; stack15[stack15.length - 7].addChild(stack15[stack15.length - 6]); her.pop(); 
 break;
 case 151:
- let stack16 = eval('$$'); stack16[stack16.length - 8].traduction = `${stack16[stack16.length - 8].traduction}${stack16[stack16.length - 7].childs[0].traduction}): ${stack16[stack16.length - 4]}{\n${$$[$0-1].traduction}\n}`; stack16[stack16.length - 8].type =  stack16[stack16.length - 4]; stack16[stack16.length - 8].array = false; stack16[stack16.length - 8].addChild(stack16[stack16.length - 7]); stack16[stack16.length - 8].addChild($$[$0-1]); 
+ 
+            let stack16 = eval('$$'); 
+            stack16[stack16.length - 8].traduction = `${stack16[stack16.length - 8].traduction}${stack16[stack16.length - 7].childs[0].traduction}): ${stack16[stack16.length - 4]}{\n${$$[$0-1].traduction}\n}`; 
+            stack16[stack16.length - 8].type =  stack16[stack16.length - 4];
+            if($$[$0-1].her != undefined){
+                stack16[stack16.length - 8].traduction += `\n${$$[$0-1].her}`;
+            }
+            her.pop(); 
+            stack16[stack16.length - 8].array = false; stack16[stack16.length - 8].addChild(stack16[stack16.length - 7]); 
+            stack16[stack16.length - 8].addChild($$[$0-1]); 
+        
 break;
 case 152:
- let stack18 = eval('$$'); stack18[stack18.length - 9].traduction = `${stack18[stack18.length - 9].traduction}${stack18[stack18.length - 8].childs[0].traduction}): ${stack18[stack18.length - 5]}[]{\n}`; stack18[stack18.length - 9].type = stack18[stack18.length - 5]; stack18[stack18.length - 9].array = true; stack18[stack18.length - 9].addChild(stack18[stack18.length - 8]); 
+ let stack18 = eval('$$'); stack18[stack18.length - 9].traduction = `${stack18[stack18.length - 9].traduction}${stack18[stack18.length - 8].childs[0].traduction}): ${stack18[stack18.length - 5]}[]{\n}`; stack18[stack18.length - 9].type = stack18[stack18.length - 5]; stack18[stack18.length - 9].array = true; stack18[stack18.length - 9].addChild(stack18[stack18.length - 8]); her.pop(); 
 break;
 case 153:
- let stack19 = eval('$$'); stack19[stack19.length - 10].traduction = `${stack19[stack19.length - 10].traduction}${stack19[stack19.length - 9].childs[0].traduction}): ${stack19[stack19.length - 6]}[]{\n${$$[$0-1].traduction}\n}`; stack19[stack19.length - 10].type = stack19[stack19.length - 6]; stack19[stack19.length - 10].array = true; stack19[stack19.length - 10].addChild(stack19[stack19.length - 9]); stack19[stack19.length - 10].addChild($$[$0-1]); 
+ 
+            let stack19 = eval('$$');
+            stack19[stack19.length - 10].traduction = `${stack19[stack19.length - 10].traduction}${stack19[stack19.length - 9].childs[0].traduction}): ${stack19[stack19.length - 6]}[]{\n${$$[$0-1].traduction}\n}`; 
+            stack19[stack19.length - 10].type = stack19[stack19.length - 6];
+            if($$[$0-1].her != undefined){
+                stack19[stack19.length - 10].traduction += `\n${$$[$0-1].her}`;
+            }
+            her.pop(); 
+            stack19[stack19.length - 10].array = true; stack19[stack19.length - 10].addChild(stack19[stack19.length - 9]); 
+            stack19[stack19.length - 10].addChild($$[$0-1]); 
+        
 break;
 case 154:
- let stack11 = eval('$$'); stack11[stack11.length - 5].traduction = `${stack11[stack11.length - 5].traduction}${stack11[stack11.length - 4].childs[0].traduction}){\n}`; stack11[stack11.length - 5].type = util.literal.dataTypes.ANY; stack11[stack11.length - 5].addChild(stack11[stack11.length - 4]); 
+ let stack11 = eval('$$'); stack11[stack11.length - 5].traduction = `${stack11[stack11.length - 5].traduction}${stack11[stack11.length - 4].childs[0].traduction}){\n}`; stack11[stack11.length - 5].type = util.literal.dataTypes.ANY; stack11[stack11.length - 5].addChild(stack11[stack11.length - 4]); her.pop(); 
 break;
 case 155:
- let stack17 = eval('$$'); stack17[stack17.length - 6].traduction = `${stack17[stack17.length - 6].traduction}${stack17[stack17.length - 5].childs[0].traduction}){\n${$$[$0-1].traduction}\n}`; stack17[stack17.length - 6].type = util.literal.dataTypes.ANY; stack17[stack17.length - 6].addChild(stack17[stack17.length - 5]); stack17[stack17.length - 6].addChild($$[$0-1]); 
+ 
+            let stack17 = eval('$$');
+            stack17[stack17.length - 6].traduction = `${stack17[stack17.length - 6].traduction}${stack17[stack17.length - 5].childs[0].traduction}){\n${$$[$0-1].traduction}\n}`;
+            stack17[stack17.length - 6].type = util.literal.dataTypes.ANY;
+            if($$[$0-1].her != undefined){
+                stack17[stack17.length - 6].traduction += `\n${$$[$0-1].her}`;
+            }
+            her.pop();
+            stack17[stack17.length - 6].addChild(stack17[stack17.length - 5]);
+            stack17[stack17.length - 6].addChild($$[$0-1]); 
+        
 break;
 case 158:
- let stack2 = eval('$$'); stack2[stack2.length - 4].traduction = `${stack2[stack2.length - 4].traduction}){\n}`; stack2[stack2.length - 4].type = util.literal.dataTypes.ANY; 
+ let stack2 = eval('$$'); stack2[stack2.length - 4].traduction = `${stack2[stack2.length - 4].traduction}){\n}`; stack2[stack2.length - 4].type = util.literal.dataTypes.ANY; her.pop(); 
 break;
 case 159:
- let stack3 = eval('$$'); stack3[stack3.length - 5].traduction = `${stack3[stack3.length - 5].traduction}){\n${$$[$0-1].traduction}\n}`; stack3[stack3.length - 5].addChild($$[$0-1]); stack3[stack3.length - 5].type = util.literal.dataTypes.ANY; 
+ 
+            let stack3 = eval('$$');
+            stack3[stack3.length - 5].traduction = `${stack3[stack3.length - 5].traduction}){\n${$$[$0-1].traduction}\n}`;
+            if($$[$0-1].her != undefined){
+                stack3[stack3.length - 5].traduction += `\n${$$[$0-1].her}`;
+            }
+            her.pop();
+            stack3[stack3.length - 5].addChild($$[$0-1]);
+            stack3[stack3.length - 5].type = util.literal.dataTypes.ANY; 
+        
 break;
 case 162:
- let stack6 = eval('$$'); stack6[stack6.length - 6].traduction = `${stack6[stack6.length - 6].traduction}): ${stack6[stack6.length - 3]}{\n}`; stack6[stack6.length - 6].type = stack6[stack6.length - 3]; stack6[stack6.length - 6].array = false; 
+ let stack6 = eval('$$'); stack6[stack6.length - 6].traduction = `${stack6[stack6.length - 6].traduction}): ${stack6[stack6.length - 3]}{\n}`; stack6[stack6.length - 6].type = stack6[stack6.length - 3]; stack6[stack6.length - 6].array = false; her.pop(); 
 break;
 case 163:
- let stack7 = eval('$$'); stack7[stack7.length - 7].traduction = `${stack7[stack7.length - 7].traduction}): ${stack7[stack7.length - 4]}{\n${$$[$0-1].traduction}\n}`; stack7[stack7.length - 7].type = stack7[stack7.length - 4]; stack7[stack7.length - 7].array = false; stack7[stack7.length - 7].addChild($$[$0-1]); 
+ 
+            let stack7 = eval('$$'); 
+            stack7[stack7.length - 7].traduction = `${stack7[stack7.length - 7].traduction}): ${stack7[stack7.length - 4]}{\n${$$[$0-1].traduction}\n}`; 
+            if($$[$0-1].her != undefined){
+                stack7[stack7.length - 7].traduction += `\n${$$[$0-1].her}`;
+            }
+            her.pop();
+            stack7[stack7.length - 7].type = stack7[stack7.length - 4]; 
+            stack7[stack7.length - 7].array = false; 
+            stack7[stack7.length - 7].addChild($$[$0-1]); 
+        
 break;
 case 164:
- let stack8 = eval('$$'); stack8[stack8.length - 8].traduction = `${stack8[stack8.length - 8].traduction}): ${stack8[stack8.length - 5]}[]{\n}`; stack8[stack8.length - 8].type = stack8[stack8.length - 5]; stack8[stack8.length - 8].array = true; 
+ let stack8 = eval('$$'); stack8[stack8.length - 8].traduction = `${stack8[stack8.length - 8].traduction}): ${stack8[stack8.length - 5]}[]{\n}`; stack8[stack8.length - 8].type = stack8[stack8.length - 5]; stack8[stack8.length - 8].array = true; her.pop(); 
 break;
 case 165:
- let stack9 = eval('$$'); stack9[stack9.length - 9].traduction = `${stack9[stack9.length - 9].traduction}): ${stack9[stack9.length - 6]}[]{\n${$$[$0-1].traduction}\n}`; stack9[stack9.length - 9].type = stack9[stack9.length - 6]; stack9[stack9.length - 9].array = true; stack9[stack9.length - 9].addChild($$[$0-1]); 
+ 
+            let stack9 = eval('$$'); 
+            stack9[stack9.length - 9].traduction = `${stack9[stack9.length - 9].traduction}): ${stack9[stack9.length - 6]}[]{\n${$$[$0-1].traduction}\n}`;
+            if($$[$0-1].her != undefined){
+                stack9[stack9.length - 9].traduction += `\n${$$[$0-1].her}`;
+            }
+            her.pop(); 
+            stack9[stack9.length - 9].type = stack9[stack9.length - 6]; 
+            stack9[stack9.length - 9].array = true; 
+            stack9[stack9.length - 9].addChild($$[$0-1]); 
+        
 break;
 case 166:
  this.$ = new ParseNode(0, 0, 'LPARAMETERS', 'LPARAMETERS'); $$[$0-1].traduction = `${$$[$0-1].traduction}${$$[$0].childs[0].traduction}`; this.$.addChild($$[$0-1]); this.$.addChild($$[$0]); 
@@ -734,6 +793,7 @@ _handle_error:
     const util = require('../utilities/util');
     const errors = [];
     exports.errors = errors;
+    const her = [];
 
     //Stringing of an array
     function ConcatInstructions(childs){
@@ -742,6 +802,21 @@ _handle_error:
             cString += item.traduction;
         });
         return cString;
+    }
+
+    //inherit father's name
+    function FatherName(father){
+        if(her.length > 0){
+            let name = '';
+            her.forEach((item) => {
+                name += `${item}_`;
+            });
+            her.push(father);
+            name += father;
+            return name;
+        }
+        her.push(father);
+        return father;
     }
 
 /* generated by jison-lex 0.3.4 */
