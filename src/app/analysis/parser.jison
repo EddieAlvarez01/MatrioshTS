@@ -5,6 +5,9 @@
     const errors = [];
     exports.errors = errors;
     const her = [];
+    let nodesFunctions = [];
+    let MapNames = new Map();
+    let flagFunction = false;
 
     //Stringing of an array
     function ConcatInstructions(childs){
@@ -28,6 +31,48 @@
         }
         her.push(father);
         return father;
+    }
+
+    //add function nodes if you are in a function
+    function AddFunctionNodes(node){
+        if(her.length > 0){
+            nodesFunctions.push(node);
+        }
+    }
+
+    //replaces translation with inheritance
+    function TraductionReplace(node){
+        MapNames.forEach((item, key) => {
+            node.traduction = node.traduction.replaceAll(`${key}(`, `${item}(`);
+        });
+        MapNames.clear();
+        nodesFunctions = [];
+    }
+
+    //RETURN FUNCTION NODE
+    function ReturnFunctionNode(stack){
+        for(let i = stack.length - 2; i >= 0; i--){
+            if(stack[i] instanceof ParseNode){
+                    if(stack[i].operation != util.literal.operation.DECLARATION && stack[i].operation != util.literal.operation.ASSIGNMENT && stack[i].operation != util.literal.operation.TYPE_DECLARATION
+                && stack[i].operation != util.literal.operation.INCREMENT && stack[i].operation != util.literal.operation.DECREMENT && 
+                stack[i].operation != util.literal.operation.FUNCTION_CALL && stack[i].operation != util.literal.operation.PRINT && 
+                stack[i].operation != util.literal.operation.GRAPH_TS && stack[i].operation != util.literal.operation.BREAK &&
+                stack[i].operation != util.literal.operation.CONTINUE && stack[i].operation != util.literal.operation.RETURN &&
+                stack[i].operation != util.literal.operation.LENGTH && stack[i].operation != util.literal.operation.POP && 
+                stack[i].operation != util.literal.operation.PUSH && stack[i].operation != util.literal.operation.SENTENCES){
+
+                    if(stack[i].operation == util.literal.operation.FUNCTION){
+                        if(stack[stack.length - 1] instanceof ParseNode){
+                            return `${stack[i].childs[0].value}_${stack[stack.length - 1].childs[0].value}`;
+                        }
+                        return `${stack[i].childs[0].value}_`;
+                    }else{
+                        return false; 
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 %}
@@ -152,14 +197,14 @@ SENTENCE
     |   DECREMENT SEMICOLON { $1.traduction += ';'; $$ = $1; }
     |   FOR_IN { $$ = $1; }
     |   FOR_OF { $$ = $1; }
-    |   FUNCTION_CALL SEMICOLON { $$ = $1; $$.traduction += ';'; }
+    |   FUNCTION_CALL SEMICOLON { $$ = $1; $$.traduction += ';'; AddFunctionNodes($1); }
     |   PRINT { $$ = $1; }
     |   GRAPH_TS { $$ = $1; }
     |   STATEMENT_BREAK { $$ = $1; }
     |   STATEMENT_CONTINUE { $$ = $1; }
     |   STATEMENT_RETURN { $$ = $1; }
     |   ARRAY_FUNCTIONS SEMICOLON { $$.traduction += ';'; $$ = $1; }
-    |   FUNCTIONS { if(her.length > 0){ $1.her = $1.traduction; $1.traduction = ''; } $$ = $1; }
+    |   FUNCTIONS { let nodeName = ReturnFunctionNode(eval('$$')); /*if(her.length > 0){ $1.her = $1.traduction; $1.traduction = ''; }else{ TraductionReplace($1); }*/ if(nodeName && nodeName != null){ $1.her = $1.traduction; $1.traduction = ''; }else if(nodeName == null){ TraductionReplace($1); }else if(MapNames.size() == 1){  } $$ = $1; }
     |   error { if(yytext != ';'){ errors.push(new ErrorClass(util.literal.errorType.SYNTACTIC, `Error de sintaxis '${yytext}'`, this._$.first_line, this._$.first_column)); } $$ = null; };
 
 DECLARATION
@@ -243,7 +288,7 @@ EXP
     |   INCREMENT { $$ = $1; }
     |   DECREMENT { $$ = $1; }
     |   ARRAY_ACCESS { $$ = $1; }
-    |   FUNCTION_CALL { $$ = $1; }
+    |   FUNCTION_CALL { $$ = $1; AddFunctionNodes($1); }
     |   ARRAY { $$ = $1; }
     |   IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.VARIABLE, $1, null, null, null, $1); }
     |   CHAIN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.STRING, $1, null, null, null, `'${$1}'`); }
@@ -381,7 +426,7 @@ FUNCTIONS
     :   FUNCTIONS_DEFINITIONS FUNCTION_NT2 { let stack = eval('$$'); $$ = stack[stack.length - 2]; };
 
 FUNCTIONS_DEFINITIONS
-    :   FUNCTION IDENTIFIER LPAREN { let nameFunction = FatherName($2); $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FUNCTION, util.literal.operation.FUNCTION, null, null, null, `function ${nameFunction}(`); $$.addChild(new ParseNode(@2.first_line, @2.first_column, util.literal.dataTypes.VARIABLE, `${nameFunction}`)); console.log($$); };
+    :   FUNCTION IDENTIFIER LPAREN { /*let nameFunction = FatherName($2);*/ let nameFunction = ReturnFunctionNode(eval('$$')); if(nameFunction == null){ nameFunction = $2; }else{ nameFunction += $2; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FUNCTION, util.literal.operation.FUNCTION, null, null, null, `function ${$2}(`); $$.addChild(new ParseNode(@2.first_line, @2.first_column, util.literal.dataTypes.VARIABLE, `${nameFunction}`)); MapNames.set($2, nameFunction); };
 
 FUNCTION_NT2
     :   RPAREN FUNCTION_NT3

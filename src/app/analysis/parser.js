@@ -92,20 +92,20 @@ break;
 case 3:
  this.$ = new ParseNode(null, null, 'SENTENCES', 'SENTENCES', null, null, null, '', null, ''); if($$[$0]){ this.$.addChild($$[$0]); this.$.traduction = $$[$0].traduction; if($$[$0].her != undefined){ this.$.her = $$[$0].her; } } 
 break;
-case 4: case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 14: case 15: case 17: case 18: case 19: case 20: case 21: case 25: case 26: case 38: case 49: case 50: case 51: case 58: case 66: case 67: case 68: case 69: case 70: case 76: case 107: case 108: case 126: case 169: case 170:
+case 4: case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 14: case 15: case 17: case 18: case 19: case 20: case 21: case 25: case 26: case 38: case 49: case 50: case 51: case 58: case 66: case 67: case 68: case 70: case 76: case 107: case 108: case 126: case 169: case 170:
  this.$ = $$[$0]; 
 break;
 case 12: case 13:
  $$[$0-1].traduction += ';'; this.$ = $$[$0-1]; 
 break;
 case 16:
- this.$ = $$[$0-1]; this.$.traduction += ';'; 
+ this.$ = $$[$0-1]; this.$.traduction += ';'; AddFunctionNodes($$[$0-1]); 
 break;
 case 22:
  this.$.traduction += ';'; this.$ = $$[$0-1]; 
 break;
 case 23:
- if(her.length > 0){ $$[$0].her = $$[$0].traduction; $$[$0].traduction = ''; } this.$ = $$[$0]; 
+ if(her.length > 0){ $$[$0].her = $$[$0].traduction; $$[$0].traduction = ''; }else{ TraductionReplace($$[$0]); } this.$ = $$[$0]; 
 break;
 case 24:
  if(yytext != ';'){ errors.push(new ErrorClass(util.literal.errorType.SYNTACTIC, `Error de sintaxis '${yytext}'`, this._$.first_line, this._$.first_column)); } this.$ = null; 
@@ -224,6 +224,9 @@ case 64:
 break;
 case 65:
  this.$ = $$[$0-1]; this.$.traduction = `(${$$[$0-1].traduction})`; 
+break;
+case 69:
+ this.$ = $$[$0]; AddFunctionNodes($$[$0]); 
 break;
 case 71:
  this.$ = new ParseNode(_$[$0].first_line, _$[$0].first_column, util.literal.dataTypes.VARIABLE, $$[$0], null, null, null, $$[$0]); 
@@ -421,7 +424,7 @@ case 142:
  let stack = eval('$$'); this.$ = stack[stack.length - 2]; 
 break;
 case 143:
- let nameFunction = FatherName($$[$0-1]); this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.FUNCTION, util.literal.operation.FUNCTION, null, null, null, `function ${nameFunction}(`); this.$.addChild(new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.dataTypes.VARIABLE, `${nameFunction}`)); console.log(this.$); 
+ /*let nameFunction = FatherName($$[$0-1]);*/ let nameFunction =  this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.FUNCTION, util.literal.operation.FUNCTION, null, null, null, `function ${$$[$0-1]}(`); this.$.addChild(new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.dataTypes.VARIABLE, `${$$[$0-1]}`)); flagFunction = true; 
 break;
 case 150:
  let stack15 = eval('$$'); stack15[stack15.length - 7].traduction = `${stack15[stack15.length - 7].traduction}${stack15[stack15.length - 6].childs[0].traduction}): ${stack15[stack15.length - 3]}{\n}`; stack15[stack15.length - 7].type =  stack15[stack15.length - 3]; stack15[stack15.length - 7].array = false; stack15[stack15.length - 7].addChild(stack15[stack15.length - 6]); her.pop(); 
@@ -794,6 +797,9 @@ _handle_error:
     const errors = [];
     exports.errors = errors;
     const her = [];
+    let nodesFunctions = [];
+    let MapNames = new Map();
+    let flagFunction = false;
 
     //Stringing of an array
     function ConcatInstructions(childs){
@@ -817,6 +823,48 @@ _handle_error:
         }
         her.push(father);
         return father;
+    }
+
+    //add function nodes if you are in a function
+    function AddFunctionNodes(node){
+        if(her.length > 0){
+            nodesFunctions.push(node);
+        }
+    }
+
+    //replaces translation with inheritance
+    function TraductionReplace(node){
+        MapNames.forEach((item, key) => {
+            node.traduction = node.traduction.replaceAll(`${key}(`, `${item}(`);
+        });
+        MapNames.clear();
+        nodesFunctions = [];
+    }
+
+    //RETURN FUNCTION NODE
+    function ReturnFunctionNode(stack){
+        for(let i = stack.length - 2; i >= 0; i--){
+            if(stack[i] instanceof ParseNode){
+                    if(stack[i].operation != util.literal.operation.DECLARATION && stack[i].operation != util.literal.operation.ASSIGNMENT && stack[i].operation != util.literal.operation.TYPE_DECLARATION
+                && stack[i].operation != util.literal.operation.INCREMENT && stack[i].operation != util.literal.operation.DECREMENT && 
+                stack[i].operation != util.literal.operation.FUNCTION_CALL && stack[i].operation != util.literal.operation.PRINT && 
+                stack[i].operation != util.literal.operation.GRAPH_TS && stack[i].operation != util.literal.operation.BREAK &&
+                stack[i].operation != util.literal.operation.CONTINUE && stack[i].operation != util.literal.operation.RETURN &&
+                stack[i].operation != util.literal.operation.LENGTH && stack[i].operation != util.literal.operation.POP && 
+                stack[i].operation != util.literal.operation.PUSH && stack[i].operation != util.literal.operation.SENTENCES){
+
+                    if(stack[i].operation == util.literal.operation.FUNCTION){
+                        return `${stack[i].childs[0].value}_${stack[stack.length - 1].childs[0].value}`;
+                    }else{
+                        break;
+                    }
+                }
+            }
+        }
+        if(stack[stack.length - 1] instanceof ParseNode){
+            return stack[stack.length - 1].childs[0].value;
+        }
+        return null;
     }
 
 /* generated by jison-lex 0.3.4 */
