@@ -280,7 +280,7 @@ case 88:
  this.$ = new ParseNode(_$[$0-6].first_line, _$[$0-6].first_column, util.literal.operation.IF, util.literal.operation.IF, null, null, null, `if(${$$[$0-4].traduction})`); this.$.addChild($$[$0-4]); if($$[$0-2] != null){ this.$.traduction += $$[$0-2].traduction + 'else '; this.$.addChild($$[$0-2]); }else{ this.$.traduction += '{\n}else '; } let elseNode2 = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.ELSE, util.literal.operation.ELSE); this.$.addChild(elseNode2); this.$.traduction += $$[$0].traduction; this.$.addChild($$[$0]); 
 break;
 case 90:
- this.$ = $$[$0-1]; this.$.traduction = `{\n\t${$$[$0-1].traduction}\n}`; 
+ this.$ = $$[$0-1]; if(this.$.her != undefined){ this.$.traduction += `\n${this.$.her}`; } this.$.traduction = `{\n\t${$$[$0-1].traduction}\n}`; 
 break;
 case 91:
  this.$ = new ParseNode(_$[$0-5].first_line, _$[$0-5].first_column, util.literal.operation.SWITCH, util.literal.operation.SWITCH, null, null, null, `switch(${$$[$0-3].traduction}){\n}`); this.$.addChild($$[$0-3]); 
@@ -298,37 +298,37 @@ case 95:
  this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.CASE, util.literal.operation.CASE, null, null, null, `\tcase ${$$[$0-1].traduction}:`); 
 break;
 case 96:
- this.$ = new ParseNode(_$[$0-3].first_line, _$[$0-3].first_column, util.literal.operation.CASE, util.literal.operation.CASE, null, null, null, `\tcase ${$$[$0-2].traduction}:\n\t${$$[$0].traduction}`); this.$.addChild($$[$0]); 
+ if($$[$0].her != undefined){ $$[$0].traduction += `\n${$$[$0].her}`; }  this.$ = new ParseNode(_$[$0-3].first_line, _$[$0-3].first_column, util.literal.operation.CASE, util.literal.operation.CASE, null, null, null, `\tcase ${$$[$0-2].traduction}:\n\t${$$[$0].traduction}`); this.$.addChild($$[$0]); 
 break;
 case 97:
  this.$ = new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.operation.DEFAULT, util.literal.operation.DEFAULT, null, null, null, `\tdefault:`); 
 break;
 case 98:
- this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.DEFAULT, util.literal.operation.DEFAULT, null, null, null, `\tdefault:\n\t${$$[$0].traduction}`); this.$.addChild($$[$0]); 
+ if($$[$0].her != undefined){ $$[$0].traduction += `\n${$$[$0].her}`; } this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.DEFAULT, util.literal.operation.DEFAULT, null, null, null, `\tdefault:\n\t${$$[$0].traduction}`); this.$.addChild($$[$0]); 
 break;
 case 99:
  this.$ = new ParseNode(_$[$0-5].first_line, _$[$0-5].first_column, util.literal.operation.WHILE, util.literal.operation.WHILE, null, null, null, `while(${$$[$0-3].traduction}){\n}`); this.$.addChild($$[$0-3]); 
 break;
 case 100:
- this.$ = new ParseNode(_$[$0-6].first_line, _$[$0-6].first_column, util.literal.operation.WHILE, util.literal.operation.WHILE, null, null, null, `while(${$$[$0-4].traduction}){\n\t${$$[$0-1].traduction}\n}`); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-1]); 
+ if($$[$0-1].her != undefined){ $$[$0-1].traduction += `\n${$$[$0-1].her}`; } this.$ = new ParseNode(_$[$0-6].first_line, _$[$0-6].first_column, util.literal.operation.WHILE, util.literal.operation.WHILE, null, null, null, `while(${$$[$0-4].traduction}){\n\t${$$[$0-1].traduction}\n}`); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-1]); 
 break;
 case 101:
  this.$ = new ParseNode(_$[$0-7].first_line, _$[$0-7].first_column, util.literal.operation.DO_WHILE, util.literal.operation.DO_WHILE, null, null, null, `do{\n}while(${$$[$0-2].traduction});`); this.$.addChild($$[$0-2]); 
 break;
 case 102:
- this.$ = new ParseNode(_$[$0-8].first_line, _$[$0-8].first_column, util.literal.operation.DO_WHILE, util.literal.operation.DO_WHILE, null, null, null, `do{\n${$$[$0-6].traduction}\n}while(${$$[$0-2].traduction});`); this.$.addChild($$[$0-6]); this.$.addChild($$[$0-2]); 
+ if($$[$0-6].her != undefined){ $$[$0-6].traduction += `\n${$$[$0-6].her}`; } this.$ = new ParseNode(_$[$0-8].first_line, _$[$0-8].first_column, util.literal.operation.DO_WHILE, util.literal.operation.DO_WHILE, null, null, null, `do{\n${$$[$0-6].traduction}\n}while(${$$[$0-2].traduction});`); this.$.addChild($$[$0-6]); this.$.addChild($$[$0-2]); 
 break;
 case 103: case 104:
  this.$ = new ParseNode(_$[$0-8].first_line, _$[$0-8].first_column, util.literal.operation.FOR, util.literal.operation.FOR, null, null, null, `for(${$$[$0-6].traduction} ${$$[$0-5].traduction}; ${$$[$0-3].traduction}){\n}`); this.$.addChild($$[$0-6]); this.$.addChild($$[$0-5]); this.$.addChild($$[$0-3]); 
 break;
 case 105: case 106:
- this.$ = new ParseNode(_$[$0-9].first_line, _$[$0-9].first_column, util.literal.operation.FOR, util.literal.operation.FOR, null, null, null, `for(${$$[$0-7].traduction} ${$$[$0-6].traduction}; ${$$[$0-4].traduction}){\n${$$[$0-1].traduction}\n}`); this.$.addChild($$[$0-7]); this.$.addChild($$[$0-6]); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-1]); 
+ if($$[$0-1].her != undefined){ $$[$0-1].traduction += `\n${$$[$0-1].her}`; } this.$ = new ParseNode(_$[$0-9].first_line, _$[$0-9].first_column, util.literal.operation.FOR, util.literal.operation.FOR, null, null, null, `for(${$$[$0-7].traduction} ${$$[$0-6].traduction}; ${$$[$0-4].traduction}){\n${$$[$0-1].traduction}\n}`); this.$.addChild($$[$0-7]); this.$.addChild($$[$0-6]); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-1]); 
 break;
 case 109:
- this.$ = new ParseNode(_$[$0-8].first_line, _$[$0-8].first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$$[$0-6].traduction} in ${$$[$0-4].traduction}){\n${$$[$0-1].traduction}\n}`); this.$.addChild($$[$0-6]); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-1]); 
+ if($$[$0-1].her != undefined){ $$[$0-1].traduction += `\n${$$[$0-1].her}`; } this.$ = new ParseNode(_$[$0-8].first_line, _$[$0-8].first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$$[$0-6].traduction} in ${$$[$0-4].traduction}){\n${$$[$0-1].traduction}\n}`); this.$.addChild($$[$0-6]); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-1]); 
 break;
 case 110:
- this.$ = new ParseNode(_$[$0-8].first_line, _$[$0-8].first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$$[$0-6]} in ${$$[$0-4].traduction}){\n${$$[$0-1].traduction}\n}`); this.$.addChild(new ParseNode(_$[$0-6].first_line, _$[$0-6].first_column, util.literal.dataTypes.VARIABLE, $$[$0-6])); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-1]); 
+ if($$[$0-1].her != undefined){ $$[$0-1].traduction += `\n${$$[$0-1].her}`; } this.$ = new ParseNode(_$[$0-8].first_line, _$[$0-8].first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$$[$0-6]} in ${$$[$0-4].traduction}){\n${$$[$0-1].traduction}\n}`); this.$.addChild(new ParseNode(_$[$0-6].first_line, _$[$0-6].first_column, util.literal.dataTypes.VARIABLE, $$[$0-6])); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-1]); 
 break;
 case 111:
  this.$ = new ParseNode(_$[$0-7].first_line, _$[$0-7].first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$$[$0-5].traduction} in ${$$[$0-3].traduction}){\n}`); this.$.addChild($$[$0-5]); this.$.addChild($$[$0-3]); 
@@ -361,10 +361,10 @@ case 120:
  this.$ = new ParseNode(_$[$0-7].first_line, _$[$0-7].first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$$[$0-5]} of ${$$[$0-3].traduction}){\n}`); this.$.addChild(new ParseNode(_$[$0-5].first_line, _$[$0-5].first_column, util.literal.dataTypes.VARIABLE, $$[$0-5])); this.$.addChild($$[$0-3]); 
 break;
 case 121:
- this.$ = new ParseNode(_$[$0-8].first_line, _$[$0-8].first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$$[$0-6].traduction} in ${$$[$0-4].traduction}){\n${$$[$0-1].traduction}\n}`); this.$.addChild($$[$0-6]); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-1]); 
+ if($$[$0-1].her != undefined){ $$[$0-1].traduction += `\n${$$[$0-1].her}`; } this.$ = new ParseNode(_$[$0-8].first_line, _$[$0-8].first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$$[$0-6].traduction} in ${$$[$0-4].traduction}){\n${$$[$0-1].traduction}\n}`); this.$.addChild($$[$0-6]); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-1]); 
 break;
 case 122:
- this.$ = new ParseNode(_$[$0-8].first_line, _$[$0-8].first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$$[$0-6]} in ${$$[$0-4].traduction}){\n${$$[$0-1].traduction}\n}`); this.$.addChild(new ParseNode(_$[$0-6].first_line, _$[$0-6].first_column, util.literal.dataTypes.VARIABLE, $$[$0-6])); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-1]); 
+ if($$[$0-1].her != undefined){ $$[$0-1].traduction += `\n${$$[$0-1].her}`; } this.$ = new ParseNode(_$[$0-8].first_line, _$[$0-8].first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$$[$0-6]} in ${$$[$0-4].traduction}){\n${$$[$0-1].traduction}\n}`); this.$.addChild(new ParseNode(_$[$0-6].first_line, _$[$0-6].first_column, util.literal.dataTypes.VARIABLE, $$[$0-6])); this.$.addChild($$[$0-4]); this.$.addChild($$[$0-1]); 
 break;
 case 123:
  this.$ = new ParseNode(_$[$0-3].first_line, _$[$0-3].first_column, util.literal.operation.ARRAY_ACCESS, $$[$0-3], null, null, null, `${$$[$0-3]}[${$$[$0-1].traduction}]`); this.$.addChild($$[$0-1]); 
@@ -424,7 +424,7 @@ case 142:
  let stack = eval('$$'); this.$ = stack[stack.length - 2]; 
 break;
 case 143:
- /*let nameFunction = FatherName($$[$0-1]);*/ let nameFunction =  this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.FUNCTION, util.literal.operation.FUNCTION, null, null, null, `function ${$$[$0-1]}(`); this.$.addChild(new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.dataTypes.VARIABLE, `${$$[$0-1]}`)); flagFunction = true; 
+ let nameFunction = FatherName($$[$0-1]); this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.FUNCTION, util.literal.operation.FUNCTION, null, null, null, `function ${$$[$0-1]}(`); this.$.addChild(new ParseNode(_$[$0-1].first_line, _$[$0-1].first_column, util.literal.dataTypes.VARIABLE, `${nameFunction}`)); MapNames.set($$[$0-1], nameFunction); 
 break;
 case 150:
  let stack15 = eval('$$'); stack15[stack15.length - 7].traduction = `${stack15[stack15.length - 7].traduction}${stack15[stack15.length - 6].childs[0].traduction}): ${stack15[stack15.length - 3]}{\n}`; stack15[stack15.length - 7].type =  stack15[stack15.length - 3]; stack15[stack15.length - 7].array = false; stack15[stack15.length - 7].addChild(stack15[stack15.length - 6]); her.pop(); 
@@ -837,34 +837,14 @@ _handle_error:
         MapNames.forEach((item, key) => {
             node.traduction = node.traduction.replaceAll(`${key}(`, `${item}(`);
         });
+        nodesFunctions.forEach((item) => {
+            let name = MapNames.get(item.value);
+            if(name != undefined){
+                item.value = name;
+            }
+        });
         MapNames.clear();
         nodesFunctions = [];
-    }
-
-    //RETURN FUNCTION NODE
-    function ReturnFunctionNode(stack){
-        for(let i = stack.length - 2; i >= 0; i--){
-            if(stack[i] instanceof ParseNode){
-                    if(stack[i].operation != util.literal.operation.DECLARATION && stack[i].operation != util.literal.operation.ASSIGNMENT && stack[i].operation != util.literal.operation.TYPE_DECLARATION
-                && stack[i].operation != util.literal.operation.INCREMENT && stack[i].operation != util.literal.operation.DECREMENT && 
-                stack[i].operation != util.literal.operation.FUNCTION_CALL && stack[i].operation != util.literal.operation.PRINT && 
-                stack[i].operation != util.literal.operation.GRAPH_TS && stack[i].operation != util.literal.operation.BREAK &&
-                stack[i].operation != util.literal.operation.CONTINUE && stack[i].operation != util.literal.operation.RETURN &&
-                stack[i].operation != util.literal.operation.LENGTH && stack[i].operation != util.literal.operation.POP && 
-                stack[i].operation != util.literal.operation.PUSH && stack[i].operation != util.literal.operation.SENTENCES){
-
-                    if(stack[i].operation == util.literal.operation.FUNCTION){
-                        return `${stack[i].childs[0].value}_${stack[stack.length - 1].childs[0].value}`;
-                    }else{
-                        break;
-                    }
-                }
-            }
-        }
-        if(stack[stack.length - 1] instanceof ParseNode){
-            return stack[stack.length - 1].childs[0].value;
-        }
-        return null;
     }
 
 /* generated by jison-lex 0.3.4 */
