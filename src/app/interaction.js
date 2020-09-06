@@ -4,7 +4,7 @@ import '../css/style.css';
 //CODE IMPOIRTS
 import { editor, consoleOutput } from './codemirror';
 import * as d3 from 'd3';
-import { traduction } from './app';
+import { traduction, MappingInstructions } from './app';
 import { literal } from './utilities/util';
 
 const btnTraduction = document.querySelector('#btnTraduction');
@@ -19,6 +19,8 @@ function traductionTxt(){
         const data = establishHierarchy(root, {});
         graphTree(data);
         literal.graphTable(root.errors, 1);
+        const instructions = MappingInstructions(root);
+        console.log(instructions);
         consoleOutput.setValue(root.traduction);
     }else{
         console.log('NO TEXT PROVIDED');
