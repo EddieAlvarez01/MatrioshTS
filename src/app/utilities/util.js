@@ -64,7 +64,8 @@ export const literal = {
         NOT: 'not',
         AND: 'and',
         OR: 'or',
-        FUNCTION: 'function'
+        FUNCTION: 'function',
+        SENTENCES: 'SENTENCES'
     },
 
     errorType: {

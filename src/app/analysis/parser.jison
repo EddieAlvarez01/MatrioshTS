@@ -360,7 +360,7 @@ FOR_OF
     |   FOR LPAREN IDENTIFIER OF EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3} in ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild(new ParseNode(@3.first_line, @3.first_column, util.literal.dataTypes.VARIABLE, $3)); $$.addChild($5); $$.addChild($8); };
 
 ARRAY_ACCESS
-    :   IDENTIFIER LBRACKET EXP RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ARRAY_ACCESS, $1, null, null, null, `${$1}[${$3.traduction}]`); $$.addChild($3); };
+    :   IDENTIFIER LBRACKET EXPL RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ARRAY_ACCESS, $1, null, null, null, `${$1}[${$3.traduction}]`); $$.addChild($3); };
 
 FUNCTION_CALL
     :   IDENTIFIER LPAREN RPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FUNCTION_CALL, $1, null, null, null, `${$1}()`); }
