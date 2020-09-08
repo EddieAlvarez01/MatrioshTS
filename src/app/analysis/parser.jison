@@ -264,6 +264,7 @@ EXP
     |   EXP PORSIGN EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.MULTIPLICATION, util.literal.operation.MULTIPLICATION, null, null, null, `${$1.traduction} * ${$3.traduction}`); $$.addChild($1); $$.addChild($3); }
     |   EXP MINUSSIGN EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.SUBTRACTION, util.literal.operation.SUBTRACTION, null, null, null, `${$1.traduction} - ${$3.traduction}`); $$.addChild($1); $$.addChild($3); }
     |   EXP PLUSSIGN EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.ADDITION, util.literal.operation.ADDITION, null, null, null, `${$1.traduction} + ${$3.traduction}`); $$.addChild($1); $$.addChild($3); }
+    |   MINUSSIGN EXP { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.UNARY_MINUS, util.literal.operation.UNARY_MINUS, null, null, null, `-${$2.traduction}`); $$.addChild($2); }
     |   LPAREN EXPL RPAREN { $$ = $2; $$.traduction = `(${$2.traduction})`; }
     |   INCREMENT { $$ = $1; }
     |   DECREMENT { $$ = $1; }

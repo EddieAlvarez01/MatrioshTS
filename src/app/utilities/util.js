@@ -65,7 +65,8 @@ export const literal = {
         AND: 'and',
         OR: 'or',
         FUNCTION: 'function',
-        SENTENCES: 'SENTENCES'
+        SENTENCES: 'SENTENCES',
+        UNARY_MINUS: 'unary_minus'
     },
 
     errorType: {
@@ -75,17 +76,18 @@ export const literal = {
     },
 
     //GRAPH ERROR TABLE AND SYMBOLS   TYPE == 0 GRAPH SYMBOL TABLE      TYPE == 1 GRAPH ERRORS TABLE
-    graphTable: (list, type) => {
+    graphTable: (list, type, element, traduction) => {
         if(type){
             graphErrors(list);
             return;
         }
+        graphSymbolTable(list, element, traduction);
 
         //GRAPH THE ERROR TABLE
         function graphErrors(list){
-            document.querySelector('#divError').innerHTML = '';
+            document.querySelector(element).innerHTML = '';
             if(list.length > 0){
-                const table = constructTableError();
+                const table = constructTableError(element);
                 const tbody = document.createElement('tbody');
                 list.forEach((error) => {
                     let tr = document.createElement('tr');
@@ -108,9 +110,9 @@ export const literal = {
         }
 
         //CONSTRUCT ERROR TABLE
-        function constructTableError(){
+        function constructTableError(element){
             const table = document.createElement('table');
-            const div = document.querySelector('#divError');
+            const div = document.querySelector(element);
             table.classList.add('table');
             const thead = document.createElement('thead');
             thead.classList.add('thead-dark');
@@ -130,6 +132,79 @@ export const literal = {
             thead.appendChild(th3);
             th4.innerHTML = 'Columna';
             thead.appendChild(th4);
+            table.appendChild(thead);
+            div.appendChild(table);
+            return table;
+        }
+
+        //GRAPH THE SYMBOL TABLE
+        function graphSymbolTable(list, element, traduction){
+            if(traduction){
+                document.querySelector(element).innerHTML = '';
+            }
+            if(list.length > 0){
+                const table = constructSymbolTable(element, traduction);
+                const tbody = document.createElement('tbody');
+                list.forEach((symbol) => {
+                    let tr = document.createElement('tr');
+                    let td1 = document.createElement('td');
+                    let td2 = document.createElement('td');
+                    let td3 = document.createElement('td');
+                    let td4 = document.createElement('td');
+                    let td5 = document.createElement('td');
+                    td1.innerHTML = symbol.id;
+                    tr.appendChild(td1);
+                    td2.innerHTML = symbol.type;
+                    tr.appendChild(td2);
+                    td3.innerHTML = symbol.scope;
+                    tr.appendChild(td3);
+                    td4.innerHTML = symbol.row;
+                    tr.appendChild(td4);
+                    td5.innerHTML = symbol.column;
+                    tr.appendChild(td5);
+                    if(!traduction){
+                        let td6 = document.createElement('td');
+                        td6.innerHTML = symbol.value;
+                        tr.appendChild(td6);
+                    }
+                    tbody.appendChild(tr);
+                });
+                table.appendChild(tbody);
+            }
+        }
+
+        function constructSymbolTable(element, traduction){
+            const table = document.createElement('table');
+            const div = document.querySelector(element);
+            table.classList.add('table');
+            const thead = document.createElement('thead');
+            thead.classList.add('thead-dark');
+            let th1 = document.createElement('th');
+            let th2 = document.createElement('th');
+            let th3 = document.createElement('th');
+            let th4 = document.createElement('th');
+            let th5 = document.createElement('th');
+            th1.setAttribute('scope', 'col');
+            th2.setAttribute('scope', 'col');
+            th3.setAttribute('scope', 'col');
+            th4.setAttribute('scope', 'col');
+            th5.setAttribute('scope', 'col');
+            th1.innerHTML = 'Nombre';
+            thead.appendChild(th1);
+            th2.innerHTML = 'Tipo';
+            thead.appendChild(th2);
+            th3.innerHTML = 'Ámbito';
+            thead.appendChild(th3);
+            th4.innerHTML = 'Fila';
+            thead.appendChild(th4);
+            th5.innerHTML = 'Columna';
+            thead.appendChild(th5);
+            if(!traduction){
+                let th6 = document.createElement('th');
+                th6.setAttribute('scope', 'col');
+                th6.innerHTML = 'Valor';
+                thead.appendChild(th6);
+            }
             table.appendChild(thead);
             div.appendChild(table);
             return table;

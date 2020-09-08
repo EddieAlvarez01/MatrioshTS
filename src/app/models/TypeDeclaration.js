@@ -8,4 +8,6 @@ export class TypeDeclaration{
         this.column = column;
     }
 
+    traduction(st, scope){}
+
 }

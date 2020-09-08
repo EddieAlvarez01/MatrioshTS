@@ -7,4 +7,6 @@ export class Push{
         this.column = column;
     }
 
+    traduction(st, scope){}
+
 }

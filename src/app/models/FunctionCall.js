@@ -7,4 +7,6 @@ export class FunctionCall{
         this.column = column;
     }
 
+    traduction(st, scope){}
+
 }

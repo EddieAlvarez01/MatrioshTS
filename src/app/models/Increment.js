@@ -6,7 +6,7 @@ export class Increment{
         this.column = column;
     }
 
-    traduction(){}
+    traduction(st, scope){}
 
     execute(st){}
 

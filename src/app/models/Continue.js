@@ -1,7 +1,6 @@
-export class Length{
+export class Continue{
 
-    constructor(id, row, column){
-        this.id = id;
+    constructor(row, column){
         this.row = row;
         this.column = column;
     }

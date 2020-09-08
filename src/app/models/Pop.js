@@ -6,4 +6,6 @@ export class Pop{
         this.column = column;
     }
 
+    traduction(st, scope){}
+
 }

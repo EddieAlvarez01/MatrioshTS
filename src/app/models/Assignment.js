@@ -7,4 +7,8 @@ export class Assignment{
         this.column = column;
     }
 
+    traduction(st, scope){
+        
+    }
+
 }

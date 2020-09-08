@@ -6,7 +6,7 @@ export class Decrement{
         this.column = column;
     }
 
-    tradution(){}
+    tradution(st, scope){}
 
     execute(st){}
 
