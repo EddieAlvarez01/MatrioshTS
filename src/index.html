@@ -23,7 +23,7 @@
                     </div>
                     <div class="row justify-content-end mt-2">
                         <button type="button" class="btn btn-primary" id="btnTraduction">Traducir</button>
-                        <button type="button" class="btn btn-primary ml-4">Ejecutar</button>
+                        <button type="button" class="btn btn-primary ml-4" id="btnExecute">Ejecutar</button>
                     </div>
                     <div>
                         <h2>Consola</h2>
@@ -61,8 +61,18 @@
                                 
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="execute" role="tabpanel" aria-labelledby="execute-tab">
-                            CONTENT EXECUTE
+                        <div class="tab-pane fade w-100" id="execute" role="tabpanel" aria-labelledby="execute-tab">
+                            <h5>Árbol:</h5>
+                            <div id="imgTreeExecute" class="overflow-hidden w-100 border border-dark">
+
+                            </div>
+                            <h5>Simbolos:</h5>
+                            <div id="divStExecute" class="w-100 border error-div overflow-auto">
+                            </div>
+                            <h5>Errores:</h5>
+                            <div id="divErrorExecute" class="w-100 error-div overflow-auto border">
+                                
+                            </div>
                         </div>
                     </div>   
                 </div>

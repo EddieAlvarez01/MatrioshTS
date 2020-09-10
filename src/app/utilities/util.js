@@ -72,7 +72,8 @@ export const literal = {
     errorType: {
         SYNTACTIC: 'Sintáctico',
         SEMANTIC: 'Semántico',
-        LEXICAL: 'Léxico'
+        LEXICAL: 'Léxico',
+        FATAL: 'fatal'
     },
 
     //GRAPH ERROR TABLE AND SYMBOLS   TYPE == 0 GRAPH SYMBOL TABLE      TYPE == 1 GRAPH ERRORS TABLE
@@ -164,7 +165,7 @@ export const literal = {
                     tr.appendChild(td5);
                     if(!traduction){
                         let td6 = document.createElement('td');
-                        td6.innerHTML = symbol.value;
+                        td6.innerHTML = (symbol.value === null) ? 'null' : symbol.value;
                         tr.appendChild(td6);
                     }
                     tbody.appendChild(tr);

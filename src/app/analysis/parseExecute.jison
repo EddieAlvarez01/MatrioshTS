@@ -2,7 +2,7 @@
     const ParseNode = require('../models/ParseNode').default;
     const ErrorClass = require('../models/Error').default;
     const util = require('../utilities/util');
-    let errors = [];
+    const errors = [];
     exports.errors = errors;
     const her = [];
     let nodesFunctions = [];
@@ -17,7 +17,6 @@
         });
         return cString;
     }
-
 
     //inherit father's name
     function FatherName(father){
@@ -185,7 +184,7 @@ SENTENCE
     |   STATEMENT_CONTINUE { $$ = $1; }
     |   STATEMENT_RETURN { $$ = $1; }
     |   ARRAY_FUNCTIONS SEMICOLON { $$.traduction += ';'; $$ = $1; }
-    |   FUNCTIONS { if(her.length > 0){ $1.her = $1.traduction; $1.traduction = ''; }else{ TraductionReplace($1); } $$ = $1; }
+    |   FUNCTIONS { if(her.length > 0){ errors.push(new ErrorClass(util.literal.errorType.FATAL, 'Función anidada', $1.row, $1.column)); }else{ $$ = $1; } }
     |   error { if(yytext != ';'){ errors.push(new ErrorClass(util.literal.errorType.SYNTACTIC, `Error de sintaxis '${yytext}'`, this._$.first_line, this._$.first_column)); } $$ = null; };
 
 DECLARATION

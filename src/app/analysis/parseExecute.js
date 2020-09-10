@@ -71,7 +71,7 @@
     recoverable: (boolean: TRUE when the parser has a error recovery rule available for this particular error)
   }
 */
-var parser = (function(){
+var parseExecute = (function(){
 var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,24],$V1=[1,43],$V2=[1,27],$V3=[1,44],$V4=[1,58],$V5=[1,54],$V6=[1,45],$V7=[1,46],$V8=[1,49],$V9=[1,50],$Va=[1,51],$Vb=[1,52],$Vc=[1,29],$Vd=[1,59],$Ve=[1,30],$Vf=[1,31],$Vg=[1,32],$Vh=[1,33],$Vi=[1,34],$Vj=[1,36],$Vk=[1,37],$Vl=[1,38],$Vm=[1,39],$Vn=[1,40],$Vo=[1,57],$Vp=[2,5,30,31,33,38,50,64,66,70,71,72,73,78,79,81,83,86,89,90,91,92,93,99,101,102,103,104,111],$Vq=[48,49,53,54,55,56,57,58,60,61,62,63,64,65,75,76,77,98],$Vr=[2,67],$Vs=[2,68],$Vt=[2,70],$Vu=[2,127],$Vv=[2,72],$Vw=[1,66],$Vx=[1,68],$Vy=[1,67],$Vz=[2,50],$VA=[16,34,36,39,47,48,49,53,54,55,56,57,58,67,77,81,98],$VB=[1,78],$VC=[1,79],$VD=[1,80],$VE=[1,81],$VF=[1,82],$VG=[1,83],$VH=[1,76],$VI=[1,77],$VJ=[1,95],$VK=[1,97],$VL=[1,98],$VM=[1,99],$VN=[1,96],$VO=[1,104],$VP=[16,34,36,39,47,48,49,53,54,55,56,57,58,60,61,62,63,64,65,67,75,76,77,81,98],$VQ=[16,34,36,39,47,48,49,67,77,81,98],$VR=[1,110],$VS=[1,111],$VT=[1,112],$VU=[1,113],$VV=[1,161],$VW=[2,169],$VX=[47,67],$VY=[1,165],$VZ=[1,166],$V_=[1,168],$V$=[16,34,36,39,47,48,49,53,54,55,56,57,58,64,65,67,77,81,98],$V01=[16,34,36,39,47,48,49,67,77,81],$V11=[1,179],$V21=[39,47,67],$V31=[31,38,50,64,66,70,71,72,73,79],$V41=[16,34,36,39,47,48,49,53,54,55,56,57,58,61,62,63,64,65,67,77,81,98],$V51=[1,213],$V61=[1,209],$V71=[1,210],$V81=[1,211],$V91=[1,212],$Va1=[16,34,36,39,47,48,49,57,58,67,77,81,98],$Vb1=[1,228],$Vc1=[1,230],$Vd1=[96,97],$Ve1=[16,34,38,47,67,79,81,96,97],$Vf1=[1,259],$Vg1=[1,261],$Vh1=[1,263],$Vi1=[47,81],$Vj1=[1,275],$Vk1=[1,276],$Vl1=[2,5,30,31,33,38,50,64,66,70,71,72,73,78,79,81,83,85,86,89,90,91,92,93,99,101,102,103,104,111],$Vm1=[81,89,90],$Vn1=[60,61,62,63,64,65,75,76],$Vo1=[1,333],$Vp1=[1,336];
 var parser = {trace: function trace () { },
 yy: {},
@@ -105,7 +105,7 @@ case 22:
  this.$.traduction += ';'; this.$ = $$[$0-1]; 
 break;
 case 23:
- if(her.length > 0){ $$[$0].her = $$[$0].traduction; $$[$0].traduction = ''; }else{ TraductionReplace($$[$0]); } this.$ = $$[$0]; 
+ if(her.length > 0){ errors.push(new ErrorClass(util.literal.errorType.FATAL, 'Función anidada', $$[$0].row, $$[$0].column)); }else{ this.$ = $$[$0]; } 
 break;
 case 24:
  if(yytext != ';'){ errors.push(new ErrorClass(util.literal.errorType.SYNTACTIC, `Error de sintaxis '${yytext}'`, this._$.first_line, this._$.first_column)); } this.$ = null; 
@@ -797,7 +797,7 @@ _handle_error:
     const ParseNode = require('../models/ParseNode').default;
     const ErrorClass = require('../models/Error').default;
     const util = require('../utilities/util');
-    let errors = [];
+    const errors = [];
     exports.errors = errors;
     const her = [];
     let nodesFunctions = [];
@@ -811,10 +811,6 @@ _handle_error:
             cString += item.traduction;
         });
         return cString;
-    }
-
-    exports.cleanErrors = function(){
-        errors.pop();
     }
 
     //inherit father's name
@@ -1343,9 +1339,9 @@ return new Parser;
 
 
 if (typeof require !== 'undefined' && typeof exports !== 'undefined') {
-exports.parser = parser;
-exports.Parser = parser.Parser;
-exports.parse = function () { return parser.parse.apply(parser, arguments); };
+exports.parser = parseExecute;
+exports.Parser = parseExecute.Parser;
+exports.parse = function () { return parseExecute.parse.apply(parseExecute, arguments); };
 exports.main = function commonjsMain (args) {
     if (!args[1]) {
         console.log('Usage: '+args[0]+' FILE');

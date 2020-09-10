@@ -1,4 +1,5 @@
 import parserTraduction from './analysis/parser';
+import parserExecute from './analysis/parseExecute';
 import { Declaration } from './models/Declaration';
 import { Assignment } from './models/Assignment';
 import { TypeDeclaration } from './models/TypeDeclaration';
@@ -30,15 +31,21 @@ import { Push } from './models/Push';
 import { Pop } from './models/Pop';
 import { literal } from './utilities/util';
 import { Length } from './models/Length';
+import Error from './models/Error';
 
+//TRANSLATE ENTRY
 export function traduction(txt) {
-    try {
-        
-    } catch (error) {
-        console.log(error);
-    }
     const result = parserTraduction.parse(txt);
-    result.errors = parserTraduction.errors;
+    result.errors = parserTraduction.errors.slice();
+    CleanErrorsArray(parserTraduction.errors);
+    return result;
+}
+
+//EXECUTE ENTRY
+export function execute(txt){
+    const result = parserExecute.parse(txt);
+    result.errors = parserExecute.errors.slice();
+    CleanErrorsArray(parserExecute.errors);
     return result;
 }
 
@@ -57,6 +64,19 @@ export function TranslationSymbolTable(instructionList){
     instructionList.forEach((instruction) => {
         instruction.traduction(globalSt, 'Global');
     });
+    return globalSt;
+}
+
+//EXCUTE CODE
+export function ExecuteCode(instuctionList, errors){
+    const globalSt = new SymbolTable('Global');
+    for(let instruction of instuctionList){
+        const executeResult = instruction.execute(globalSt, []);
+        if(executeResult instanceof Error){
+           errors.push(executeResult);
+           return globalSt; 
+        }
+    }
     return globalSt;
 }
 
@@ -319,4 +339,11 @@ function ExtractParameterList(node, list){
         return ExtractParameterList(node.childs[1], list);
     }
     return list;
+}
+
+//CLEAN ERRORS ARRAY
+function CleanErrorsArray(errors){
+    while(errors.length){
+        errors.pop();
+    }
 }

@@ -4,27 +4,50 @@ import '../css/style.css';
 //CODE IMPOIRTS
 import { editor, consoleOutput } from './codemirror';
 import * as d3 from 'd3';
-import { traduction, MappingInstructions, TranslationSymbolTable } from './app';
+import { traduction, execute, MappingInstructions, TranslationSymbolTable, ExecuteCode } from './app';
 import { literal } from './utilities/util';
+import { ErrorAlert } from './utilities/alert';
 
 const btnTraduction = document.querySelector('#btnTraduction');
+const btnExecute = document.querySelector('#btnExecute');
 
 //LISTENER
 btnTraduction.addEventListener('click', traductionTxt);
+btnExecute.addEventListener('click', ExecuteTxt);
 
 //TRANSLATE LANGUAGE
 function traductionTxt(){
     if(editor.getValue() != ''){
         const root = traduction(editor.getValue());
         const data = establishHierarchy(root, {});
-        graphTree(data);
+        graphTree(data, '#imgTreeTraduction');
         literal.graphTable(root.errors, 1, '#divError', 0);
         const symbolTable = TranslationSymbolTable(MappingInstructions(root));
         literal.graphTable(symbolTable.symbols, 0, '#divSt', 1);
-        console.log(symbolTable);
-        consoleOutput.setValue(root.traduction);
+        editor.setValue(root.traduction);
     }else{
-        console.log('NO TEXT PROVIDED');
+        ErrorAlert('No hay texto para traducir');
+    }
+}
+
+//EXECUTE LANGUAGE
+function ExecuteTxt(){
+    if(editor.getValue() != ''){
+        document.querySelector('#divStExecute').innerHTML = '';
+        const root = execute(editor.getValue());
+        if((root.errors.find(Error => Error.type == literal.errorType.FATAL)) == undefined){
+            const data = establishHierarchy(root, {});
+            graphTree(data, '#imgTreeExecute');
+            const symbolTable = ExecuteCode(MappingInstructions(root), root.errors);
+            console.log(symbolTable);
+            literal.graphTable(symbolTable.symbols, 0, '#divStExecute', 0);
+            literal.graphTable(root.errors, 1, '#divErrorExecute', 0);
+        }else{
+            literal.graphTable(root.errors, 1, '#divErrorExecute', 0);
+            ErrorAlert('No se puede ejecutar el código porque existen funciones anidadas, verificar en la tabla de errores');
+        }
+    }else{
+        ErrorAlert('No hay texto para ejecutar');
     }
 }
 
@@ -41,8 +64,8 @@ function establishHierarchy(root, data){
 }
 
 //GRAPH TREE
-function graphTree(data){
-    clearTreeDiv();
+function graphTree(data, element){
+    clearTreeDiv(element);
     const margin = {
         top: 40,
         right: 90,
@@ -63,7 +86,7 @@ function graphTree(data){
     let nodes = d3.hierarchy(data);
     nodes = tree(nodes);
 
-    const svg = d3.select("#imgTreeTraduction").append("svg")
+    const svg = d3.select(element).append("svg")
                                                 .attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom);
     
     let zoomer = svg.append("rect")
@@ -123,6 +146,6 @@ function graphTree(data){
 }
 
 //CLEAR TREE DIV
-function clearTreeDiv(){
-    document.querySelector('#imgTreeTraduction').innerHTML = '';
+function clearTreeDiv(element){
+    document.querySelector(element).innerHTML = '';
 }
