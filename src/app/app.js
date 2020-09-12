@@ -207,7 +207,10 @@ function RecognizeInstruction(node){
         case literal.operation.FUNCTION_CALL:
             return RecognizeOperation(node);
         case literal.operation.PRINT:
-            return new Print(RecognizeOperation(node.childs[0]), node.row, node.column);
+            if(node.childs.length){
+                return new Print(RecognizeOperation(node.childs[0]), node.row, node.column);
+            }
+            return new Print(null, node.row, node.column);
         case literal.operation.GRAPH_TS:
             return new GraphTs(node.row, node.column);
         case literal.operation.BREAK:
@@ -259,8 +262,10 @@ function RecognizeOperation(node){
             return Operation.NewOperation(RecognizeOperation(node.childs[0]), RecognizeOperation(node.childs[1]), literal.operation.MULTIPLICATION, node.row, node.column);
         case literal.operation.DIVISION:
             return Operation.NewOperation(RecognizeOperation(node.childs[0]), RecognizeOperation(node.childs[1]), literal.operation.DIVISION, node.row, node.column);
+        case literal.operation.MODULUS:
+            return Operation.NewOperation(RecognizeOperation(node.childs[0]), RecognizeOperation(node.childs[1]), literal.operation.MODULUS, node.row, node.column);
         case literal.operation.UNARY_MINUS:
-            return Operation.NewOperation(null, RecognizeOperation(node.childs[0]), literal.operation.UNARY_MINUS, node.row, node.colum);
+            return Operation.NewOperation(null, RecognizeOperation(node.childs[0]), literal.operation.UNARY_MINUS, node.row, node.column);
         case literal.operation.POW:
             return Operation.NewOperation(RecognizeOperation(node.childs[0]), RecognizeOperation(node.childs[1]), literal.operation.POW, node.row, node.column);
         case literal.operation.OTHER_THAN:

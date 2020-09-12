@@ -1,3 +1,8 @@
+import { Operation } from './Operation';
+import { Symbol } from './Symbol';
+import Error from './Error';
+import { literal } from '../utilities/util';
+
 export class Increment{
 
     constructor(exp, row, column){
@@ -8,6 +13,28 @@ export class Increment{
 
     traduction(st, scope){}
 
-    execute(st){}
+    execute(st, output){
+        if(this.exp instanceof Operation && (this.exp.type == literal.dataTypes.VARIABLE || this.exp.type == literal.operation.PROPERTY_ACCESS || this.exp.type == literal.operation.ARRAY_ACCESS)){
+            const val = this.exp.execute(st, output);
+            if(val instanceof Error) return val;
+            const returnSymbol = new Symbol(val.id, val.type, val.constant, val.dynamic, val.array, val.value, val.scope, val.row, val.column);
+            if(val.constant){
+                return new Error(literal.errorType.SEMANTIC, `No se puede asignar a una constante`, this.row, this.column);
+            }
+            switch(val.type){
+                case literal.dataTypes.NUMBER:
+                    val.value++;
+                    break;
+                case literal.dataTypes.ANY:
+                    val.value++;
+                    val.type = literal.dataTypes.NUMBER;
+                    break;
+                default:
+                    return new Error(literal.errorType.SEMANTIC, `No se puede aumentar un tipo '${val.type}'`, this.row, this.column);
+            }
+            return returnSymbol;
+        }
+        return new Error(literal.errorType.SEMANTIC, `No se puede incrementar algo que no sea propiedad, elemento de array o variable`, this.row, this.column);
+    }
 
 }

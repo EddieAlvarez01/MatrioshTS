@@ -1,3 +1,5 @@
+import { Symbol } from './Symbol';
+
 export class TypeDeclaration{
 
     constructor(id, type, listPropertys, row, column){
@@ -8,6 +10,8 @@ export class TypeDeclaration{
         this.column = column;
     }
 
-    traduction(st, scope){}
+    traduction(st, scope){
+        st.Set(Symbol.NewSymbolTranslate(this.id, 'Type', scope, this.row, this.column), 0);
+    }
 
 }

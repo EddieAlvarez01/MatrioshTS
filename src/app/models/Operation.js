@@ -29,6 +29,222 @@ export class Operation{
         let leftOperator;
         let rightOperator;
         switch(this.type){
+            case literal.operation.OR:
+                leftOperator = this.firstOperator.execute(st, output);
+                rightOperator = this.secondOperator.execute(st, output);
+                if (leftOperator instanceof Error) return leftOperator;
+                if (rightOperator instanceof Error) return rightOperator;
+                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value || rightOperator.value, this.row, this.column);
+            case literal.operation.AND:
+                leftOperator = this.firstOperator.execute(st, output);
+                rightOperator = this.secondOperator.execute(st, output);
+                if (leftOperator instanceof Error) return leftOperator;
+                if (rightOperator instanceof Error) return rightOperator;
+                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value && rightOperator.value, this.row, this.column);
+            case literal.operation.NOT:
+                rightOperator = this.secondOperator.execute(st, output);
+                if (rightOperator instanceof Error) return leftOperator;
+                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, !rightOperator.value, this.row, this.column);
+            case literal.operation.LESS_THAN:
+                leftOperator = this.firstOperator.execute(st, output);
+                rightOperator = this.secondOperator.execute(st, output);
+                if (leftOperator instanceof Error) return leftOperator;
+                if (rightOperator instanceof Error) return rightOperator;
+                switch(leftOperator.type){
+                    case literal.dataTypes.STRING:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.STRING:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value < rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value < rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '<' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    case literal.dataTypes.NUMBER:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.NUMBER:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value < rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value < rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '<' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    case literal.dataTypes.BOOLEAN:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.BOOLEAN:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value < rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value < rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '<' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    case literal.dataTypes.NULL:
+                        return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value < rightOperator.value, this.row, this.column);
+                    case literal.dataTypes.OBJECT:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.OBJECT:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value < rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value < rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '<' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    default:
+                        return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value < rightOperator.value, this.row, this.column);
+                }
+            case literal.operation.GREATER_THAN:
+                leftOperator = this.firstOperator.execute(st, output);
+                rightOperator = this.secondOperator.execute(st, output);
+                if (leftOperator instanceof Error) return leftOperator;
+                if (rightOperator instanceof Error) return rightOperator;
+                switch(leftOperator.type){
+                    case literal.dataTypes.STRING:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.STRING:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value > rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value > rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '>' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    case literal.dataTypes.NUMBER:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.NUMBER:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value > rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value > rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '>' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    case literal.dataTypes.BOOLEAN:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.BOOLEAN:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value > rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value > rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '>' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    case literal.dataTypes.NULL:
+                        return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value > rightOperator.value, this.row, this.column);
+                    case literal.dataTypes.OBJECT:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.OBJECT:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value > rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value > rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '>' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    default:
+                        return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value > rightOperator.value, this.row, this.column);
+                }
+            case literal.operation.LESS_THAN_OR_EQUAL_TO:
+                leftOperator = this.firstOperator.execute(st, output);
+                rightOperator = this.secondOperator.execute(st, output);
+                if (leftOperator instanceof Error) return leftOperator;
+                if (rightOperator instanceof Error) return rightOperator;
+                switch(leftOperator.type){
+                    case literal.dataTypes.STRING:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.STRING:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value <= rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value <= rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '<=' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    case literal.dataTypes.NUMBER:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.NUMBER:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value <= rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value <= rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '<=' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    case literal.dataTypes.BOOLEAN:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.BOOLEAN:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value <= rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value <= rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '<=' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    case literal.dataTypes.NULL:
+                        return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value <= rightOperator.value, this.row, this.column);
+                    case literal.dataTypes.OBJECT:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.OBJECT:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value <= rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value <= rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '<=' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    default:
+                        return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value <= rightOperator.value, this.row, this.column);
+                }
+            case literal.operation.GREATER_THAN_OR_EQUAL_TO:
+                leftOperator = this.firstOperator.execute(st, output);
+                rightOperator = this.secondOperator.execute(st, output);
+                if (leftOperator instanceof Error) return leftOperator;
+                if (rightOperator instanceof Error) return rightOperator;
+                switch(leftOperator.type){
+                    case literal.dataTypes.STRING:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.STRING:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value >= rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value >= rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '>=' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    case literal.dataTypes.NUMBER:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.NUMBER:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value >= rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value >= rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '>=' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    case literal.dataTypes.BOOLEAN:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.BOOLEAN:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value >= rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value >= rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '>=' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    case literal.dataTypes.NULL:
+                        return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value >= rightOperator.value, this.row, this.column);
+                    case literal.dataTypes.OBJECT:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.OBJECT:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value >= rightOperator.value, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value >= rightOperator.value, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede usar el operador '>=' con un tipo '${leftOperator.type}' y '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    default:
+                        return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value >= rightOperator.value, this.row, this.column);
+                }
+            case literal.operation.JUST_AS:
+                leftOperator = this.firstOperator.execute(st, output);
+                rightOperator = this.secondOperator.execute(st, output);
+                if (leftOperator instanceof Error) return leftOperator;
+                if (rightOperator instanceof Error) return rightOperator;
+                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value == rightOperator.value, this.row, this.column);
+            case literal.operation.OTHER_THAN:
+                leftOperator = this.firstOperator.execute(st, output);
+                rightOperator = this.secondOperator.execute(st, output);
+                if (leftOperator instanceof Error) return leftOperator;
+                if (rightOperator instanceof Error) return rightOperator;
+                return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value != rightOperator.value, this.row, this.column);
             case literal.operation.ADDITION:
                 leftOperator = this.firstOperator.execute(st, output);
                 rightOperator = this.secondOperator.execute(st, output);
@@ -275,6 +491,80 @@ export class Operation{
                         }
                     default:
                         return new Error(literal.errorType.SEMANTIC, `No se puede exponer un tipo '${leftOperator.type}' con un tipo '${rightOperator.type}'`, this.row, this.column);
+                }
+            case literal.operation.MODULUS:
+                leftOperator = this.firstOperator.execute(st, output);
+                rightOperator = this.secondOperator.execute(st, output);
+                if (leftOperator instanceof Error) return leftOperator;
+                if (rightOperator instanceof Error) return rightOperator;
+                switch(leftOperator.type){
+                    case literal.dataTypes.NUMBER:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.NUMBER:
+                                if(rightOperator.value){
+                                    return Operation.NewOperationValue(literal.dataTypes.NUMBER, leftOperator.value % rightOperator.value, this.row, this.column);
+                                }
+                                return new Error(literal.errorType.SEMANTIC, `No se puede sacar el resto de un 0`, this.row, this.column);
+                            case literal.dataTypes.BOOLEAN:
+                                if(rightOperator.value){
+                                    return Operation.NewOperationValue(literal.dataTypes.NUMBER, leftOperator.value % rightOperator.value, this.row, this.column);
+                                }
+                                return new Error(literal.errorType.SEMANTIC, `No se puede sacar el resto de un 0`, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede sacar el resto de un 0`, this.row, this.column);
+                            default:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede hacer resto un tipo '${leftOperator.type}' con un tipo '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    case literal.dataTypes.BOOLEAN:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.NUMBER:
+                                if(rightOperator.value){
+                                    return Operation.NewOperationValue(literal.dataTypes.NUMBER, leftOperator.value % rightOperator.value, this.row, this.column);
+                                }
+                                return new Error(literal.errorType.SEMANTIC, `No se puede sacar el resto de un 0`, this.row, this.column);
+                            case literal.dataTypes.BOOLEAN:
+                                if(rightOperator.value){
+                                    return Operation.NewOperationValue(literal.dataTypes.NUMBER, leftOperator.value % rightOperator.value, this.row, this.column);
+                                }
+                                return new Error(literal.errorType.SEMANTIC, `No se puede sacar el resto de un 0`, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede sacar el resto de un 0`, this.row, this.column);
+                            default:
+                                new Error(literal.errorType.SEMANTIC, `No se puede hacer resto un tipo '${leftOperator.type}' con un tipo '${rightOperator.type}'`, this.row, this.column);
+                
+                        }
+                    case literal.dataTypes.NULL:
+                        switch(rightOperator.type){
+                            case literal.dataTypes.NUMBER:
+                                if(rightOperator.value){
+                                    return Operation.NewOperationValue(literal.dataTypes.NUMBER, leftOperator.value % rightOperator.value, this.row, this.column);
+                                }
+                                return new Error(literal.errorType.SEMANTIC, `No se puede sacar el resto de un 0`, this.row, this.column);
+                            case literal.dataTypes.BOOLEAN:
+                                if(rightOperator.value){
+                                    return Operation.NewOperationValue(literal.dataTypes.NUMBER, leftOperator.value % rightOperator.value, this.row, this.column);
+                                }
+                                return new Error(literal.errorType.SEMANTIC, `No se puede sacar el resto de un 0`, this.row, this.column);
+                            case literal.dataTypes.NULL:
+                                return new Error(literal.errorType.SEMANTIC, `No se puede sacar el resto de un 0`, this.row, this.column);
+                            default:
+                                new Error(literal.errorType.SEMANTIC, `No se puede hacer resto un tipo '${leftOperator.type}' con un tipo '${rightOperator.type}'`, this.row, this.column);
+                        }
+                    default:
+                        new Error(literal.errorType.SEMANTIC, `No se puede hacer resto un tipo '${leftOperator.type}' con un tipo '${rightOperator.type}'`, this.row, this.column);
+                }
+            case literal.operation.UNARY_MINUS:
+                rightOperator = this.secondOperator.execute(st, output);
+                if (rightOperator instanceof Error) return rightOperator;
+                switch(rightOperator.type){
+                    case literal.dataTypes.NUMBER:
+                        return Operation.NewOperationValue(literal.dataTypes.NUMBER, rightOperator.value * -1, this.row, this.column);
+                    case literal.dataTypes.BOOLEAN:
+                        return Operation.NewOperationValue(literal.dataTypes.NUMBER, rightOperator.value * -1, this.row, this.column);
+                    case literal.dataTypes.NULL:
+                        return Operation.NewOperationValue(literal.dataTypes.NUMBER, rightOperator.value * -1, this.row, this.column);
+                    default:
+                        return new Error(literal.errorType.SEMANTIC, `No se puede negar un tipo '${rightOperator.type}'`, this.row, this.column);
                 }
             case literal.dataTypes.STRING:
                 return this;

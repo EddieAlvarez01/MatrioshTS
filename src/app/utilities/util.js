@@ -10,6 +10,8 @@ export const literal = {
         ARRAY_NUMBER: 'array_number',
         ARRAY_BOOLEAN: 'array_boolean',
         ARRAY_ANY: 'array_any',
+        ARRAY_EMPTY: 'array_empty',
+        ARRAY_OBJECT: 'array_object',
         OBJECT: 'object',
         VARIABLE: 'variable',
         NULL: 'null',
@@ -165,7 +167,11 @@ export const literal = {
                     tr.appendChild(td5);
                     if(!traduction){
                         let td6 = document.createElement('td');
-                        td6.innerHTML = (symbol.value === null) ? 'null' : symbol.value;
+                        if(Array.isArray(symbol.value)){
+                            td6.innerHTML = ParseArray(symbol.value.slice());
+                        }else{
+                            td6.innerHTML = (symbol.value === null) ? 'null' : symbol.value;
+                        }
                         tr.appendChild(td6);
                     }
                     tbody.appendChild(tr);
@@ -213,3 +219,17 @@ export const literal = {
     }
 
 };
+
+//returns a string from the array
+function ParseArray(array){
+    let chain = '';
+    if(array.length){
+        chain = `[${array.shift().value}`;
+    }else{
+        chain = '[';
+    }
+    array.forEach((symbol) => {
+        chain += `, ${symbol.value}`
+    });
+    return chain += ']';
+}

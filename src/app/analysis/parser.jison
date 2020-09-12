@@ -289,10 +289,13 @@ TERNARY
     :   EXPL QUESTIONINGSIGN EXPL COLON EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.TERNARY_OPERATOR, util.literal.operation.TERNARY_OPERATOR, null, null, null, `${$1.traduction} ? ${$3.traduction} : ${$5.traduction}`); $$.addChild($1); $$.addChild($3); $$.addChild($5); };
 
 TYPE_DECLARATION
-    :   TYPE IDENTIFIER EQUAL LBRACE LPARAMETERS RBRACE { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.TYPE_DECLARATION, $2, util.literal.dataTypes.OBJECT, null, null, `type ${$2} = {\n${ConcatInstructions($5)}\n}`); $$.childs = $5; };
+    :   TYPE IDENTIFIER EQUAL LBRACE LPARAMETERS RBRACE { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.TYPE_DECLARATION, $2, util.literal.dataTypes.OBJECT, null, null, `type ${$2} = {\n${ConcatInstructions($5)}\n}`); $$.childs = $5; }
+    |   TYPE IDENTIFIER EQUAL LBRACE LPARAMETERS COMMA RBRACE { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.TYPE_DECLARATION, $2, util.literal.dataTypes.OBJECT, null, null, `type ${$2} = {\n${ConcatInstructions($5)},\n}`); $$.childs = $5; }
+    |   TYPE IDENTIFIER EQUAL LBRACE LPARAMETERS SEMICOLON RBRACE { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.TYPE_DECLARATION, $2, util.literal.dataTypes.OBJECT, null, null, `type ${$2} = {\n${ConcatInstructions($5)};\n}`); $$.childs = $5; };
 
 LPARAMETERS
     :   LPARAMETERS COMMA PARAMETERS { $3.traduction = `,\n\t${$3.traduction}`; $1.push($3); $$ = $1; }
+    |   LPARAMETERS SEMICOLON PARAMETERS { $3.traduction = `;\n\t${$3.traduction}`; $1.push($3); $$ = $1; }
     |   PARAMETERS { $$ = []; $1.traduction = `\t${$1.traduction}`; $$.push($1); };
 
 PARAMETERS
@@ -373,7 +376,8 @@ PROPERTY_ACCESS
     |   EXPL POINT EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.PROPERTY_ACCESS, util.literal.operation.PROPERTY_ACCESS, null, null, null, `${$1.traduction}.${$3.traduction}`); $$.addChild($1); $$.addChild($3); };
 
 PRINT
-    :   CONSOLE POINT LOG LPAREN EXPL RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PRINT, util.literal.operation.PRINT, null, null, null, `console.log(${$5.traduction});`); $$.addChild($5); };
+    :   CONSOLE POINT LOG LPAREN EXPL RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PRINT, util.literal.operation.PRINT, null, null, null, `console.log(${$5.traduction});`); $$.addChild($5); }
+    |   CONSOLE POINT LOG LPAREN RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PRINT, util.literal.operation.PRINT, null, null, null, `console.log();`); };
 
 GRAPH_TS
     :   GRAPH LPAREN RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.GRAPH_TS, util.literal.operation.GRAPH_TS, null, null, null, `graficar_ts();`); };

@@ -1,6 +1,6 @@
 export class Symbol{
 
-    constructor(id, type, constant, dynamic, array, value, scope, row, column){
+    constructor(id, type, constant, dynamic, array, value, scope, row, column, isType){
         this.id = id;
         this.type = type;
         this.constant = constant;
@@ -10,6 +10,7 @@ export class Symbol{
         this.scope = scope;
         this.row = row;
         this.column = column;
+        this.isType = isType;
     }
 
     static NewSymbolTranslate(id, type, scope, row, colum){
