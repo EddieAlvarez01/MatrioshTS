@@ -2,7 +2,7 @@
 import '../css/style.css';
 
 //CODE IMPOIRTS
-import { editor, consoleOutput } from './codemirror';
+import { editor } from './codemirror';
 import * as d3 from 'd3';
 import { traduction, execute, MappingInstructions, TranslationSymbolTable, ExecuteCode } from './app';
 import { literal } from './utilities/util';
@@ -39,7 +39,6 @@ function ExecuteTxt(){
             const data = establishHierarchy(root, {});
             graphTree(data, '#imgTreeExecute');
             const symbolTable = ExecuteCode(MappingInstructions(root), root.errors);
-            console.log(symbolTable);
             literal.graphTable(symbolTable.symbols, 0, '#divStExecute', 0);
             literal.graphTable(root.errors, 1, '#divErrorExecute', 0);
         }else{

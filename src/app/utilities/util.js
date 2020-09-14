@@ -157,7 +157,7 @@ export const literal = {
                     let td5 = document.createElement('td');
                     td1.innerHTML = symbol.id;
                     tr.appendChild(td1);
-                    td2.innerHTML = symbol.type;
+                    td2.innerHTML = (symbol.isType) ? 'Type' : symbol.type;
                     tr.appendChild(td2);
                     td3.innerHTML = symbol.scope;
                     tr.appendChild(td3);
@@ -165,10 +165,12 @@ export const literal = {
                     tr.appendChild(td4);
                     td5.innerHTML = symbol.column;
                     tr.appendChild(td5);
-                    if(!traduction){
+                    if(!traduction && !symbol.isType){
                         let td6 = document.createElement('td');
                         if(Array.isArray(symbol.value)){
                             td6.innerHTML = ParseArray(symbol.value.slice());
+                        }else if(typeof symbol.value == 'object'){
+                            td6.innerHTML = ParseType(symbol.value);
                         }else{
                             td6.innerHTML = (symbol.value === null) ? 'null' : symbol.value;
                         }
@@ -224,12 +226,56 @@ export const literal = {
 function ParseArray(array){
     let chain = '';
     if(array.length){
-        chain = `[${array.shift().value}`;
+        const symbol = array.shift();
+        if(Array.isArray(symbol.value)){
+            chain = `[${ParseArray(symbol.value)}`;
+        }else if(symbol.type == literal.dataTypes.OBJECT){
+            chain = `[${ParseType(symbol.value)}`;
+        }else{
+            chain = `[${symbol.value}`;
+        }
     }else{
         chain = '[';
     }
     array.forEach((symbol) => {
-        chain += `, ${symbol.value}`
+        if(Array.isArray(symbol.value)){
+            chain += `, ${ParseArray(symbol.value)}`;
+        }else if(symbol.type == literal.dataTypes.OBJECT){
+            chain += `, ${ParseType(symbol.value)}`;
+        }else{
+            chain += `, ${symbol.value}`;
+        }
     });
     return chain += ']';
+}
+
+//returns a string from the object
+function ParseType(obj){
+    const keys = [];
+    for(let key in obj){
+        keys.push(key);
+    }
+    let chain = '';
+    if(keys.length){
+        const key = keys.shift();
+        if(Array.isArray(obj[key].value)){
+            chain = `{${key}: ${ParseArray(obj[key].value.slice())}`;
+        }else if(obj[key].type == literal.dataTypes.OBJECT){
+            chain = `{${key}: ${ParseType(obj[key].value)}`;
+        }else{
+            chain = `{${key}: ${obj[key].value}`;
+        }
+    }else{
+        chain = '{';
+    }
+    keys.forEach((key) => {
+        if(Array.isArray(obj[key].value)){
+            chain += `, ${key}: ${ParseArray(obj[key].value.slice())}`;
+        }else if(obj[key].type == literal.dataTypes.OBJECT){
+            chain += `, ${key}: ${ParseType(obj[key].value)}`;
+        }else{
+            chain += `, ${key}: ${obj[key].value}`;
+        }
+    });
+    return chain += '}';
 }

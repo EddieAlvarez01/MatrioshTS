@@ -196,14 +196,14 @@ VARLET
         if($3 != null){
             if($3.value != null){
                 if(Array.isArray($3.value)){
-                    $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, $3.type, false, $3.dynamic, `let ${$2}${$3.traduction}`);
+                    $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, $3.type, false, $3.dynamic, `let ${$2}${$3.traduction}`, $3.array);
                     $$.childs = $3.value;
                 }else{
-                    $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, $3.type, false, $3.dynamic, `let ${$2}${$3.traduction}`);
+                    $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, $3.type, false, $3.dynamic, `let ${$2}${$3.traduction}`, $3.array);
                     $$.addChild($3.value);
                 }
             }else{
-                $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, $3.type, false, $3.dynamic, `let ${$2}${$3.traduction}`);
+                $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, $3.type, false, $3.dynamic, `let ${$2}${$3.traduction}`, $3.array);
             } 
         }else{
             $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true, `let ${$2};`);
@@ -217,8 +217,8 @@ VARCONST
 
 ENDLET
     :   SEMICOLON { $$ = null; }
-    |   EQUAL EXPL SEMICOLON { $$ = new ParseNode(null, null, null, $2, util.literal.dataTypes.ANY, false, true, ` = ${$2.traduction};`); }
-    |   COLON DATATYPE ENDDECLARATION { $$ = new ParseNode(null, null, null, $3, $2, false, false); if($3){ $$.traduction = `: ${$2}${$3.traduction}`; $$.array = $3.array; }else{ $$.traduction = ';'; $$.array = $3.array; } };
+    |   EQUAL EXPL SEMICOLON { $$ = new ParseNode(null, null, null, $2, util.literal.dataTypes.ANY, false, true, ` = ${$2.traduction};`, false); }
+    |   COLON DATATYPE ENDDECLARATION { $$ = new ParseNode(null, null, null, $3, $2, false, false); if($3){ $$.traduction = `: ${$2}${$3.traduction}`; $$.array = $3.array; }else{ $$.traduction = ';'; $$.array = false; } };
 
 DATATYPE
     :   TSTRING { $$ = util.literal.dataTypes.STRING; }
@@ -230,6 +230,7 @@ DATATYPE
 ENDDECLARATION
     :   SEMICOLON { $$ = null; }
     |   LBRACKET RBRACKET EQUAL EXPL SEMICOLON { $$ = $4; $$.array = true; $$.traduction = `[] = ${$4.traduction}`; }
+    |   LBRACKET RBRACKET SEMICOLON { $$ = new ParseNode(null, null, null, null, null, null, null, `[];`, true); }
     |   EQUAL EXPL SEMICOLON { $$ = $2; $$.array = false; $$.traduction = ` = ${$2.traduction};`; };
 
 ASSIGNMENT
@@ -298,9 +299,9 @@ LPARAMETERS
     |   PARAMETERS { $$ = []; $1.traduction = `\t${$1.traduction}`; $$.push($1); };
 
 PARAMETERS
-    :   IDENTIFIER COLON DATATYPE { $$ = new ParseNode(@1.first_line, @1.first_column, null, $1, $3, false, false, `${$1}: ${$3}`); }
-    |   IDENTIFIER COLON DATATYPE LBRACKET RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, null, $1, $3, false, false, `${$1}: ${$3}[]`); }
-    |   IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, null, $1, util.literal.operation.ANY, false, true, `${$1}`); };
+    :   IDENTIFIER COLON DATATYPE { $$ = new ParseNode(@1.first_line, @1.first_column, null, $1, $3, false, false, `${$1}: ${$3}`, false); }
+    |   IDENTIFIER COLON DATATYPE LBRACKET RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, null, $1, $3, false, false, `${$1}: ${$3}[]`, true); }
+    |   IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, null, $1, util.literal.dataTypes.ANY, false, true, `${$1}`, false); };
 
 STATEMENT_IF
     :   IF LPAREN EXPL RPAREN BODY_IF { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.IF, util.literal.operation.IF, null, null, null,`if(${$3.traduction})`); $$.addChild($3); if($5 != null){ $$.traduction += $5.traduction; $$.addChild($5); }else{ $$.traduction += '{\n}'; } }
@@ -392,7 +393,8 @@ STATEMENT_RETURN
     |   RETURN EXPL SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.RETURN, util.literal.operation.RETURN, null, null, null, `return ${$2.traduction};`); $$.addChild($2); };
 
 DEFINITION
-    :   LBRACE LVALUES RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFINITION, util.literal.operation.DEFINITION, null, null, null, `{\n${ConcatInstructions($2)}\n}`); $$.childs = $2; };
+    :   LBRACE LVALUES RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFINITION, util.literal.operation.DEFINITION, null, null, null, `{\n${ConcatInstructions($2)}\n}`); $$.childs = $2; }
+    |   LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFINITION, util.literal.operation.DEFINITION, null, null, null, `{}`); };
 
 LVALUES
     :   LVALUES COMMA IDENTIFIER COLON EXPL { let decl2 = new ParseNode(@3.first_line, @3.first_column, util.literal.operation.PROPERTY_DECLARATION, $3, null, null, null, `,\n\t${$3}: ${$5.traduction}`); decl2.addChild($5); $1.push(decl2); $$ = $1; }

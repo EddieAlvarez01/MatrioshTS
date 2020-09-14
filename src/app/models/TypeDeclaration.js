@@ -1,3 +1,4 @@
+import { literal } from '../utilities/util';
 import { Symbol } from './Symbol';
 
 export class TypeDeclaration{
@@ -12,6 +13,28 @@ export class TypeDeclaration{
 
     traduction(st, scope){
         st.Set(Symbol.NewSymbolTranslate(this.id, 'Type', scope, this.row, this.column), 0);
+    }
+
+    execute(st, output, errors){
+        const symbol = new Symbol(this.id, this.id, false, false, false, null, st.scope, this.row, this.column, true);
+        for(let node of this.listPropertys){
+            if(node.array){
+                switch(node.type){
+                    case literal.dataTypes.STRING:
+                        node.type = literal.dataTypes.ARRAY_STRING;
+                        break;
+                    case literal.dataTypes.NUMBER:
+                        node.type = literal.dataTypes.ARRAY_NUMBER;
+                        break;
+                    case literal.dataTypes.BOOLEAN:
+                        node.type = literal.dataTypes.ARRAY_BOOLEAN;
+                        break;
+                } 
+            }
+            const result = symbol.SetProperty(new Symbol(node.value, node.type, node.constant, node.dynamic, node.array, null, st.scope, node.row, node.column, false));
+            if(result instanceof Error) return result;
+        }
+        return st.Set(symbol, 1, 1);
     }
 
 }

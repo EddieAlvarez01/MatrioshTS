@@ -32,6 +32,7 @@ import { Pop } from './models/Pop';
 import { literal } from './utilities/util';
 import { Length } from './models/Length';
 import Error from './models/Error';
+import { consoleOutput } from './codemirror';
 
 //TRANSLATE ENTRY
 export function traduction(txt) {
@@ -70,13 +71,15 @@ export function TranslationSymbolTable(instructionList){
 //EXCUTE CODE
 export function ExecuteCode(instuctionList, errors){
     const globalSt = new SymbolTable('Global');
+    const output = [];
+    globalSt.SearchTypes(instuctionList, output, errors);
     for(let instruction of instuctionList){
-        const executeResult = instruction.execute(globalSt, []);
+        const executeResult = instruction.execute(globalSt, output, errors);
         if(executeResult instanceof Error){
            errors.push(executeResult);
-           return globalSt; 
         }
     }
+    PrintConsole(output);
     return globalSt;
 }
 
@@ -350,5 +353,20 @@ function ExtractParameterList(node, list){
 function CleanErrorsArray(errors){
     while(errors.length){
         errors.pop();
+    }
+}
+
+//PRINT BY CONSOLE
+function PrintConsole(output){
+    if(output.length){
+        const separator = '-----------------------------------------------------------------------------------------------------------------------------------------';
+        let exit = '';
+        output.forEach((chain) => {
+            exit += chain;
+            exit += `\n${separator}\n`;
+        });
+        consoleOutput.setValue(exit);
+    }else{
+        consoleOutput.setValue('');
     }
 }

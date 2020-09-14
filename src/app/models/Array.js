@@ -9,11 +9,11 @@ export class Array{
         this.column = column;
     }
 
-    execute(st, output){
+    execute(st, output, errors){
         if(this.expresionsList.length){
             const symbol = new Symbol('', null, false, false, true, [], st.scope, this.row, this.column, false);
             for(let exp of this.expresionsList){
-                const value = exp.execute(st, output);
+                const value = exp.execute(st, output, errors);
                 if(value instanceof Error) return value;
                 if(!(symbol.type == literal.dataTypes.ARRAY_ANY)){
                     if(symbol.type == null){

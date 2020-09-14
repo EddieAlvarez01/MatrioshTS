@@ -25,29 +25,29 @@ export class Operation{
         return new Operation(null, null, type, value, row, column);
     }
 
-    execute(st, output){
+    execute(st, output, errors){
         let leftOperator;
         let rightOperator;
         switch(this.type){
             case literal.operation.OR:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator;
                 return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value || rightOperator.value, this.row, this.column);
             case literal.operation.AND:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator;
                 return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value && rightOperator.value, this.row, this.column);
             case literal.operation.NOT:
-                rightOperator = this.secondOperator.execute(st, output);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (rightOperator instanceof Error) return leftOperator;
                 return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, !rightOperator.value, this.row, this.column);
             case literal.operation.LESS_THAN:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator;
                 switch(leftOperator.type){
@@ -93,8 +93,8 @@ export class Operation{
                         return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value < rightOperator.value, this.row, this.column);
                 }
             case literal.operation.GREATER_THAN:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator;
                 switch(leftOperator.type){
@@ -140,8 +140,8 @@ export class Operation{
                         return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value > rightOperator.value, this.row, this.column);
                 }
             case literal.operation.LESS_THAN_OR_EQUAL_TO:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator;
                 switch(leftOperator.type){
@@ -187,8 +187,8 @@ export class Operation{
                         return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value <= rightOperator.value, this.row, this.column);
                 }
             case literal.operation.GREATER_THAN_OR_EQUAL_TO:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator;
                 switch(leftOperator.type){
@@ -234,20 +234,20 @@ export class Operation{
                         return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value >= rightOperator.value, this.row, this.column);
                 }
             case literal.operation.JUST_AS:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator;
                 return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value == rightOperator.value, this.row, this.column);
             case literal.operation.OTHER_THAN:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator;
                 return Operation.NewOperationValue(literal.dataTypes.BOOLEAN, leftOperator.value != rightOperator.value, this.row, this.column);
             case literal.operation.ADDITION:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator; 
                 switch(leftOperator.type){
@@ -307,8 +307,8 @@ export class Operation{
                         /* ERROR */
                 }
             case literal.operation.SUBTRACTION:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator; 
                 switch(leftOperator.type){
@@ -349,8 +349,8 @@ export class Operation{
                         return new Error(literal.errorType.SEMANTIC, `No se puede restar un tipo '${leftOperator.type}' con un tipo '${rightOperator.type}'`, this.row, this.column);
                 }
             case literal.operation.MULTIPLICATION:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator; 
                 switch(leftOperator.type){
@@ -391,8 +391,8 @@ export class Operation{
                         return new Error(literal.errorType.SEMANTIC, `No se puede multiplicar un tipo '${leftOperator.type}' con un tipo '${rightOperator.type}'`, this.row, this.column);
                 }
             case literal.operation.DIVISION:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator; 
                 switch(leftOperator.type){
@@ -451,8 +451,8 @@ export class Operation{
                         return new Error(literal.errorType.SEMANTIC, `No se puede dividir un tipo '${leftOperator.type}' con un tipo '${rightOperator.type}'`, this.row, this.column); 
                 }
             case literal.operation.POW:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator; 
                 switch(leftOperator.type){
@@ -493,8 +493,8 @@ export class Operation{
                         return new Error(literal.errorType.SEMANTIC, `No se puede exponer un tipo '${leftOperator.type}' con un tipo '${rightOperator.type}'`, this.row, this.column);
                 }
             case literal.operation.MODULUS:
-                leftOperator = this.firstOperator.execute(st, output);
-                rightOperator = this.secondOperator.execute(st, output);
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (leftOperator instanceof Error) return leftOperator;
                 if (rightOperator instanceof Error) return rightOperator;
                 switch(leftOperator.type){
@@ -554,7 +554,7 @@ export class Operation{
                         new Error(literal.errorType.SEMANTIC, `No se puede hacer resto un tipo '${leftOperator.type}' con un tipo '${rightOperator.type}'`, this.row, this.column);
                 }
             case literal.operation.UNARY_MINUS:
-                rightOperator = this.secondOperator.execute(st, output);
+                rightOperator = this.secondOperator.execute(st, output, errors);
                 if (rightOperator instanceof Error) return rightOperator;
                 switch(rightOperator.type){
                     case literal.dataTypes.NUMBER:

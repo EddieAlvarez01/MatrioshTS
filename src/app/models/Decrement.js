@@ -8,9 +8,9 @@ export class Decrement{
 
     tradution(st, scope){}
 
-    execute(st, output){
+    execute(st, output, errors){
         if(this.exp instanceof Operation && (this.exp.type == literal.dataTypes.VARIABLE || this.exp.type == literal.operation.PROPERTY_ACCESS || this.exp.type == literal.operation.ARRAY_ACCESS)){
-            const val = this.exp.execute(st, output);
+            const val = this.exp.execute(st, output, errors);
             if(val instanceof Error) return val;
             const returnSymbol = new Symbol(val.id, val.type, val.constant, val.dynamic, val.array, val.value, val.scope, val.row, val.column);
             if(val.constant){

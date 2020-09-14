@@ -10,5 +10,5 @@ const consoleOutput = code(document.querySelector('#console'), {
 });
 
 editor.setSize('100%', '29rem');
-consoleOutput.setSize(null, '16rem');
+consoleOutput.setSize('100%', '24rem');
 export {editor, consoleOutput};

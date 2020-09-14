@@ -219,7 +219,7 @@ VARCONST
 ENDLET
     :   SEMICOLON { $$ = null; }
     |   EQUAL EXPL SEMICOLON { $$ = new ParseNode(null, null, null, $2, util.literal.dataTypes.ANY, false, true, ` = ${$2.traduction};`); }
-    |   COLON DATATYPE ENDDECLARATION { $$ = new ParseNode(null, null, null, $3, $2, false, false); if($3){ $$.traduction = `: ${$2}${$3.traduction}`; $$.array = $3.array; }else{ $$.traduction = ';'; $$.array = $3.array; } };
+    |   COLON DATATYPE ENDDECLARATION { $$ = new ParseNode(null, null, null, $3, $2, false, false); if($3){ $$.traduction = `: ${$2}${$3.traduction}`; $$.array = $3.array; }else{ $$.traduction = `: ${$2};`; $$.array = false; } };
 
 DATATYPE
     :   TSTRING { $$ = util.literal.dataTypes.STRING; }
@@ -231,6 +231,7 @@ DATATYPE
 ENDDECLARATION
     :   SEMICOLON { $$ = null; }
     |   LBRACKET RBRACKET EQUAL EXPL SEMICOLON { $$ = $4; $$.array = true; $$.traduction = `[] = ${$4.traduction}`; }
+    |   LBRACKET RBRACKET SEMICOLON { $$ = new ParseNode(null, null, null, null, null, null, null, `[];`, true); }
     |   EQUAL EXPL SEMICOLON { $$ = $2; $$.array = false; $$.traduction = ` = ${$2.traduction};`; };
 
 ASSIGNMENT
@@ -300,7 +301,7 @@ LPARAMETERS
 
 PARAMETERS
     :   IDENTIFIER COLON DATATYPE { $$ = new ParseNode(@1.first_line, @1.first_column, null, $1, $3, false, false, `${$1}: ${$3}`); }
-    |   IDENTIFIER COLON DATATYPE LBRACKET RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, null, $1, $3, false, false, `${$1}: ${$3}[]`); }
+    |   IDENTIFIER COLON DATATYPE LBRACKET RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, null, $1, $3, false, false, `${$1}: ${$3}[]`, true); }
     |   IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, null, $1, util.literal.operation.ANY, false, true, `${$1}`); };
 
 STATEMENT_IF
@@ -393,7 +394,8 @@ STATEMENT_RETURN
     |   RETURN EXPL SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.RETURN, util.literal.operation.RETURN, null, null, null, `return ${$2.traduction};`); $$.addChild($2); };
 
 DEFINITION
-    :   LBRACE LVALUES RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFINITION, util.literal.operation.DEFINITION, null, null, null, `{\n${ConcatInstructions($2)}\n}`); $$.childs = $2; };
+    :   LBRACE LVALUES RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFINITION, util.literal.operation.DEFINITION, null, null, null, `{\n${ConcatInstructions($2)}\n}`); $$.childs = $2; }
+    |   LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFINITION, util.literal.operation.DEFINITION, null, null, null, `{}`); };
 
 LVALUES
     :   LVALUES COMMA IDENTIFIER COLON EXPL { let decl2 = new ParseNode(@3.first_line, @3.first_column, util.literal.operation.PROPERTY_DECLARATION, $3, null, null, null, `,\n\t${$3}: ${$5.traduction}`); decl2.addChild($5); $1.push(decl2); $$ = $1; }
