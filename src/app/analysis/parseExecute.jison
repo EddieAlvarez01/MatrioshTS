@@ -55,16 +55,24 @@
         nodesFunctions = [];
     }
 
+    //unescape
+    function StringLiteral(chain){
+        chain = chain.replace(/\\"/g, "\"");
+        chain = chain.replace(/\\\\/g, "\\");
+        chain = chain.replace(/\\n/g, "\n");
+        chain = chain.replace(/\\r/g, "\r");
+        chain = chain.replace(/\\t/g, "\t");
+        return chain;
+    }
+
 %}
 
 /* lexical grammar */
 %lex
-%x chain
-%x chain_simp
 
 %%
 \s+                   /* skip whitespace */
-"//"[^\n]+            /* SKIP COMMENT */
+"//"[^\n]*            /* SKIP COMMENT */
 "/*"("*"(?!\/)|[^*])*"*/"   /* SKIP COMMENT */
 "let"                 return 'LET';
 "type"                return 'TYPE';
@@ -97,6 +105,8 @@
 ("true"|"false")      return 'BOOLEAN';
 ([a-zA-Z]|"_")([a-zA-Z]|[0-9]|"_")*    return 'IDENTIFIER';
 [0-9]+"."?[0-9]*      return 'NUMBER';
+"\""(?:[^"\\]|\\.)*"\"" return 'CHAIN';
+"'"(?:[^'\\]|\\.)*"'" return 'CHAIN';
 "=="                  return 'JUSTAS';
 "!="                  return 'OTHERTHAN';
 "<="                  return 'LESSTHANOREQUALTO';
@@ -126,12 +136,6 @@
 "&&"                  return 'AND';
 "||"                  return 'OR';
 "!"                   return 'NOT';
-["]                   this.begin("chain");
-<chain>[^"\n]+        return 'CHAIN';
-<chain>["]            this.popState();
-[']                   this.begin("chain_simp");
-<chain_simp>[^'\n]+   return 'CHAIN';
-<chain_simp>[']       this.popState();
 <<EOF>>               return 'EOF';
 
 .                     {
@@ -246,7 +250,6 @@ EXPL
     |   EXPL AND EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.AND, util.literal.operation.AND, null, null, null, `${$1.traduction} && ${$3.traduction}`); $$.addChild($1); $$.addChild($3); }
     |   NOT EXPL { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.NOT, util.literal.operation.NOT, null, null, null, `!${$2.traduction}`); $$.addChild($2); }
     |   TERNARY { $$ = $1; }
-    |   PROPERTY_ACCESS { $$ = $1; }
     |   EXPR { $$ = $1; };
 
 EXPR
@@ -271,9 +274,10 @@ EXP
     |   DECREMENT { $$ = $1; }
     |   ARRAY_ACCESS { $$ = $1; }
     |   FUNCTION_CALL { $$ = $1; AddFunctionNodes($1); }
+    |   PROPERTY_ACCESS { $$ = $1; }
     |   ARRAY { $$ = $1; }
     |   IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.VARIABLE, $1, null, null, null, $1); }
-    |   CHAIN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.STRING, $1, null, null, null, `'${$1}'`); }
+    |   CHAIN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.STRING, StringLiteral($1.slice(1, $1.length - 1)), null, null, null, `'${$1.slice(1, $1.length - 1)}'`); }
     |   NUMBER  { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.NUMBER, Number($1), null, null, null, $1); }
     |   BOOLEAN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.BOOLEAN, ($1 === 'true'), null, null, null, $1); }
     |   NULL { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.dataTypes.NULL, undefined, null, null, null, $1); }
@@ -373,7 +377,7 @@ FUNCTION_CALL
 
 PROPERTY_ACCESS
     :   ARRAY_FUNCTIONS { $$ = $1; }
-    |   EXPL POINT EXPL { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.PROPERTY_ACCESS, util.literal.operation.PROPERTY_ACCESS, null, null, null, `${$1.traduction}.${$3.traduction}`); $$.addChild($1); $$.addChild($3); };
+    |   EXP POINT EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.PROPERTY_ACCESS, util.literal.operation.PROPERTY_ACCESS, null, null, null, `${$1.traduction}.${$3.traduction}`); $$.addChild($1); $$.addChild($3); };
 
 PRINT
     :   CONSOLE POINT LOG LPAREN EXPL RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PRINT, util.literal.operation.PRINT, null, null, null, `console.log(${$5.traduction});`); $$.addChild($5); }
@@ -405,9 +409,9 @@ ARRAY
     |   LBRACKET LEXPL RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ARRAY, util.literal.operation.ARRAY, null, null, null, `[${ConcatInstructions($2)}]`); $$.childs = $2; };
 
 ARRAY_FUNCTIONS
-    :   EXPL POINT PUSH LPAREN EXPL RPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PUSH, util.literal.operation.PUSH, null, null, null, `${$1.traduction}.Push(${$5.traduction})`); $$.addChild($1); $$.addChild($5); }
-    |   EXPL POINT POP LPAREN RPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.POP, util.literal.operation.POP, null, null, null, `${$1.traduction}.Pop()`); $$.addChild($1); }
-    |   EXPL POINT LENGTH { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.LENGTH, util.literal.operation.LENGTH, null, null, null, `${$1.traduction}.Length`); $$.addChild($1); };
+    :   EXP POINT PUSH LPAREN EXPL RPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PUSH, util.literal.operation.PUSH, null, null, null, `${$1.traduction}.Push(${$5.traduction})`); $$.addChild($1); $$.addChild($5); }
+    |   EXP POINT POP LPAREN RPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.POP, util.literal.operation.POP, null, null, null, `${$1.traduction}.Pop()`); $$.addChild($1); }
+    |   EXP POINT LENGTH { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.LENGTH, util.literal.operation.LENGTH, null, null, null, `${$1.traduction}.Length`); $$.addChild($1); };
 
 FUNCTIONS
     :   FUNCTIONS_DEFINITIONS FUNCTION_NT2 { let stack = eval('$$'); $$ = stack[stack.length - 2]; };

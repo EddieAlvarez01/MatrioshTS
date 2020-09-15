@@ -121,7 +121,6 @@ export class SymbolTable{
 
     //check data consistency with type
     CheckDataType(type, obj){
-        console.log(obj);
         for(let [key, symbol] of type.propertys){
             const sProperty = obj.value[key];
             if(sProperty === undefined) return new Error(literal.errorType.SEMANTIC, `La propiedad '${key}' no esta definida`, obj.row, obj.column);
@@ -187,7 +186,8 @@ export class SymbolTable{
                             const searchType = this.GetType(symbol.type, this.row, this.column);
                             if(searchType instanceof Error) return searchType;
                             const validate = this.CheckDataType(searchType, sProperty);
-                            if(validate instanceof Error) return validate; 
+                            if(validate instanceof Error) return validate;
+                            sProperty.type = searchType.id; 
                         }else if(sProperty.type == literal.dataTypes.NULL){
                             const searchType = this.GetType(symbol.type, this.row, this.column);
                             if(searchType instanceof Error) return searchType;

@@ -165,14 +165,16 @@ export const literal = {
                     tr.appendChild(td4);
                     td5.innerHTML = symbol.column;
                     tr.appendChild(td5);
-                    if(!traduction && !symbol.isType){
+                    if(!traduction){
                         let td6 = document.createElement('td');
-                        if(Array.isArray(symbol.value)){
-                            td6.innerHTML = ParseArray(symbol.value.slice());
-                        }else if(typeof symbol.value == 'object'){
-                            td6.innerHTML = ParseType(symbol.value);
-                        }else{
-                            td6.innerHTML = (symbol.value === null) ? 'null' : symbol.value;
+                        if(!symbol.isType){
+                            if(Array.isArray(symbol.value)){
+                                td6.innerHTML = ParseArray(symbol.value.slice());
+                            }else if(typeof symbol.value == 'object'){
+                                td6.innerHTML = ParseType(symbol.value);
+                            }else{
+                                td6.innerHTML = (symbol.value === null) ? 'null' : symbol.value;
+                            }
                         }
                         tr.appendChild(td6);
                     }
@@ -229,7 +231,7 @@ function ParseArray(array){
         const symbol = array.shift();
         if(Array.isArray(symbol.value)){
             chain = `[${ParseArray(symbol.value)}`;
-        }else if(symbol.type == literal.dataTypes.OBJECT){
+        }else if(typeof symbol.value == 'object' && symbol.value != null){
             chain = `[${ParseType(symbol.value)}`;
         }else{
             chain = `[${symbol.value}`;
@@ -240,7 +242,7 @@ function ParseArray(array){
     array.forEach((symbol) => {
         if(Array.isArray(symbol.value)){
             chain += `, ${ParseArray(symbol.value)}`;
-        }else if(symbol.type == literal.dataTypes.OBJECT){
+        }else if(typeof symbol.value == 'object' && symbol.value != null){
             chain += `, ${ParseType(symbol.value)}`;
         }else{
             chain += `, ${symbol.value}`;
@@ -260,7 +262,7 @@ function ParseType(obj){
         const key = keys.shift();
         if(Array.isArray(obj[key].value)){
             chain = `{${key}: ${ParseArray(obj[key].value.slice())}`;
-        }else if(obj[key].type == literal.dataTypes.OBJECT){
+        }else if(typeof obj[key].value == 'object' && obj[key].value != null){
             chain = `{${key}: ${ParseType(obj[key].value)}`;
         }else{
             chain = `{${key}: ${obj[key].value}`;
@@ -271,7 +273,7 @@ function ParseType(obj){
     keys.forEach((key) => {
         if(Array.isArray(obj[key].value)){
             chain += `, ${key}: ${ParseArray(obj[key].value.slice())}`;
-        }else if(obj[key].type == literal.dataTypes.OBJECT){
+        }else if(typeof obj[key].value == 'object' && obj[key].value != null){
             chain += `, ${key}: ${ParseType(obj[key].value)}`;
         }else{
             chain += `, ${key}: ${obj[key].value}`;

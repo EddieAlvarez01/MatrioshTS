@@ -19,6 +19,7 @@ export class Push{
         if(!symbol.array){
             return new Error(literal.errorType.SEMANTIC, `Solo se puede usar el push con un array`, this.row, this.column);
         }
+        if(symbol.value == null) return new Error(literal.errorType.SEMANTIC, `No se puede usar 'push' en un 'null'`, this.row, this.column);
         const value = this.value.execute(st, output, errors);
         if(value instanceof Error) return value;
         switch(value.type){
@@ -41,13 +42,17 @@ export class Push{
                 }
                 break;
             case literal.dataTypes.NULL:
-                if(symbol.type == literal.dataTypes.ARRAY_ANY){
                     symbol.value.push(value);
                     return Operation.NewOperationValue(literal.dataTypes.NULL, null, this.row, this.column);
-                }
             case literal.dataTypes.OBJECT:
                 /* TYPES ARRAY LOGICAL */
-                break;
+                const searchType = st.GetType(symbol.type, this.row, this.column);
+                if(searchType instanceof Error) return searchType;
+                const validate = st.CheckDataType(searchType, value);
+                if(validate instanceof Error) return validate;
+                value.type = searchType.id;
+                symbol.value.push(value);
+                return Operation.NewOperationValue(literal.dataTypes.NULL, null, this.row, this.column);
         }
         return new Error(literal.errorType.SEMANTIC, `No se puede agregar a un array tipo '${symbol.type}' un tipo '${value.type}'`, this.row, this.column);
     }

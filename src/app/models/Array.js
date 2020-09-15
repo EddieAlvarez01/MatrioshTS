@@ -1,4 +1,5 @@
 import { Symbol } from './Symbol';
+import Error from './Error';
 import { literal } from '../utilities/util';
 
 export class Array{
@@ -54,10 +55,12 @@ export class Array{
                                 break;
                             default:
                                 if(!(symbol.type == literal.dataTypes.ARRAY_OBJECT)){
-                                    symbol.type = literal.dataTypes.ARRAY_ANY;
+                                    return new Error(literal.errorType.SEMANTIC, `Un tipo '${value.type}' no pude declararse en un array tipo '${symbol.type}'`, value.row, value.column);
                                 }
                         }
                     }
+                }else{
+                    if(value.type == literal.dataTypes.OBJECT) return new Error(literal.errorType.SEMANTIC, `Un tipo '${value.type}' no pude declararse en un array tipo '${symbol.type}'`, value.row, value.column);
                 }
                 symbol.value.push(value);
             }

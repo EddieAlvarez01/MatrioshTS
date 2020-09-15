@@ -1,5 +1,6 @@
 import { literal } from '../utilities/util';
 import Error from './Error';
+import { ArrayAccess } from './ArrayAccess';
 
 export class Operation{
 
@@ -566,6 +567,40 @@ export class Operation{
                     default:
                         return new Error(literal.errorType.SEMANTIC, `No se puede negar un tipo '${rightOperator.type}'`, this.row, this.column);
                 }
+            case literal.operation.PROPERTY_ACCESS:
+                leftOperator = this.firstOperator.execute(st, output, errors);
+                if(leftOperator instanceof Error) return leftOperator;
+                if(!st.CheckType(leftOperator) && leftOperator.type != literal.dataTypes.OBJECT) return new Error(literal.errorType.SEMANTIC, `No se puede acceder a un tipo '${leftOperator.type}'`, this.row, this.column);
+                if(leftOperator.value == null) return new Error(literal.errorType.SEMANTIC, `No se puede acceder a un objeto con valor nulo`, this.row, this.column);
+                if(this.secondOperator.type != literal.dataTypes.VARIABLE && !(this.secondOperator instanceof ArrayAccess)) return new Error(literal.errorType.SEMANTIC, `No se puede acceder a una propiedad con un tipo '${this.secondOperator.type}'`, this.row, this.column);
+                let value;
+                if(this.secondOperator.type == literal.dataTypes.VARIABLE){
+                    value = leftOperator.value[this.secondOperator.value];
+                }else{
+                    value = leftOperator.value[this.secondOperator.id];
+                    if(value){
+                        const exp = this.secondOperator.value.execute(st, output, errors);
+                        if(exp instanceof Error) return exp;
+                        if(value.array){
+                            if(value.value == null) return new Error(literal.errorType.SEMANTIC, `No se puede acceder a un valor nulo`, this.row, this.column);
+                            if(!(exp.type == literal.dataTypes.STRING || exp.type == literal.dataTypes.NUMBER)) return new Error(literal.errorType.SEMANTIC, `No se puede acceder a un array con un tipo '${exp.type}'`, this.row, this.column);
+                            const value2 = value.value[exp.value];
+                            if(value2 === undefined) return new Error(literal.errorType.SEMANTIC, `El indice '${exp.value}' de el array no es correcto`, this.row, this.column);
+                            return value2;
+                        }else if(st.CheckType(value)){
+                            if(exp.type == literal.dataTypes.STRING){
+                                if(value.value == null) return new Error(literal.errorType.SEMANTIC, `No se puede acceder a un valor nulo`, this.row, this.column);
+                                const value2 = value.value[exp.value];
+                                if(value2 === undefined) return new Error(literal.errorType.SEMANTIC, `El indice '${exp.value}' de el array no es correcto`, this.row, this.column);
+                                return value2;
+                            }
+                            return new Error(literal.errorType.SEMANTIC, `No se puede acceder a un array con un tipo '${exp.type}'`, this.row, this.column);
+                        }
+                        return new Error(literal.errorType.SEMANTIC, `No se puede acceder de esta forma a una variable que no es un array o un objeto`, this.row, this.column);
+                    }
+                }
+                if(value === undefined) return new Error(literal.errorType.SEMANTIC, `La propiedad '${this.secondOperator.value}' no existe en el objeto`, this.row, this.column);
+                return value; 
             case literal.dataTypes.STRING:
                 return this;
             case literal.dataTypes.NUMBER:

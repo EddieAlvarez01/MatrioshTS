@@ -30,7 +30,7 @@ export class Declaration{
                 if(val.type == literal.dataTypes.ARRAY_ANY || val.type == literal.dataTypes.ARRAY_STRING || val.type == literal.dataTypes.ARRAY_NUMBER || val.type == literal.dataTypes.ARRAY_BOOLEAN || val.type == literal.dataTypes.ARRAY_EMPTY){
                     if(val.type == literal.dataTypes.ARRAY_EMPTY) return st.Set(new Symbol(this.id, literal.dataTypes.ARRAY_ANY, this.constant, this.dynamic, true, val.value, st.scope, this.row, this.column, false), 1, 0);
                     return st.Set(new Symbol(this.id, val.type, this.constant, this.dynamic, true, val.value, st.scope, this.row, this.column, false), 1, 0);
-                }else if(val.type != literal.dataTypes.OBJECT){
+                }else if(val.type != literal.dataTypes.OBJECT && val.type != literal.dataTypes.ARRAY_OBJECT){
                     if(val.value === null) return st.Set(new Symbol(this.id, literal.dataTypes.ANY, this.constant, this.dynamic, this.array, val.value, st.scope, this.row, this.column), 1, 0);
                     return st.Set(new Symbol(this.id, val.type, this.constant, this.dynamic, this.array, val.value, st.scope, this.row, this.column), 1, 0);
                 }
@@ -44,11 +44,20 @@ export class Declaration{
             }else if(this.array && val.type == literal.dataTypes.ARRAY_EMPTY){
                 return st.Set(new Symbol(this.id, this.type, this.constant, this.dynamic, this.array, val.value, st.scope, this.row, this.column), 1, 0);
             }else if(st.CheckType(this)){
-                if(val.type == literal.dataTypes.OBJECT){
+                if(val.type == literal.dataTypes.OBJECT && !this.array){
                     const searchType = st.GetType(this.type, this.row, this.column);
                     if(searchType instanceof Error) return searchType;
                     const validate = st.CheckDataType(searchType, val);
                     if(validate instanceof Error) return validate;
+                    return st.Set(new Symbol(this.id, this.type, this.constant, this.dynamic, this.array, val.value, st.scope, this.row, this.column, false, false), 1, 0);
+                }else if(this.array && val.type == literal.dataTypes.ARRAY_OBJECT){
+                    const searchType = st.GetType(this.type, this.row, this.column);
+                    if(searchType instanceof Error) return searchType;
+                    for(let obj of val.value){
+                        const validate = st.CheckDataType(searchType, obj);
+                        if(validate instanceof Error) return validate;
+                        obj.type = this.type;
+                    }
                     return st.Set(new Symbol(this.id, this.type, this.constant, this.dynamic, this.array, val.value, st.scope, this.row, this.column, false, false), 1, 0);
                 }
             }

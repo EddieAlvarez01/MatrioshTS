@@ -17,7 +17,7 @@ export class Print{
             if(value instanceof Error) return value;
             if(Array.isArray(value.value)){
                 output.push(this.ParseArray(value.value));
-            }else if(value.type == literal.dataTypes.OBJECT || st.CheckType(value)){
+            }else if((value.type == literal.dataTypes.OBJECT || st.CheckType(value)) && value.value != null){
                 output.push(this.ParseType(value.value));
             }else{
                 output.push(value.value);
@@ -35,7 +35,7 @@ export class Print{
             const symbol = array.shift();
             if(Array.isArray(symbol.value)){
                 chain = `[${this.ParseArray(symbol.value.slice())}`;
-            }else if(symbol.type == literal.dataTypes.OBJECT){
+            }else if(symbol.type == literal.dataTypes.OBJECT || (typeof symbol.value == 'object' && symbol.value != null)){
                 chain = `[${this.ParseType(symbol.value)}`;
             }else{
                 chain = `[${symbol.value}`;
@@ -46,7 +46,7 @@ export class Print{
         array.forEach((symbol) => {
             if(Array.isArray(symbol.value)){
                 chain += `, ${this.ParseArray(symbol.value.slice())}`;
-            }else if(symbol.type == literal.dataTypes.OBJECT){
+            }else if(symbol.type == literal.dataTypes.OBJECT || (typeof symbol.value == 'object' && symbol.value != null)){
                 chain += `, ${this.ParseType(symbol.value)}`;
             }else{
                 chain += `, ${symbol.value}`;
@@ -66,7 +66,7 @@ export class Print{
             const key = keys.shift();
             if(Array.isArray(obj[key].value)){
                 chain = `{${key}: ${this.ParseArray(obj[key].value.slice())}`;
-            }else if(obj[key].type == literal.dataTypes.OBJECT){
+            }else if(obj[key].type == literal.dataTypes.OBJECT || (typeof obj[key].value == 'object' && obj[key].value != null)){
                 chain = `{${key}: ${this.ParseType(obj[key].value)}`;
             }else{
                 chain = `{${key}: ${obj[key].value}`;
@@ -77,7 +77,7 @@ export class Print{
         keys.forEach((key) => {
             if(Array.isArray(obj[key].value)){
                 chain += `, ${key}: ${this.ParseArray(obj[key].value.slice())}`;
-            }else if(obj[key].type == literal.dataTypes.OBJECT){
+            }else if(obj[key].type == literal.dataTypes.OBJECT || (typeof obj[key].value == 'object' && obj[key].value != null)){
                 chain += `, ${key}: ${this.ParseType(obj[key].value)}`;
             }else{
                 chain += `, ${key}: ${obj[key].value}`;
