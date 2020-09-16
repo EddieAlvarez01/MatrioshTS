@@ -35,16 +35,24 @@ difResults.Push({title: '', addition: 5, substract: 51, multiplication: -9, divi
 
 
 const root: node = {
-    next: {
-        next: null,
-        value: [1, 2, 34]
-    },
-    value: []
+	next: {
+	next: null,
+	value: [1, 2, 34]
+},
+	value: []
 };
-
 type node = {
-    next: node,
-    value: number[]
+	next: node,
+	value: number[]
 }
-
-console.log(root.next.value);
+root.next.next = {
+	next: null,
+	value: [100]
+};
+const ty: node[] = [root, {
+	next: null,
+	value: [2, 4]
+}];
+root.value = null;
+console.log(root.value);
+console.log(ty);

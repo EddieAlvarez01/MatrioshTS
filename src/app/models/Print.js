@@ -16,7 +16,7 @@ export class Print{
             const value = this.expression.execute(st, output, errors);
             if(value instanceof Error) return value;
             if(Array.isArray(value.value)){
-                output.push(this.ParseArray(value.value));
+                output.push(this.ParseArray(value.value.slice()));
             }else if((value.type == literal.dataTypes.OBJECT || st.CheckType(value)) && value.value != null){
                 output.push(this.ParseType(value.value));
             }else{

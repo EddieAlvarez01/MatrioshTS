@@ -170,7 +170,7 @@ export const literal = {
                         if(!symbol.isType){
                             if(Array.isArray(symbol.value)){
                                 td6.innerHTML = ParseArray(symbol.value.slice());
-                            }else if(typeof symbol.value == 'object'){
+                            }else if(typeof symbol.value == 'object' && symbol.value != null){
                                 td6.innerHTML = ParseType(symbol.value);
                             }else{
                                 td6.innerHTML = (symbol.value === null) ? 'null' : symbol.value;

@@ -13,4 +13,8 @@ export class DoWhile{
         });
     }
 
+    execute(st, output, errors){
+        const 
+    }
+
 }

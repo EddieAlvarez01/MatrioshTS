@@ -193,7 +193,7 @@ export class SymbolTable{
                             if(searchType instanceof Error) return searchType;
                             sProperty.type = symbol.type;
                             sProperty.dynamic = false;
-                        }else{
+                        }else if(!(sProperty.type == symbol.type)){
                             return new Error(literal.errorType.SEMANTIC, `No se puede asignar a un tipo '${symbol.type}' un '${sProperty.type}'`, sProperty.row, sProperty.column);
                         }
                     }

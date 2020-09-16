@@ -54,9 +54,11 @@ export class Declaration{
                     const searchType = st.GetType(this.type, this.row, this.column);
                     if(searchType instanceof Error) return searchType;
                     for(let obj of val.value){
-                        const validate = st.CheckDataType(searchType, obj);
-                        if(validate instanceof Error) return validate;
-                        obj.type = this.type;
+                        if(obj.type != this.type){
+                            const validate = st.CheckDataType(searchType, obj);
+                            if(validate instanceof Error) return validate;
+                            obj.type = this.type;
+                        }
                     }
                     return st.Set(new Symbol(this.id, this.type, this.constant, this.dynamic, this.array, val.value, st.scope, this.row, this.column, false, false), 1, 0);
                 }

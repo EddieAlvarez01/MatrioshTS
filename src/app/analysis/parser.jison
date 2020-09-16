@@ -230,6 +230,7 @@ ENDDECLARATION
 
 ASSIGNMENT
     :   IDENTIFIER EQUAL EXPL SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ASSIGNMENT, $1, null, null, null, `${$1} = ${$3.traduction};`); $$.addChild($3); }
+    |   ARRAY_ACCESS EQUAL EXPL SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ASSIGNMENT, util.literal.operation.ASSIGNMENT, null, null, null, `${$1.traduction} = ${$3.traduction};`); $$.addChild($1); $$.addChild($3); }
     |   PROPERTY_ACCESS EQUAL EXPL SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ASSIGNMENT, util.literal.operation.ASSIGNMENT, null, null, null, `${$1.traduction} = ${$3.traduction};`); $$.addChild($1); $$.addChild($3); };
 
 LEXPL
