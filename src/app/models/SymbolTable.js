@@ -209,6 +209,43 @@ export class SymbolTable{
         }
         return null;
     }
+
+    //corroborate that I am in a cycle or function
+    //option = 1, for break statement
+    //option = 2, for continue statement
+    CheckCicleFunction(option, row, column){
+        if(this.CheckCycleType(option)) return true;
+        if(this.next != null){
+            return this.next.CheckCicleFunction(option, row, column);
+        }
+        switch(option){
+            case 1:
+                return new Error(literal.errorType.SEMANTIC, `No se puede utilizar 'break' en un ámbito que no es un ciclo o switch`, row, column);
+            case 2:
+                return new Error(literal.errorType.SEMANTIC, `No se puede utilizar 'continue' en un ámbito que no es un ciclo`, row, column);
+            default:
+        }
+    }
+
+    //see the type of cycle
+    CheckCycleType(option){
+        switch(this.scope){
+            case 'Do-While':
+                return true;
+            case 'For':
+                return true;
+            case 'ForIn':
+                return true;
+            case 'ForOf':
+                return true;
+            case 'While':
+                return true;
+            case 'Switch':
+                if(option == 2) break;  //FOR CONTINUE STATEMENT
+                return true;
+        }
+        return false;
+    }
     
 }
 

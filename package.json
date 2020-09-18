@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "traduction": "jison ./src/app/analysis/parser.jison -o ./src/app/analysis/parser.js",
     "execute": "jison ./src/app/analysis/parseExecute.jison -o ./src/app/analysis/parseExecute.js",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "build": "webpack -d"
   },
   "keywords": [],
   "author": "",

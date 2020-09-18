@@ -1,5 +1,7 @@
 import Error from './Error';
 import { SymbolTable } from './SymbolTable';
+import { Break } from './Break';
+import { Continue } from './Continue';
 
 export class While{
 
@@ -29,6 +31,10 @@ export class While{
                 const resultInstruction = instruction.execute(newSt, output, errors);
                 if(resultInstruction instanceof Error){
                     errors.push(resultInstruction);
+                }else if(resultInstruction instanceof Break){
+                    return null;
+                }else if(resultInstruction instanceof Continue){
+                    break;
                 }
             }
         }while(true);

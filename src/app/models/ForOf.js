@@ -1,5 +1,7 @@
 import { Declaration } from './Declaration';
 import { Operation } from './Operation';
+import { Break } from './Break';
+import { Continue } from './Continue';
 import { literal } from '../utilities/util';
 import { SymbolTable } from './SymbolTable';
 import { Symbol } from './Symbol';
@@ -26,7 +28,7 @@ export class ForOf{
 
     execute(st, output, errors){
         let symbol;
-        const newSt = new SymbolTable('ForIn');
+        const newSt = new SymbolTable('ForOf');
         newSt.next = st;
         if(this.variable instanceof Operation && this.variable.type == literal.dataTypes.VARIABLE){
             symbol = st.GetValue(this.variable, true);
@@ -60,6 +62,10 @@ export class ForOf{
                 const executeResult = instruction.execute(newSt, output, errors);
                 if(executeResult instanceof Error){
                     errors.push(executeResult);
+                }else if(executeResult instanceof Break){
+                    return null;
+                }else if(executeResult instanceof Continue){
+                    break;
                 }
             }
         }

@@ -421,13 +421,13 @@ case 146:
  this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.ARRAY, util.literal.operation.ARRAY, null, null, null, `[${ConcatInstructions($$[$0-1])}]`); this.$.childs = $$[$0-1]; 
 break;
 case 147:
- this.$ = new ParseNode(_$[$0-5].first_line, _$[$0-5].first_column, util.literal.operation.PUSH, util.literal.operation.PUSH, null, null, null, `${$$[$0-5].traduction}.Push(${$$[$0-1].traduction})`); this.$.addChild($$[$0-5]); this.$.addChild($$[$0-1]); 
+ this.$ = new ParseNode(_$[$0-5].first_line, _$[$0-5].first_column, util.literal.operation.PUSH, util.literal.operation.PUSH, null, null, null, `${$$[$0-5].traduction}.push(${$$[$0-1].traduction})`); this.$.addChild($$[$0-5]); this.$.addChild($$[$0-1]); 
 break;
 case 148:
- this.$ = new ParseNode(_$[$0-4].first_line, _$[$0-4].first_column, util.literal.operation.POP, util.literal.operation.POP, null, null, null, `${$$[$0-4].traduction}.Pop()`); this.$.addChild($$[$0-4]); 
+ this.$ = new ParseNode(_$[$0-4].first_line, _$[$0-4].first_column, util.literal.operation.POP, util.literal.operation.POP, null, null, null, `${$$[$0-4].traduction}.pop()`); this.$.addChild($$[$0-4]); 
 break;
 case 149:
- this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.LENGTH, util.literal.operation.LENGTH, null, null, null, `${$$[$0-2].traduction}.Length`); this.$.addChild($$[$0-2]); 
+ this.$ = new ParseNode(_$[$0-2].first_line, _$[$0-2].first_column, util.literal.operation.LENGTH, util.literal.operation.LENGTH, null, null, null, `${$$[$0-2].traduction}.length`); this.$.addChild($$[$0-2]); 
 break;
 case 150:
  let stack = eval('$$'); this.$ = stack[stack.length - 2]; 
@@ -1332,7 +1332,7 @@ case 66:
 break;
 }
 },
-rules: [/^(?:\s+)/,/^(?:\/\/[^\n]*)/,/^(?:\/\*(\*(?!\/)|[^*])*\*\/)/,/^(?:let\b)/,/^(?:type\b)/,/^(?:const\b)/,/^(?:console\b)/,/^(?:if\b)/,/^(?:else\b)/,/^(?:switch\b)/,/^(?:case\b)/,/^(?:default\b)/,/^(?:while\b)/,/^(?:do\b)/,/^(?:graficar_ts\b)/,/^(?:for\b)/,/^(?:log\b)/,/^(?:in\b)/,/^(?:of\b)/,/^(?:break\b)/,/^(?:continue\b)/,/^(?:return\b)/,/^(?:string\b)/,/^(?:number\b)/,/^(?:Push\b)/,/^(?:Pop\b)/,/^(?:Length\b)/,/^(?:boolean\b)/,/^(?:void\b)/,/^(?:null\b)/,/^(?:function\b)/,/^(?:(true|false))/,/^(?:([a-zA-Z]|_)([a-zA-Z]|[0-9]|_)*)/,/^(?:[0-9]+\.?[0-9]*)/,/^(?:"(?:[^"\\]|\\.)*")/,/^(?:'(?:[^'\\]|\\.)*')/,/^(?:==)/,/^(?:!=)/,/^(?:<=)/,/^(?:>=)/,/^(?:\+\+)/,/^(?:--)/,/^(?:=)/,/^(?:\()/,/^(?:\))/,/^(?:\{)/,/^(?:\})/,/^(?:\[)/,/^(?:\])/,/^(?::)/,/^(?:,)/,/^(?:;)/,/^(?:\.)/,/^(?:\*\*)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:%)/,/^(?:\?)/,/^(?:<)/,/^(?:>)/,/^(?:&&)/,/^(?:\|\|)/,/^(?:!)/,/^(?:$)/,/^(?:.)/],
+rules: [/^(?:\s+)/,/^(?:\/\/[^\n]*)/,/^(?:\/\*(\*(?!\/)|[^*])*\*\/)/,/^(?:let\b)/,/^(?:type\b)/,/^(?:const\b)/,/^(?:console\b)/,/^(?:if\b)/,/^(?:else\b)/,/^(?:switch\b)/,/^(?:case\b)/,/^(?:default\b)/,/^(?:while\b)/,/^(?:do\b)/,/^(?:graficar_ts\b)/,/^(?:for\b)/,/^(?:log\b)/,/^(?:in\b)/,/^(?:of\b)/,/^(?:break\b)/,/^(?:continue\b)/,/^(?:return\b)/,/^(?:string\b)/,/^(?:number\b)/,/^(?:push\b)/,/^(?:pop\b)/,/^(?:length\b)/,/^(?:boolean\b)/,/^(?:void\b)/,/^(?:null\b)/,/^(?:function\b)/,/^(?:(true|false))/,/^(?:([a-zA-Z]|_)([a-zA-Z]|[0-9]|_)*)/,/^(?:[0-9]+\.?[0-9]*)/,/^(?:"(?:[^"\\]|\\.)*")/,/^(?:'(?:[^'\\]|\\.)*')/,/^(?:==)/,/^(?:!=)/,/^(?:<=)/,/^(?:>=)/,/^(?:\+\+)/,/^(?:--)/,/^(?:=)/,/^(?:\()/,/^(?:\))/,/^(?:\{)/,/^(?:\})/,/^(?:\[)/,/^(?:\])/,/^(?::)/,/^(?:,)/,/^(?:;)/,/^(?:\.)/,/^(?:\*\*)/,/^(?:\*)/,/^(?:\/)/,/^(?:-)/,/^(?:\+)/,/^(?:%)/,/^(?:\?)/,/^(?:<)/,/^(?:>)/,/^(?:&&)/,/^(?:\|\|)/,/^(?:!)/,/^(?:$)/,/^(?:.)/],
 conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66],"inclusive":true}}
 });
 return lexer;

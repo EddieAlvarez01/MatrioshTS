@@ -1,5 +1,7 @@
 import Error from './Error';
 import { SymbolTable } from './SymbolTable';
+import { Break } from './Break';
+import { Continue } from './Continue';
 
 export class If{
 
@@ -32,6 +34,8 @@ export class If{
                 const executeResult = instruction.execute(newSt, output, errors);
                 if(executeResult instanceof Error){
                     errors.push(executeResult);
+                }else if(executeResult instanceof Break || executeResult instanceof Continue){
+                    return executeResult;
                 }
             } 
         }else{
@@ -41,6 +45,8 @@ export class If{
                 const executeResult = instruction.execute(newSt, output, errors);
                 if(executeResult instanceof Error){
                     errors.push(executeResult);
+                }else if(executeResult instanceof Break || executeResult instanceof Continue){
+                    return executeResult;
                 }
             } 
         }

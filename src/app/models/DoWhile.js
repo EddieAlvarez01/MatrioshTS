@@ -1,5 +1,7 @@
 import Error from './Error';
 import { SymbolTable } from './SymbolTable';
+import { Continue } from './Continue';
+import { Break } from './Break';
 
 export class DoWhile{
 
@@ -26,6 +28,10 @@ export class DoWhile{
                 const executeResult = instruction.execute(newSt, output, errors);
                 if(executeResult instanceof Error){
                     errors.push(executeResult);
+                }else if(executeResult instanceof Break){
+                    return null;
+                }else if(executeResult instanceof Continue){
+                    break;
                 }
             }
             condition = this.expression.execute(st, output, errors);

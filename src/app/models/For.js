@@ -1,4 +1,6 @@
 import { Declaration } from './Declaration';
+import { Break } from './Break';
+import { Continue } from './Continue';
 import { SymbolTable } from './SymbolTable';
 import Error from './Error';
 
@@ -45,6 +47,10 @@ export class For{
                 const executeInstruction = instruction.execute(newSt, output, errors);
                 if(executeInstruction instanceof Error){
                     errors.push(executeInstruction);
+                }else if(executeInstruction instanceof Break){
+                    return null;
+                }else if(executeInstruction instanceof Continue){
+                    break;
                 }
             }
             const iteration = this.operator.execute(newSt, output, errors);

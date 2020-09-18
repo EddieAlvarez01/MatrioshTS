@@ -1,5 +1,7 @@
 import { Declaration } from './Declaration';
 import { Operation } from './Operation';
+import { Break } from './Break';
+import { Continue } from './Continue';
 import { literal } from '../utilities/util';
 import { SymbolTable } from './SymbolTable';
 import { Symbol } from './Symbol';
@@ -51,10 +53,15 @@ export class ForIn{
             newSt.symbols = [symbol];
             if(symbol.type == literal.dataTypes.ANY) symbol.type = literal.dataTypes.STRING;
             symbol.value = itSymbol;
+            newSt.SearchTypes(this.listInstructions, output, errors);
             for(let instruction of this.listInstructions){
                 const executeResult = instruction.execute(newSt, output, errors);
                 if(executeResult instanceof Error){
                     errors.push(executeResult);
+                }else if(executeResult instanceof Break){
+                    return null;
+                }else if(executeResult instanceof Continue){
+                    break;
                 }
             }
         }

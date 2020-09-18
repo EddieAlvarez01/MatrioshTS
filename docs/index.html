@@ -1,31 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.css"></link>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/theme/tomorrow-night-eighties.min.css">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <title>MatrioshTS</title>
 <link href="css/style.css" rel="stylesheet"></head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col">
+    <div class="container-fluid container-height">
+        <div class="row w-100 h-100">
+            <div class="col-6">
                 <div class="container mt-4">
                     <h1>MatrioshTS</h1>
-                    <textarea rows="15" class="w-100"></textarea>
+                    <div id="txt" class="w-100">
+                        
+                    </div>
                     <div class="row justify-content-end mt-2">
-                        <button type="button" class="btn btn-primary">Traducir</button>
-                        <button type="button" class="btn btn-primary ml-4">Ejecutar</button>
+                        <button type="button" class="btn btn-primary" id="btnTraduction">Traducir</button>
+                        <button type="button" class="btn btn-primary ml-4" id="btnExecute">Ejecutar</button>
                     </div>
                     <div>
                         <h2>Consola</h2>
+                        <div id="console">
+
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col">
-                <div class="container mt-4">
+            <div class="col-6 w-100 h-100">
+                <div class="container mt-4 w-100 h-100">
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item" role="presentation">
                             <a class="nav-link active" id="traduction-tab" data-toggle="tab" href="#traduction" role="tab" aria-controls="traduction" aria-selected="true">
@@ -38,12 +47,33 @@
                             </a>
                         </li>
                     </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="traduction" role="tabpanel" aria-labelledby="traduction-tab">
-                            CONTENT TRADUCTION
+                    <div class="tab-content w-100 h-100">
+                        <div class="tab-pane fade show active w-100" id="traduction" role="tabpanel" aria-labelledby="traduction-tab">
+                            <h5>Árbol:</h5>
+                            <div id="imgTreeTraduction" class="overflow-hidden w-100 border border-dark">
+
+                            </div>
+                            <h5>Simbolos:</h5>
+                            <div id="divSt" class="w-100 border error-div overflow-auto">
+                            </div>
+                            <h5>Errores:</h5>
+                            <div id="divError" class="w-100 error-div overflow-auto border">
+                                
+                            </div>
                         </div>
-                        <div class="tab-pane fade" id="execute" role="tabpanel" aria-labelledby="execute-tab">
-                            CONTENT EXECUTE
+                        <div class="tab-pane fade w-100" id="execute" role="tabpanel" aria-labelledby="execute-tab">
+                            <h5>Árbol:</h5>
+                            <div id="imgTreeExecute" class="overflow-hidden w-100 border border-dark">
+
+                            </div>
+                            <h5>Simbolos:</h5>
+                            <div id="divStExecute" class="w-100 border error-div overflow-auto">
+                                
+                            </div>
+                            <h5>Errores:</h5>
+                            <div id="divErrorExecute" class="w-100 error-div overflow-auto border">
+                                
+                            </div>
                         </div>
                     </div>   
                 </div>

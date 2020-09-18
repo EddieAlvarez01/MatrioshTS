@@ -64,6 +64,9 @@ for(let obj of sama){
 switch(num[1]){
     case 100:
         console.log('soy 100');
+    case 200:
+        console.log("Soy 200");
+        break;
     case 300:
         console.log('soy 300');
     default:

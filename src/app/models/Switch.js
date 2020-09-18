@@ -1,5 +1,7 @@
 import { literal } from "../utilities/util";
 import { SymbolTable } from './SymbolTable';
+import { Break } from './Break';
+import { Continue } from './Continue';
 import Error from './Error';
 
 export class Switch{
@@ -33,12 +35,18 @@ export class Switch{
         }
         const index = this.SearchMatch(mappedCases, evaluate);
         if(index === null) return null;
+        mappedCases.forEach((obj) => {
+            newSt.SearchTypes(obj.instructions, output, errors);
+        });
         for(let i = index; i < mappedCases.length; i++){
-            newSt.SearchTypes(mappedCases[i].instructions, output, errors);
             for(let instruction of mappedCases[i].instructions){
                 const resultExecute = instruction.execute(newSt, output, errors);
                 if(resultExecute instanceof Error){
                     errors.push(resultExecute);
+                }else if(resultExecute instanceof Break){
+                    return null;
+                }else if(resultExecute instanceof Continue){
+                    return resultExecute;
                 }
             }
         }

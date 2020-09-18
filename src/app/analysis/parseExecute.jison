@@ -95,9 +95,9 @@
 "return"              return 'RETURN';
 "string"              return 'TSTRING';
 "number"              return 'TNUMBER';
-"Push"                return 'PUSH';
-"Pop"                 return 'POP';
-"Length"              return 'LENGTH';
+"push"                return 'PUSH';
+"pop"                 return 'POP';
+"length"              return 'LENGTH';
 "boolean"             return 'TBOOLEAN';
 "void"                return 'TVOID';
 "null"                return 'NULL';
@@ -410,9 +410,9 @@ ARRAY
     |   LBRACKET LEXPL RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ARRAY, util.literal.operation.ARRAY, null, null, null, `[${ConcatInstructions($2)}]`); $$.childs = $2; };
 
 ARRAY_FUNCTIONS
-    :   EXP POINT PUSH LPAREN EXPL RPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PUSH, util.literal.operation.PUSH, null, null, null, `${$1.traduction}.Push(${$5.traduction})`); $$.addChild($1); $$.addChild($5); }
-    |   EXP POINT POP LPAREN RPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.POP, util.literal.operation.POP, null, null, null, `${$1.traduction}.Pop()`); $$.addChild($1); }
-    |   EXP POINT LENGTH { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.LENGTH, util.literal.operation.LENGTH, null, null, null, `${$1.traduction}.Length`); $$.addChild($1); };
+    :   EXP POINT PUSH LPAREN EXPL RPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PUSH, util.literal.operation.PUSH, null, null, null, `${$1.traduction}.push(${$5.traduction})`); $$.addChild($1); $$.addChild($5); }
+    |   EXP POINT POP LPAREN RPAREN { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.POP, util.literal.operation.POP, null, null, null, `${$1.traduction}.pop()`); $$.addChild($1); }
+    |   EXP POINT LENGTH { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.LENGTH, util.literal.operation.LENGTH, null, null, null, `${$1.traduction}.length`); $$.addChild($1); };
 
 FUNCTIONS
     :   FUNCTIONS_DEFINITIONS FUNCTION_NT2 { let stack = eval('$$'); $$ = stack[stack.length - 2]; };
