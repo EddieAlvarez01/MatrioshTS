@@ -18,7 +18,7 @@ export class Assignment{
         if(!(typeof this.id == 'string')){
             symbol = this.id.execute(st, output, errors);
         }else{
-            symbol = st.GetValue(Operation.NewOperationValue('variable', this.id, this.row, this.column));
+            symbol = st.GetValue(Operation.NewOperationValue('variable', this.id, this.row, this.column), true);
         }
         if(symbol instanceof Error) return symbol;
         if(symbol.constant) return new Error(literal.errorType.SEMANTIC, `Una constante no puede ser asignada`, this.row, this.column);
@@ -155,7 +155,7 @@ export class Assignment{
                     break;
                 case literal.dataTypes.ANY:
                     switch(expl.type){
-                        case literal.dataTypes.ARRAY_OBJECT:
+                        case literal.dataTypes.ARRAY_OBJECT || literal.dataTypes.OBJECT:
                             return this.ReportErrorTypes(symbol.type, expl.type);
                         case literal.dataTypes.NULL:
                             symbol.value = expl.value;
@@ -176,7 +176,7 @@ export class Assignment{
                         default:
                             symbol.value = expl.value;
                             symbol.type = expl.type;
-                            symbol.array = false;
+                            symbol.array = (expl.hasOwnProperty('array')) ? expl.array : false;
                     }
                     break;
                 default:

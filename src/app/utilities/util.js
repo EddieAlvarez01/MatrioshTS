@@ -79,12 +79,12 @@ export const literal = {
     },
 
     //GRAPH ERROR TABLE AND SYMBOLS   TYPE == 0 GRAPH SYMBOL TABLE      TYPE == 1 GRAPH ERRORS TABLE
-    graphTable: (list, type, element, traduction) => {
+    graphTable: (list, type, element, traduction, msg) => {
         if(type){
             graphErrors(list);
             return;
         }
-        graphSymbolTable(list, element, traduction);
+        graphSymbolTable(list, element, traduction, msg);
 
         //GRAPH THE ERROR TABLE
         function graphErrors(list){
@@ -141,12 +141,12 @@ export const literal = {
         }
 
         //GRAPH THE SYMBOL TABLE
-        function graphSymbolTable(list, element, traduction){
+        function graphSymbolTable(list, element, traduction, msg){
             if(traduction){
                 document.querySelector(element).innerHTML = '';
             }
             if(list.length > 0){
-                const table = constructSymbolTable(element, traduction);
+                const table = constructSymbolTable(element, traduction, msg);
                 const tbody = document.createElement('tbody');
                 list.forEach((symbol) => {
                     let tr = document.createElement('tr');
@@ -184,9 +184,11 @@ export const literal = {
             }
         }
 
-        function constructSymbolTable(element, traduction){
+        function constructSymbolTable(element, traduction, msg){
             const table = document.createElement('table');
             const div = document.querySelector(element);
+            const h6 = document.createElement('h6');
+            h6.innerHTML = `Ámbito: ${msg}`;
             table.classList.add('table');
             const thead = document.createElement('thead');
             thead.classList.add('thead-dark');
@@ -215,6 +217,7 @@ export const literal = {
                 th6.setAttribute('scope', 'col');
                 th6.innerHTML = 'Valor';
                 thead.appendChild(th6);
+                div.appendChild(h6);
             }
             table.appendChild(thead);
             div.appendChild(table);

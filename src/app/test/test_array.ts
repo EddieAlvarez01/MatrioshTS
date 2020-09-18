@@ -4,6 +4,8 @@ type testing = {
     numero: number
 }
 
+const sama = [1, 'sss', true];
+
 let result: testing = null;
 
 let suppResult: testing[] = [{numero: num[1] * 4}];
@@ -24,7 +26,48 @@ if(num[1] > 4){
     console.log(suppResult);
 }
 
-while(suppResult[0].numero < num[1]){
-    console.log(suppResult[0].numero);
-    suppResult[0].numero = suppResult[0].numero * 2;
+type response = {
+    message: string,
+    code: number 
+}
+
+let res: response = {
+    message: 'Successful',
+    code: 102
+};
+
+//FOR IN
+for(let index in suppResult[0]){
+    const salve = suppResult[0];
+    console.log(salve[index]);
+}
+
+let index;
+
+//FOR IN ASIGNATE
+for(index in suppResult){
+    console.log(index);
+}
+
+
+for(let index in res){
+    const salve = res[index];
+    console.log(index);
+    console.log(salve);
+}
+
+for(let obj of sama){
+    console.log(obj);
+}
+
+//SWITCH
+switch(num[1]){
+    case 100:
+        console.log('soy 100');
+    case 300:
+        console.log('soy 300');
+    default:
+        const samas = res.code;
+        graficar_ts();
+        console.log(samas);
 }

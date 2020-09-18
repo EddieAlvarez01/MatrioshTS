@@ -1,3 +1,7 @@
+import { Operation } from './Operation';
+import { literal } from '../utilities/util';
+import { Symbol } from './Symbol';
+
 export class Decrement{
 
     constructor(exp, row, column){

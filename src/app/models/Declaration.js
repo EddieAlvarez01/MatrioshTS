@@ -31,6 +31,7 @@ export class Declaration{
                     if(val.type == literal.dataTypes.ARRAY_EMPTY) return st.Set(new Symbol(this.id, literal.dataTypes.ARRAY_ANY, this.constant, this.dynamic, true, val.value, st.scope, this.row, this.column, false), 1, 0);
                     return st.Set(new Symbol(this.id, val.type, this.constant, this.dynamic, true, val.value, st.scope, this.row, this.column, false), 1, 0);
                 }else if(val.type != literal.dataTypes.OBJECT && val.type != literal.dataTypes.ARRAY_OBJECT){
+                    if(val.hasOwnProperty('array')) this.array = val.array;
                     if(val.value === null) return st.Set(new Symbol(this.id, literal.dataTypes.ANY, this.constant, this.dynamic, this.array, val.value, st.scope, this.row, this.column), 1, 0);
                     return st.Set(new Symbol(this.id, val.type, this.constant, this.dynamic, this.array, val.value, st.scope, this.row, this.column), 1, 0);
                 }

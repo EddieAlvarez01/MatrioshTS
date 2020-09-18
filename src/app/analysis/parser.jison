@@ -306,7 +306,7 @@ STATEMENT_IF
 
 BODY_IF
     :   LBRACE RBRACE { $$ = null; }
-    |   LBRACE LSENTENCES RBRACE { $$ = $2; if($$.her != undefined){ $$.traduction += `\n${$$.her}`; } $$.traduction = `{\n\t${$2.traduction}\n}`; };
+    |   LBRACE LSENTENCES RBRACE { $$ = $2; if($$.her != undefined && $$.her != ''){ $$.traduction += `\n${$$.her}`; } $$.traduction = `{\n\t${$2.traduction}\n}`; };
 
 STATEMENT_SWITCH
     :   SWITCH LPAREN EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.SWITCH, util.literal.operation.SWITCH, null, null, null, `switch(${$3.traduction}){\n}`); $$.addChild($3); }
@@ -317,48 +317,48 @@ LCASES
     |   CASES { $$ = new ParseNode(null, null, util.literal.operation.LCASES, util.literal.operation.LCASES, null, null, null, $1.traduction); $$.addChild($1); };
 
 CASES
-    :   CASE EXPL COLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CASE, util.literal.operation.CASE, null, null, null, `\tcase ${$2.traduction}:`); }
-    |   CASE EXPL COLON LSENTENCES { if($4.her != undefined){ $4.traduction += `\n${$4.her}`; }  $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CASE, util.literal.operation.CASE, null, null, null, `\tcase ${$2.traduction}:\n\t${$4.traduction}`); $$.addChild($4); }
+    :   CASE EXPL COLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CASE, util.literal.operation.CASE, null, null, null, `\tcase ${$2.traduction}:`); $$.addChild($2); }
+    |   CASE EXPL COLON LSENTENCES { if($4.her != undefined && $4.her != ''){ $4.traduction += `\n${$4.her}`; }  $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CASE, util.literal.operation.CASE, null, null, null, `\tcase ${$2.traduction}:\n\t${$4.traduction}`); $$.addChild($2); $$.addChild($4); }
     |   DEFAULT COLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFAULT, util.literal.operation.DEFAULT, null, null, null, `\tdefault:`); }
-    |   DEFAULT COLON LSENTENCES { if($3.her != undefined){ $3.traduction += `\n${$3.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFAULT, util.literal.operation.DEFAULT, null, null, null, `\tdefault:\n\t${$3.traduction}`); $$.addChild($3); };
+    |   DEFAULT COLON LSENTENCES { if($3.her != undefined && $3.her != ''){ $3.traduction += `\n${$3.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFAULT, util.literal.operation.DEFAULT, null, null, null, `\tdefault:\n\t${$3.traduction}`); $$.addChild($3); };
 
 STATEMENT_WHILE
     :   WHILE LPAREN EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.WHILE, util.literal.operation.WHILE, null, null, null, `while(${$3.traduction}){\n}`); $$.addChild($3); }
-    |   WHILE LPAREN EXPL RPAREN LBRACE LSENTENCES RBRACE { if($6.her != undefined){ $6.traduction += `\n${$6.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.WHILE, util.literal.operation.WHILE, null, null, null, `while(${$3.traduction}){\n\t${$6.traduction}\n}`); $$.addChild($3); $$.addChild($6); };
+    |   WHILE LPAREN EXPL RPAREN LBRACE LSENTENCES RBRACE { console.log($6); if($6.her != undefined && $6.her != ''){ $6.traduction += `\n${$6.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.WHILE, util.literal.operation.WHILE, null, null, null, `while(${$3.traduction}){\n\t${$6.traduction}\n}`); $$.addChild($3); $$.addChild($6); };
 
 DO_WHILE
     :   DO LBRACE RBRACE WHILE LPAREN EXPL RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DO_WHILE, util.literal.operation.DO_WHILE, null, null, null, `do{\n}while(${$6.traduction});`); $$.addChild($6); }
-    |   DO LBRACE LSENTENCES RBRACE WHILE LPAREN EXPL RPAREN SEMICOLON { if($3.her != undefined){ $3.traduction += `\n${$3.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DO_WHILE, util.literal.operation.DO_WHILE, null, null, null, `do{\n${$3.traduction}\n}while(${$7.traduction});`); $$.addChild($3); $$.addChild($7); };
+    |   DO LBRACE LSENTENCES RBRACE WHILE LPAREN EXPL RPAREN SEMICOLON { if($3.her != undefined && $3.her != ''){ $3.traduction += `\n${$3.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DO_WHILE, util.literal.operation.DO_WHILE, null, null, null, `do{\n${$3.traduction}\n}while(${$7.traduction});`); $$.addChild($3); $$.addChild($7); };
 
 STATEMENT_FOR
     :   FOR LPAREN FOR_PARAMETER1 EXPL SEMICOLON INCREMENT RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR, util.literal.operation.FOR, null, null, null, `for(${$3.traduction} ${$4.traduction}; ${$6.traduction}){\n}`); $$.addChild($3); $$.addChild($4); $$.addChild($6); }
     |   FOR LPAREN FOR_PARAMETER1 EXPL SEMICOLON DECREMENT RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR, util.literal.operation.FOR, null, null, null, `for(${$3.traduction} ${$4.traduction}; ${$6.traduction}){\n}`); $$.addChild($3); $$.addChild($4); $$.addChild($6); }
-    |   FOR LPAREN FOR_PARAMETER1 EXPL SEMICOLON INCREMENT RPAREN LBRACE LSENTENCES RBRACE { if($9.her != undefined){ $9.traduction += `\n${$9.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR, util.literal.operation.FOR, null, null, null, `for(${$3.traduction} ${$4.traduction}; ${$6.traduction}){\n${$9.traduction}\n}`); $$.addChild($3); $$.addChild($4); $$.addChild($6); $$.addChild($9); }
-    |   FOR LPAREN FOR_PARAMETER1 EXPL SEMICOLON DECREMENT RPAREN LBRACE LSENTENCES RBRACE { if($9.her != undefined){ $9.traduction += `\n${$9.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR, util.literal.operation.FOR, null, null, null, `for(${$3.traduction} ${$4.traduction}; ${$6.traduction}){\n${$9.traduction}\n}`); $$.addChild($3); $$.addChild($4); $$.addChild($6); $$.addChild($9); }; 
+    |   FOR LPAREN FOR_PARAMETER1 EXPL SEMICOLON INCREMENT RPAREN LBRACE LSENTENCES RBRACE { if($9.her != undefined && $9.her != ''){ $9.traduction += `\n${$9.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR, util.literal.operation.FOR, null, null, null, `for(${$3.traduction} ${$4.traduction}; ${$6.traduction}){\n${$9.traduction}\n}`); $$.addChild($3); $$.addChild($4); $$.addChild($6); $$.addChild($9); }
+    |   FOR LPAREN FOR_PARAMETER1 EXPL SEMICOLON DECREMENT RPAREN LBRACE LSENTENCES RBRACE { if($9.her != undefined && $9.her != ''){ $9.traduction += `\n${$9.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR, util.literal.operation.FOR, null, null, null, `for(${$3.traduction} ${$4.traduction}; ${$6.traduction}){\n${$9.traduction}\n}`); $$.addChild($3); $$.addChild($4); $$.addChild($6); $$.addChild($9); }; 
 
 FOR_PARAMETER1
     :   DECLARATION { $$ = $1; }
     |   ASSIGNMENT { $$ = $1; };
 
 FOR_IN
-    :   FOR LPAREN FOR_IN_P1 IN EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$3.traduction} in ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild($3); $$.addChild($5); $$.addChild($8); }
-    |   FOR LPAREN IDENTIFIER IN EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$3} in ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild(new ParseNode(@3.first_line, @3.first_column, util.literal.dataTypes.VARIABLE, $3)); $$.addChild($5); $$.addChild($8); }
+    :   FOR LPAREN FOR_IN_P1 IN EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined && $8.her != ''){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$3.traduction} in ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild($3); $$.addChild($5); $$.addChild($8); }
+    |   FOR LPAREN EXP IN EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined && $8.her != ''){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$3.traduction} in ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild($3); $$.addChild($5); $$.addChild($8); }
     |   FOR LPAREN FOR_IN_P1 IN EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$3.traduction} in ${$5.traduction}){\n}`); $$.addChild($3); $$.addChild($5); }
-    |   FOR LPAREN IDENTIFIER IN EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$3} in ${$5.traduction}){\n}`); $$.addChild(new ParseNode(@3.first_line, @3.first_column, util.literal.dataTypes.VARIABLE, $3)); $$.addChild($5); };
+    |   FOR LPAREN EXP IN EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$3.traduction} in ${$5.traduction}){\n}`); $$.addChild($3); $$.addChild($5); };
 
 FOR_IN_P1
     :   LET IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true, `let ${$2}`); }
-    |   LET IDENTIFIER COLON DATATYPE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true, `let ${$2}: ${$4}`); }
-    |   LET IDENTIFIER COLON DATATYPE LBRACKET RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true, `let ${$2}: ${$4}[]`); }
-    |   CONST IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true, `const ${$2}`); }
-    |   CONST IDENTIFIER COLON DATATYPE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true, `const ${$2}: ${$4}`); }
-    |   CONST IDENTIFIER COLON DATATYPE LBRACKET RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true, `const ${$2}: ${$4}[]`); };
+    |   LET IDENTIFIER COLON DATATYPE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, $4, false, false, `let ${$2}: ${$4}`); }
+    |   LET IDENTIFIER COLON DATATYPE LBRACKET RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, $4, false, false, `let ${$2}: ${$4}[]`, true); }
+    |   CONST IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, true, true, `const ${$2}`); }
+    |   CONST IDENTIFIER COLON DATATYPE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, $4, true, true, `const ${$2}: ${$4}`); }
+    |   CONST IDENTIFIER COLON DATATYPE LBRACKET RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, $4, false, true, `const ${$2}: ${$4}[]`, true); };
 
 FOR_OF
     :   FOR LPAREN FOR_IN_P1 OF EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3.traduction} of ${$5.traduction}){\n}`); $$.addChild($3); $$.addChild($5); }
-    |   FOR LPAREN IDENTIFIER OF EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3} of ${$5.traduction}){\n}`); $$.addChild(new ParseNode(@3.first_line, @3.first_column, util.literal.dataTypes.VARIABLE, $3)); $$.addChild($5); }
-    |   FOR LPAREN FOR_IN_P1 OF EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3.traduction} in ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild($3); $$.addChild($5); $$.addChild($8); }
-    |   FOR LPAREN IDENTIFIER OF EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3} in ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild(new ParseNode(@3.first_line, @3.first_column, util.literal.dataTypes.VARIABLE, $3)); $$.addChild($5); $$.addChild($8); };
+    |   FOR LPAREN EXP OF EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3.traduction} of ${$5.traduction}){\n}`); $$.addChild($3); $$.addChild($5); }
+    |   FOR LPAREN FOR_IN_P1 OF EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined && $8.her != ''){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3.traduction} of ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild($3); $$.addChild($5); $$.addChild($8); }
+    |   FOR LPAREN EXP OF EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined && $8.her != ''){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3.traduction} of ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild($3); $$.addChild($5); $$.addChild($8); };
 
 ARRAY_ACCESS
     :   IDENTIFIER LBRACKET EXPL RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ARRAY_ACCESS, $1, null, null, null, `${$1}[${$3.traduction}]`); $$.addChild($3); };
@@ -429,7 +429,7 @@ FUNCTION_NT11
             let stack16 = eval('$$'); 
             stack16[stack16.length - 8].traduction = `${stack16[stack16.length - 8].traduction}${stack16[stack16.length - 7].childs[0].traduction}): ${stack16[stack16.length - 4]}{\n${$1.traduction}\n}`; 
             stack16[stack16.length - 8].type =  stack16[stack16.length - 4];
-            if($1.her != undefined){
+            if($1.her != undefined && $1.her != ''){
                 stack16[stack16.length - 8].traduction += `\n${$1.her}`;
             }
             her.pop(); 
@@ -443,7 +443,7 @@ FUNCTION_NT12
             let stack19 = eval('$$');
             stack19[stack19.length - 10].traduction = `${stack19[stack19.length - 10].traduction}${stack19[stack19.length - 9].childs[0].traduction}): ${stack19[stack19.length - 6]}[]{\n${$1.traduction}\n}`; 
             stack19[stack19.length - 10].type = stack19[stack19.length - 6];
-            if($1.her != undefined){
+            if($1.her != undefined && $1.her != ''){
                 stack19[stack19.length - 10].traduction += `\n${$1.her}`;
             }
             her.pop(); 
@@ -457,7 +457,7 @@ FUNCTION_NT9
             let stack17 = eval('$$');
             stack17[stack17.length - 6].traduction = `${stack17[stack17.length - 6].traduction}${stack17[stack17.length - 5].childs[0].traduction}){\n${$1.traduction}\n}`;
             stack17[stack17.length - 6].type = util.literal.dataTypes.ANY;
-            if($1.her != undefined){
+            if($1.her != undefined && $1.her != ''){
                 stack17[stack17.length - 6].traduction += `\n${$1.her}`;
             }
             her.pop();
@@ -474,7 +474,7 @@ FUNCTION_NT4
     |   LSENTENCES RBRACE { 
             let stack3 = eval('$$');
             stack3[stack3.length - 5].traduction = `${stack3[stack3.length - 5].traduction}){\n${$1.traduction}\n}`;
-            if($1.her != undefined){
+            if($1.her != undefined && $1.her != ''){
                 stack3[stack3.length - 5].traduction += `\n${$1.her}`;
             }
             her.pop();
@@ -491,7 +491,7 @@ FUNCTION_NT6
     |   LSENTENCES RBRACE { 
             let stack7 = eval('$$'); 
             stack7[stack7.length - 7].traduction = `${stack7[stack7.length - 7].traduction}): ${stack7[stack7.length - 4]}{\n${$1.traduction}\n}`; 
-            if($1.her != undefined){
+            if($1.her != undefined && $1.her != ''){
                 stack7[stack7.length - 7].traduction += `\n${$1.her}`;
             }
             her.pop();
@@ -505,7 +505,7 @@ FUNCTION_NT8
     |   LSENTENCES RBRACE { 
             let stack9 = eval('$$'); 
             stack9[stack9.length - 9].traduction = `${stack9[stack9.length - 9].traduction}): ${stack9[stack9.length - 6]}[]{\n${$1.traduction}\n}`;
-            if($1.her != undefined){
+            if($1.her != undefined && $1.her != ''){
                 stack9[stack9.length - 9].traduction += `\n${$1.her}`;
             }
             her.pop(); 

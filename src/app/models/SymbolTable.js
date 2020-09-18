@@ -45,11 +45,11 @@ export class SymbolTable{
         return true;
     }
 
-    //bring value of a variable
-    GetValue(operation){
+    //bring value of a variable --- flag = true -> for assignment
+    GetValue(operation, flag){
         const symbol = this.SearchId(operation.value, operation.row, operation.column, 1);
         if(symbol instanceof Error) return symbol;
-        if(symbol.value === undefined) return new Error(literal.errorType.SEMANTIC, `La variable aun no ha sido declarada con ningún valor`, operation.row, operation.column);
+        if(symbol.value === undefined && !flag) return new Error(literal.errorType.SEMANTIC, `La variable '${symbol.id}' aun no ha sido declarada con ningún valor`, operation.row, operation.column);
         return symbol;
     }
 

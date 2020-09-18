@@ -142,20 +142,22 @@ function RecognizeInstruction(node){
                 });
             }
             return new Switch(RecognizeOperation(node.childs[0]), casesList, node.row, node.column);
-        case literal.operation.CASE || literal.operation.DEFAULT:
+        case literal.operation.CASE:
             const instructionsList = [];
             if(node.childs.length > 1){
                 node.childs[1].childs.forEach((node) => {
                     instructionsList.push(RecognizeInstruction(node));
                 });
             }
-            if(node.childs[0].operation == literal.operation.SENTENCES){
-                node.childs[0].childs.forEach((node) => {
-                    instructionsList.push(RecognizeInstruction(node));
-                });
-                return new Case(null, instructionsList, node.row, node.column);
-            }
             return new Case(RecognizeOperation(node.childs[0]), instructionsList, node.row, node.column);
+        case literal.operation.DEFAULT:
+            const instructionsListDefault = [];
+            if(node.childs){
+                node.childs[0].childs.forEach((node) => {
+                    instructionsListDefault.push(RecognizeInstruction(node));
+                });
+            }
+            return new Case(null, instructionsListDefault, node.row, node.column);
         case literal.operation.WHILE:
             let instructions = [];
             if(node.childs.length > 1){
@@ -192,10 +194,10 @@ function RecognizeInstruction(node){
                     listInstructionsForIn.push(RecognizeInstruction(node));
                 });
             }
-            if(node.childs[0].operation == literal.dataTypes.VARIABLE){
-                return new ForIn(RecognizeOperation(node.childs[0]), RecognizeOperation(node.childs[1]), listInstructionsForIn, node.row, node.column);
+            if(node.childs[0].operation == literal.operation.DECLARATION){
+                return new ForIn(RecognizeInstruction(node.childs[0]), RecognizeOperation(node.childs[1]), listInstructionsForIn, node.row, node.column);
             }
-            return new ForIn(RecognizeInstruction(node.childs[0]), RecognizeOperation(node.childs[1]), listInstructionsForIn, node.row, node.column);
+            return new ForIn(RecognizeOperation(node.childs[0]), RecognizeOperation(node.childs[1]), listInstructionsForIn, node.row, node.column);
         case literal.operation.FOR_OF:
             const listInstructionsForOf = [];
             if(node.childs.length > 2){
@@ -203,10 +205,10 @@ function RecognizeInstruction(node){
                     listInstructionsForOf.push(RecognizeInstruction(node));
                 });
             }
-            if(node.childs[0].operation == literal.dataTypes.VARIABLE){
-                return new ForOf(RecognizeOperation(node.childs[0]), RecognizeOperation(node.childs[1]), listInstructionsForOf, node.row, node.column);
+            if(node.childs[0].operation == literal.operation.DECLARATION){
+                return new ForOf(RecognizeInstruction(node.childs[0]), RecognizeOperation(node.childs[1]), listInstructionsForOf, node.row, node.column);
             }
-            return new ForOf(RecognizeInstruction(node.childs[0]), RecognizeOperation(node.childs[1]), listInstructionsForOf, node.row, node.column);
+            return new ForOf(RecognizeOperation(node.childs[0]), RecognizeOperation(node.childs[1]), listInstructionsForOf, node.row, node.column);
         case literal.operation.FUNCTION_CALL:
             return RecognizeOperation(node);
         case literal.operation.PRINT:

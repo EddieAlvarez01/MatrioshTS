@@ -39,7 +39,7 @@ function ExecuteTxt(){
             const data = establishHierarchy(root, {});
             graphTree(data, '#imgTreeExecute');
             const symbolTable = ExecuteCode(MappingInstructions(root), root.errors);
-            literal.graphTable(symbolTable.symbols, 0, '#divStExecute', 0);
+            literal.graphTable(symbolTable.symbols, 0, '#divStExecute', 0, 'Global');
             literal.graphTable(root.errors, 1, '#divErrorExecute', 0);
         }else{
             literal.graphTable(root.errors, 1, '#divErrorExecute', 0);

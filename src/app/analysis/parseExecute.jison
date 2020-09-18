@@ -326,8 +326,8 @@ LCASES
     |   CASES { $$ = new ParseNode(null, null, util.literal.operation.LCASES, util.literal.operation.LCASES, null, null, null, $1.traduction); $$.addChild($1); };
 
 CASES
-    :   CASE EXPL COLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CASE, util.literal.operation.CASE, null, null, null, `\tcase ${$2.traduction}:`); }
-    |   CASE EXPL COLON LSENTENCES { if($4.her != undefined){ $4.traduction += `\n${$4.her}`; }  $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CASE, util.literal.operation.CASE, null, null, null, `\tcase ${$2.traduction}:\n\t${$4.traduction}`); $$.addChild($4); }
+    :   CASE EXPL COLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CASE, util.literal.operation.CASE, null, null, null, `\tcase ${$2.traduction}:`); $$.addChild($2); }
+    |   CASE EXPL COLON LSENTENCES { if($4.her != undefined){ $4.traduction += `\n${$4.her}`; }  $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.CASE, util.literal.operation.CASE, null, null, null, `\tcase ${$2.traduction}:\n\t${$4.traduction}`); $$.addChild($2); $$.addChild($4); }
     |   DEFAULT COLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFAULT, util.literal.operation.DEFAULT, null, null, null, `\tdefault:`); }
     |   DEFAULT COLON LSENTENCES { if($3.her != undefined){ $3.traduction += `\n${$3.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DEFAULT, util.literal.operation.DEFAULT, null, null, null, `\tdefault:\n\t${$3.traduction}`); $$.addChild($3); };
 
@@ -351,23 +351,23 @@ FOR_PARAMETER1
 
 FOR_IN
     :   FOR LPAREN FOR_IN_P1 IN EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$3.traduction} in ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild($3); $$.addChild($5); $$.addChild($8); }
-    |   FOR LPAREN IDENTIFIER IN EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$3} in ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild(new ParseNode(@3.first_line, @3.first_column, util.literal.dataTypes.VARIABLE, $3)); $$.addChild($5); $$.addChild($8); }
+    |   FOR LPAREN EXP IN EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$3.traduction} in ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild($3); $$.addChild($5); $$.addChild($8); }
     |   FOR LPAREN FOR_IN_P1 IN EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$3.traduction} in ${$5.traduction}){\n}`); $$.addChild($3); $$.addChild($5); }
-    |   FOR LPAREN IDENTIFIER IN EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$3} in ${$5.traduction}){\n}`); $$.addChild(new ParseNode(@3.first_line, @3.first_column, util.literal.dataTypes.VARIABLE, $3)); $$.addChild($5); };
+    |   FOR LPAREN EXP IN EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_IN, util.literal.operation.FOR_IN, null, null, null, `for(${$3.traduction} in ${$5.traduction}){\n}`); $$.addChild($3); $$.addChild($5); };
 
 FOR_IN_P1
     :   LET IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true, `let ${$2}`); }
-    |   LET IDENTIFIER COLON DATATYPE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true, `let ${$2}: ${$4}`); }
-    |   LET IDENTIFIER COLON DATATYPE LBRACKET RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true, `let ${$2}: ${$4}[]`); }
-    |   CONST IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true, `const ${$2}`); }
-    |   CONST IDENTIFIER COLON DATATYPE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true, `const ${$2}: ${$4}`); }
-    |   CONST IDENTIFIER COLON DATATYPE LBRACKET RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, false, true, `const ${$2}: ${$4}[]`); };
+    |   LET IDENTIFIER COLON DATATYPE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, $4, false, false, `let ${$2}: ${$4}`); }
+    |   LET IDENTIFIER COLON DATATYPE LBRACKET RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, $4, false, false, `let ${$2}: ${$4}[]`, true); }
+    |   CONST IDENTIFIER { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, util.literal.dataTypes.ANY, true, false, `const ${$2}`); }
+    |   CONST IDENTIFIER COLON DATATYPE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, $4, true, false, `const ${$2}: ${$4}`); }
+    |   CONST IDENTIFIER COLON DATATYPE LBRACKET RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DECLARATION, $2, $4, true, false, `const ${$2}: ${$4}[]`, true); };
 
 FOR_OF
     :   FOR LPAREN FOR_IN_P1 OF EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3.traduction} of ${$5.traduction}){\n}`); $$.addChild($3); $$.addChild($5); }
-    |   FOR LPAREN IDENTIFIER OF EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3} of ${$5.traduction}){\n}`); $$.addChild(new ParseNode(@3.first_line, @3.first_column, util.literal.dataTypes.VARIABLE, $3)); $$.addChild($5); }
+    |   FOR LPAREN EXP OF EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3.traduction} of ${$5.traduction}){\n}`); $$.addChild($3); $$.addChild($5); }
     |   FOR LPAREN FOR_IN_P1 OF EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3.traduction} in ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild($3); $$.addChild($5); $$.addChild($8); }
-    |   FOR LPAREN IDENTIFIER OF EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3} in ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild(new ParseNode(@3.first_line, @3.first_column, util.literal.dataTypes.VARIABLE, $3)); $$.addChild($5); $$.addChild($8); };
+    |   FOR LPAREN EXP OF EXPL RPAREN LBRACE LSENTENCES RBRACE { if($8.her != undefined){ $8.traduction += `\n${$8.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.FOR_OF, util.literal.operation.FOR_OF, null, null, null, `for(${$3.traduction} in ${$5.traduction}){\n${$8.traduction}\n}`); $$.addChild($3); $$.addChild($5); $$.addChild($8); };
 
 ARRAY_ACCESS
     :   IDENTIFIER LBRACKET EXPL RBRACKET { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.ARRAY_ACCESS, $1, null, null, null, `${$1}[${$3.traduction}]`); $$.addChild($3); };
