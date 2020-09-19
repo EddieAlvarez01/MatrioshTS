@@ -219,7 +219,7 @@ function RecognizeInstruction(node){
         case literal.operation.GRAPH_TS:
             return new GraphTs(node.row, node.column);
         case literal.operation.BREAK:
-            return new Break(node.row, node.colum);
+            return new Break(node.row, node.column);
         case literal.operation.CONTINUE:
             return new Continue(node.row, node.column);
         case literal.operation.RETURN:
