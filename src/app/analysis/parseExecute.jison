@@ -189,7 +189,7 @@ SENTENCE
     |   STATEMENT_RETURN { $$ = $1; }
     |   ARRAY_FUNCTIONS SEMICOLON { $$.traduction += ';'; $$ = $1; }
     |   FUNCTIONS { if(her.length > 0){ errors.push(new ErrorClass(util.literal.errorType.FATAL, 'Función anidada', $1.row, $1.column)); }else{ $$ = $1; } }
-    |   error { if(yytext != ';'){ errors.push(new ErrorClass(util.literal.errorType.SYNTACTIC, `Error de sintaxis '${yytext}'`, this._$.first_line, this._$.first_column)); } $$ = null; };
+    |   error { $$ = null; errors.push(new ErrorClass(util.literal.errorType.SYNTACTIC, `Error de sintaxis '${yytext}'`, this._$.first_line, this._$.first_column)); };
 
 DECLARATION
     :   VARLET { $$ = $1; }

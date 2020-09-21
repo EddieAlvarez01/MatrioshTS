@@ -1,6 +1,7 @@
 import Error from './Error';
 import { literal } from '../utilities/util';
 import { TypeDeclaration } from './TypeDeclaration';
+import { Function } from './Function';
 
 export class SymbolTable{
 
@@ -87,6 +88,8 @@ export class SymbolTable{
                 return new Error(literal.errorType.SEMANTIC, `La variable '${id}' no se ha declarado`, row, column);
             case 2:
                 return new Error(literal.errorType.SEMANTIC, `El type '${id}' no se ha declarado`, row, column);
+            case 3:
+                return new Error(literal.errorType.SEMANTIC, `La funcion '${id}' no se ha declarado`, row, column);
         }
     }
 
@@ -101,6 +104,7 @@ export class SymbolTable{
             case literal.dataTypes.ARRAY_STRING:
             case literal.dataTypes.ARRAY_NUMBER:
             case literal.dataTypes.ARRAY_BOOLEAN:
+            case literal.dataTypes.VOID:
                 return false;
         }
         return true;
@@ -108,14 +112,46 @@ export class SymbolTable{
 
     //SEARCH TYPES
     SearchTypes(instructionList, output, errors){
-        for(let index in instructionList){
-            if(instructionList[index] instanceof TypeDeclaration){
-                const result = instructionList[index].execute(this, output, errors);
+        let noTypes = 0;
+        for(let instruction of instructionList){
+            if(instruction instanceof TypeDeclaration){
+                const result = instruction.execute(this, output, errors);
                 if(result instanceof Error){
                     errors.push(result);
                 }
-                instructionList.splice(index, 1);
+                noTypes++;
             }
+        }
+        this.RemoveFound(instructionList, noTypes, 1);
+    }
+
+    //SEARCH FUNCTIONS
+    SearchFunctions(instructionList, output, errors){
+        let noFunctions = 0;
+        for(let instruction of instructionList){
+            if(instruction instanceof Function){
+                const result = instruction.execute(this, output, errors);
+                if(result instanceof Error){
+                    errors.push(result);
+                }
+                noFunctions++;
+            }
+        }
+        this.RemoveFound(instructionList, noFunctions, 2);
+    }
+
+    //DELETE EXECUTE TYPES AND FUNCTIONS
+    //option = 1, TYPES
+    //option = 2, Functions
+    RemoveFound(instructionList, count, option){
+        for(let i = 0; i < count; i++){
+            let index;
+            if(option == 1){
+                index = instructionList.findIndex((element) => element instanceof TypeDeclaration);
+            }else{
+                index = instructionList.findIndex((element) => element instanceof Function);
+            }
+            instructionList.splice(index, 1);
         }
     }
 

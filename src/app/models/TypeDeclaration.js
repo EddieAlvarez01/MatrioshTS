@@ -1,5 +1,6 @@
 import { literal } from '../utilities/util';
 import { Symbol } from './Symbol';
+import Error from './Error';
 
 export class TypeDeclaration{
 
@@ -29,9 +30,20 @@ export class TypeDeclaration{
                     case literal.dataTypes.BOOLEAN:
                         node.type = literal.dataTypes.ARRAY_BOOLEAN;
                         break;
+                    default:
+                        if(!st.CheckType(node)) return new Error(literal.errorType.SEMANTIC, `No se puede declarar un tipo 'void[]'`, this.row, this.column);
+                        if(node.type != this.id){
+                            const resultType = st.GetType(node.type, node.row, node.column);
+                            if(resultType instanceof Error) return resultType; 
+                        }
                 } 
+            }else{
+                if(st.CheckType(node) && node.type != this.id){
+                    const resultType = st.GetType(node.type, node.row, node.column);
+                    if(resultType instanceof Error) return resultType; 
+                }
             }
-            const result = symbol.SetProperty(new Symbol(node.value, node.type, node.constant, node.dynamic, node.array, null, st.scope, node.row, node.column, false));
+            const result = symbol.SetProperty(new Symbol(node.value, node.type, node.constant, node.dynamic, node.array, null, st.scope, node.row, node.column, false), 1);
             if(result instanceof Error) return result;
         }
         return st.Set(symbol, 1, 1);

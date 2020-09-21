@@ -157,7 +157,7 @@ export const literal = {
                     let td5 = document.createElement('td');
                     td1.innerHTML = symbol.id;
                     tr.appendChild(td1);
-                    td2.innerHTML = (symbol.isType) ? 'Type' : symbol.type;
+                    td2.innerHTML = (symbol.isType) ? 'Type' : (symbol.isFunction) ? `${symbol.type} (Function)` : symbol.type;
                     tr.appendChild(td2);
                     td3.innerHTML = symbol.scope;
                     tr.appendChild(td3);
@@ -167,7 +167,7 @@ export const literal = {
                     tr.appendChild(td5);
                     if(!traduction){
                         let td6 = document.createElement('td');
-                        if(!symbol.isType){
+                        if(!symbol.isType && !symbol.isFunction){
                             if(Array.isArray(symbol.value)){
                                 td6.innerHTML = ParseArray(symbol.value.slice());
                             }else if(typeof symbol.value == 'object' && symbol.value != null){

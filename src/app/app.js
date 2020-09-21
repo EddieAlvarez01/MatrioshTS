@@ -73,6 +73,7 @@ export function ExecuteCode(instuctionList, errors){
     const globalSt = new SymbolTable('Global');
     const output = [];
     globalSt.SearchTypes(instuctionList, output, errors);
+    globalSt.SearchFunctions(instuctionList, output, errors);
     for(let instruction of instuctionList){
         const executeResult = instruction.execute(globalSt, output, errors);
         if(executeResult instanceof Error){

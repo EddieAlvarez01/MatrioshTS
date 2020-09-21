@@ -108,7 +108,7 @@ case 23:
  if(her.length > 0){ errors.push(new ErrorClass(util.literal.errorType.FATAL, 'Función anidada', $$[$0].row, $$[$0].column)); }else{ this.$ = $$[$0]; } 
 break;
 case 24:
- if(yytext != ';'){ errors.push(new ErrorClass(util.literal.errorType.SYNTACTIC, `Error de sintaxis '${yytext}'`, this._$.first_line, this._$.first_column)); } this.$ = null; 
+ this.$ = null; errors.push(new ErrorClass(util.literal.errorType.SYNTACTIC, `Error de sintaxis '${yytext}'`, this._$.first_line, this._$.first_column)); 
 break;
 case 27:
  

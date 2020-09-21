@@ -23,8 +23,15 @@ export class Symbol{
     }
 
     //SET TYPE PROPERTY
-    SetProperty(node) {
-        if(!this.SearchProperty(node.id)) return new Error(literal.errorType.SEMANTIC, `EL id '${node.id}' esta duplicado en el type`, node.row, node.column);
+    SetProperty(node, msg) {
+        if(!this.SearchProperty(node.id)){
+            switch(msg){
+                case 1:
+                    return new Error(literal.errorType.SEMANTIC, `EL id '${node.id}' esta duplicado en el type`, node.row, node.column);
+                default:
+                    return new Error(literal.errorType.SEMANTIC, `EL id '${node.id}' esta duplicado en la función`, node.row, node.column);
+            }
+        }
         this.propertys.set(node.id, node);
         return null;
     }

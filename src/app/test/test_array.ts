@@ -74,3 +74,8 @@ switch(num[1]){
         graficar_ts();
         console.log(samas);
 }
+
+type rocko = {
+    gg: number;
+    de: surfeut
+}
