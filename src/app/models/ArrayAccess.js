@@ -18,7 +18,12 @@ export class ArrayAccess{
         if(symbol.array){
             if(symbol.value == null) return new Error(literal.errorType.SEMANTIC, `No se puede acceder a un valor nulo`, this.row, this.column);
             if(!(exp.type == literal.dataTypes.STRING || exp.type == literal.dataTypes.NUMBER)) return new Error(literal.errorType.SEMANTIC, `No se puede acceder a un array con un tipo '${exp.type}'`, this.row, this.column);
-            const value = symbol.value[exp.value];
+            let value;
+            if(exp.type == literal.dataTypes.NUMBER){
+                value = symbol.value[Math.round(exp.value)];
+            }else{
+                value = symbol.value[exp.value];
+            }
             if(value === undefined) return new Error(literal.errorType.SEMANTIC, `El indice '${exp.value}' de el array no es correcto`, this.row, this.column);
             return value;
         }else if(st.CheckType(symbol)){

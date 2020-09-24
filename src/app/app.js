@@ -213,8 +213,12 @@ function RecognizeInstruction(node){
         case literal.operation.FUNCTION_CALL:
             return RecognizeOperation(node);
         case literal.operation.PRINT:
+            const listExpressions = [];
             if(node.childs.length){
-                return new Print(RecognizeOperation(node.childs[0]), node.row, node.column);
+                node.childs.forEach((node) => {
+                    listExpressions.push(RecognizeOperation(node));
+                });
+                return new Print(listExpressions, node.row, node.column);
             }
             return new Print(null, node.row, node.column);
         case literal.operation.GRAPH_TS:

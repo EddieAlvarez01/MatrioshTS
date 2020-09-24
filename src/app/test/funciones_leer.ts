@@ -1,22 +1,17 @@
 const numero: number = 45;
 let huy = 'aaa';
 
-function hola(number1: number, alo){
-    const op = 'saber';
-    return op + number1;
-}
+fibonacci(2);
 
-function resta(a, b): number{
-    return a - b;
-} 
-
-function asuma(){
-    const taite = parameter(12);
-    function parameter(vals: number){
-        function legoB(){
-            parameter(resta(1, 3));
-        }
-        return 4 * 5 / vals;
+function fibonacci(n: number): number{
+    if(n > 1){
+        return fibonacci(n-1) + fibonacci(n - 2);
+    }else if(n == 1){
+        return 1;
+    }else if(n == 0){
+        return 0;
+    }else{
+        console.log('Debes ingresar un tamaño mayor o igual a 1');
+        return -1;
     }
-    const lumer = 45;
 }

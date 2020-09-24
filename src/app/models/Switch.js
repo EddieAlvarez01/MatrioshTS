@@ -2,6 +2,7 @@ import { literal } from "../utilities/util";
 import { SymbolTable } from './SymbolTable';
 import { Break } from './Break';
 import { Continue } from './Continue';
+import { Return } from './Return';
 import Error from './Error';
 
 export class Switch{
@@ -46,6 +47,8 @@ export class Switch{
                 }else if(resultExecute instanceof Break){
                     return null;
                 }else if(resultExecute instanceof Continue){
+                    return resultExecute;
+                }else if(resultExecute instanceof Return){
                     return resultExecute;
                 }
             }

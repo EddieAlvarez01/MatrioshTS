@@ -2,6 +2,7 @@ import Error from './Error';
 import { SymbolTable } from './SymbolTable';
 import { Break } from './Break';
 import { Continue } from './Continue';
+import { Return } from './Return';
 
 export class If{
 
@@ -36,6 +37,8 @@ export class If{
                     errors.push(executeResult);
                 }else if(executeResult instanceof Break || executeResult instanceof Continue){
                     return executeResult;
+                }else if(executeResult instanceof Return){
+                    return executeResult;
                 }
             } 
         }else{
@@ -46,6 +49,8 @@ export class If{
                 if(executeResult instanceof Error){
                     errors.push(executeResult);
                 }else if(executeResult instanceof Break || executeResult instanceof Continue){
+                    return executeResult;
+                }else if(executeResult instanceof Return){
                     return executeResult;
                 }
             } 

@@ -163,6 +163,7 @@ SENTENCE
     :   DECLARATION { $$ = $1; }
     |   ASSIGNMENT { $$ = $1; }
     |   TYPE_DECLARATION { $$ = $1; }
+    |   TYPE_DECLARATION SEMICOLON { $1.traduction += ';'; $$ = $1; }
     |   STATEMENT_IF { $$ = $1; }
     |   STATEMENT_SWITCH { $$ = $1; }
     |   STATEMENT_WHILE { $$ = $1; }
@@ -324,7 +325,7 @@ CASES
 
 STATEMENT_WHILE
     :   WHILE LPAREN EXPL RPAREN LBRACE RBRACE { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.WHILE, util.literal.operation.WHILE, null, null, null, `while(${$3.traduction}){\n}`); $$.addChild($3); }
-    |   WHILE LPAREN EXPL RPAREN LBRACE LSENTENCES RBRACE { console.log($6); if($6.her != undefined && $6.her != ''){ $6.traduction += `\n${$6.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.WHILE, util.literal.operation.WHILE, null, null, null, `while(${$3.traduction}){\n\t${$6.traduction}\n}`); $$.addChild($3); $$.addChild($6); };
+    |   WHILE LPAREN EXPL RPAREN LBRACE LSENTENCES RBRACE { if($6.her != undefined && $6.her != ''){ $6.traduction += `\n${$6.her}`; } $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.WHILE, util.literal.operation.WHILE, null, null, null, `while(${$3.traduction}){\n\t${$6.traduction}\n}`); $$.addChild($3); $$.addChild($6); };
 
 DO_WHILE
     :   DO LBRACE RBRACE WHILE LPAREN EXPL RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.DO_WHILE, util.literal.operation.DO_WHILE, null, null, null, `do{\n}while(${$6.traduction});`); $$.addChild($6); }
@@ -372,7 +373,7 @@ PROPERTY_ACCESS
     |   EXP POINT EXP { $$ = new ParseNode(@2.first_line, @2.first_column, util.literal.operation.PROPERTY_ACCESS, util.literal.operation.PROPERTY_ACCESS, null, null, null, `${$1.traduction}.${$3.traduction}`); $$.addChild($1); $$.addChild($3); };
 
 PRINT
-    :   CONSOLE POINT LOG LPAREN EXPL RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PRINT, util.literal.operation.PRINT, null, null, null, `console.log(${$5.traduction});`); $$.addChild($5); }
+    :   CONSOLE POINT LOG LPAREN LEXPL RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PRINT, util.literal.operation.PRINT, null, null, null, `console.log(${ConcatInstructions($5)});`); $$.childs = $5; }
     |   CONSOLE POINT LOG LPAREN RPAREN SEMICOLON { $$ = new ParseNode(@1.first_line, @1.first_column, util.literal.operation.PRINT, util.literal.operation.PRINT, null, null, null, `console.log();`); };
 
 GRAPH_TS

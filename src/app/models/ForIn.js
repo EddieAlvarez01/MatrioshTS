@@ -5,6 +5,7 @@ import { Continue } from './Continue';
 import { literal } from '../utilities/util';
 import { SymbolTable } from './SymbolTable';
 import { Symbol } from './Symbol';
+import { Return } from './Return';
 import Error from './Error';
 
 
@@ -62,6 +63,8 @@ export class ForIn{
                     return null;
                 }else if(executeResult instanceof Continue){
                     break;
+                }else if(executeResult instanceof Return){
+                    return executeResult;
                 }
             }
         }

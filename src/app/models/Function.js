@@ -51,7 +51,7 @@ export class Function{
                     if(checkType instanceof Error) return checkType;
                 }
             }
-            const result = newSymbol.SetProperty(new Symbol(node.value, node.type, node.constant, node.dynamic, node.array, null, st.scope, node.row, node.column, false, false), 2);
+            const result = newSymbol.SetPropertyFunction(new Symbol(node.value, node.type, node.constant, node.dynamic, node.array, null, st.scope, node.row, node.column, false, false));
             if(result instanceof Error) return result;
         }
         return st.Set(newSymbol, 1, 2);

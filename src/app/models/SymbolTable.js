@@ -67,6 +67,23 @@ export class SymbolTable{
         return this.SearchId(id, row, column, 2);
     }
 
+    //GET FUNCTION
+    GetFunction(id, row, column){
+        return this.SearchId(id, row, column, 3);
+    }
+
+    SearchScope(id){
+        for(let symbol of this.symbols){
+            if(symbol.id == id){
+                if(!symbol.isType) return this;
+            }
+        }
+        if(this.next != null){
+            return this.next.SearchScope(id);
+        }
+        return null;
+    }
+
     //SEARCH SCOPE --- OP = 1 --- SEARCH A VARIABLE, OP = 2, SEARCH A TYPE --- OP = 3, SEARCH A FUNCTION 
     SearchId(id, row, column, op){
         for(let symbol of this.symbols){
@@ -219,13 +236,13 @@ export class SymbolTable{
                         }
                     }else{
                         if(sProperty.type == literal.dataTypes.OBJECT){
-                            const searchType = this.GetType(symbol.type, this.row, this.column);
+                            const searchType = this.GetType(symbol.type, symbol.row, symbol.column);
                             if(searchType instanceof Error) return searchType;
                             const validate = this.CheckDataType(searchType, sProperty);
                             if(validate instanceof Error) return validate;
                             sProperty.type = searchType.id; 
                         }else if(sProperty.type == literal.dataTypes.NULL){
-                            const searchType = this.GetType(symbol.type, this.row, this.column);
+                            const searchType = this.GetType(symbol.type, symbol.row, symbol.column);
                             if(searchType instanceof Error) return searchType;
                             sProperty.type = symbol.type;
                             sProperty.dynamic = false;
@@ -281,6 +298,14 @@ export class SymbolTable{
                 return true;
         }
         return false;
+    }
+
+    CheckFunctionScope(row, column){
+        if(this.scope.includes('Function')) return true;
+        if(this.next != null){
+            return this.next.CheckFunctionScope(row, column);
+        }
+        return new Error(literal.errorType.SEMANTIC, `No se puede utilizar un return en este ámbito`, row, column);
     }
     
 }

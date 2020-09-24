@@ -2,6 +2,7 @@ import Error from './Error';
 import { SymbolTable } from './SymbolTable';
 import { Break } from './Break';
 import { Continue } from './Continue';
+import { Return } from './Return';
 
 export class While{
 
@@ -35,6 +36,8 @@ export class While{
                     return null;
                 }else if(resultInstruction instanceof Continue){
                     break;
+                }else if(resultInstruction instanceof Return){
+                    return resultInstruction;
                 }
             }
         }while(true);

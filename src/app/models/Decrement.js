@@ -10,7 +10,7 @@ export class Decrement{
         this.column = column;
     }
 
-    tradution(st, scope){}
+    traduction(st, scope){}
 
     execute(st, output, errors){
         if(this.exp instanceof Operation && (this.exp.type == literal.dataTypes.VARIABLE || this.exp.type == literal.operation.PROPERTY_ACCESS || this.exp.type == literal.operation.ARRAY_ACCESS)){

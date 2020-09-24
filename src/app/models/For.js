@@ -2,6 +2,7 @@ import { Declaration } from './Declaration';
 import { Break } from './Break';
 import { Continue } from './Continue';
 import { SymbolTable } from './SymbolTable';
+import { Return } from './Return';
 import Error from './Error';
 
 export class For{
@@ -51,6 +52,8 @@ export class For{
                     return null;
                 }else if(executeInstruction instanceof Continue){
                     break;
+                }else if(executeInstruction instanceof Return){
+                    return executeInstruction;
                 }
             }
             const iteration = this.operator.execute(newSt, output, errors);

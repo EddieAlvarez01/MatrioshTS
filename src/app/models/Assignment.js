@@ -193,7 +193,11 @@ export class Assignment{
                             symbol.value = expl.value;
                             break;
                         default:
-                            return this.ReportErrorTypes(symbol.type, expl.type);
+                            if(symbol.type == expl.type){
+                                symbol.value = expl.value;
+                            }else{
+                                return this.ReportErrorTypes(symbol.type, expl.type);
+                            }
                     }
             }
         }

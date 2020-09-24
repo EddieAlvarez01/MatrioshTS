@@ -2,6 +2,7 @@ import Error from './Error';
 import { SymbolTable } from './SymbolTable';
 import { Continue } from './Continue';
 import { Break } from './Break';
+import { Return } from './Return';
 
 export class DoWhile{
 
@@ -32,6 +33,8 @@ export class DoWhile{
                     return null;
                 }else if(executeResult instanceof Continue){
                     break;
+                }else if(executeResult instanceof Return){
+                    return executeResult;
                 }
             }
             condition = this.expression.execute(st, output, errors);

@@ -3,8 +3,8 @@ import { literal } from '../utilities/util';
 
 export class Print{
 
-    constructor(expression, row, column){
-        this.expression = expression;
+    constructor(listExpressions, row, column){
+        this.listExpressions = listExpressions;
         this.row = row;
         this.column = column;
     }
@@ -12,16 +12,20 @@ export class Print{
     traduction(st, scope){}
 
     execute(st, output, errors){
-        if(this.expression != null){
-            const value = this.expression.execute(st, output, errors);
-            if(value instanceof Error) return value;
-            if(Array.isArray(value.value)){
-                output.push(this.ParseArray(value.value.slice()));
-            }else if((value.type == literal.dataTypes.OBJECT || st.CheckType(value)) && value.value != null){
-                output.push(this.ParseType(value.value));
-            }else{
-                output.push(value.value);
-            }
+        if(this.listExpressions != null){
+            let exit = '';
+            this.listExpressions.forEach((expression) => {
+                const value = expression.execute(st, output, errors);
+                if(value instanceof Error) return value;
+                if(Array.isArray(value.value)){
+                    exit += ` ${this.ParseArray(value.value.slice())}`;
+                }else if((value.type == literal.dataTypes.OBJECT || st.CheckType(value)) && value.value != null){
+                    exit += ` ${this.ParseType(value.value)}`;
+                }else{
+                    exit += ` ${value.value}`;
+                }
+            });
+            output.push(exit);
         }else{
             output.push('');
         }

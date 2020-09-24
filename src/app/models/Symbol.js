@@ -16,6 +16,7 @@ export class Symbol{
         this.isType = isType;
         this.isFunction = isFunction;
         this.propertys = new Map();
+        this.parameters = [];
     }
 
     static NewSymbolTranslate(id, type, scope, row, colum){
@@ -23,17 +24,25 @@ export class Symbol{
     }
 
     //SET TYPE PROPERTY
-    SetProperty(node, msg) {
+    SetProperty(node) {
         if(!this.SearchProperty(node.id)){
-            switch(msg){
-                case 1:
-                    return new Error(literal.errorType.SEMANTIC, `EL id '${node.id}' esta duplicado en el type`, node.row, node.column);
-                default:
-                    return new Error(literal.errorType.SEMANTIC, `EL id '${node.id}' esta duplicado en la función`, node.row, node.column);
-            }
+            return new Error(literal.errorType.SEMANTIC, `EL id '${node.id}' esta duplicado en el type`, node.row, node.column);
         }
         this.propertys.set(node.id, node);
         return null;
+    }
+
+    //SetProperty FUNCTION
+    SetPropertyFunction(node){
+        if(!this.SearchPropertyFunction(node.id)){
+            return new Error(literal.errorType.SEMANTIC, `EL id '${node.id}' esta duplicado en la función`, node.row, node.column);   
+        }
+        this.parameters.push(node);
+        return null;
+    }
+
+    SearchPropertyFunction(id){
+        return this.parameters.findIndex(symbol => symbol.id == id) == -1;
     }
 
     //SEARCH DUPLICATES

@@ -37,13 +37,8 @@ export class TypeDeclaration{
                             if(resultType instanceof Error) return resultType; 
                         }
                 } 
-            }else{
-                if(st.CheckType(node) && node.type != this.id){
-                    const resultType = st.GetType(node.type, node.row, node.column);
-                    if(resultType instanceof Error) return resultType; 
-                }
             }
-            const result = symbol.SetProperty(new Symbol(node.value, node.type, node.constant, node.dynamic, node.array, null, st.scope, node.row, node.column, false), 1);
+            const result = symbol.SetProperty(new Symbol(node.value, node.type, node.constant, node.dynamic, node.array, null, st.scope, node.row, node.column, false));
             if(result instanceof Error) return result;
         }
         return st.Set(symbol, 1, 1);
