@@ -13,11 +13,11 @@ export class Ternary{
     execute(st, output, errors){
         const condition = this.evaluate.execute(st, output, errors);
         if(condition instanceof Error) return eval;
-        const valueTrue = this.exp1.execute(st, output, errors);
-        if(valueTrue instanceof Error) return valueTrue;
-        const valueFalse = this.exp2.execute(st, output, errors);
-        if(valueFalse instanceof Error) return valueFalse;
-        return (condition) ? valueTrue : valueFalse;
+        if(condition.value){
+            return this.exp1.execute(st, output, errors);
+        }else{
+            return this.exp2.execute(st, output, errors);
+        }
     }
 
 }
