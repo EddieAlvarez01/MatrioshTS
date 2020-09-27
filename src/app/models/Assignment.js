@@ -16,7 +16,9 @@ export class Assignment{
     execute(st, output, errors){
         let symbol;
         if(!(typeof this.id == 'string')){
+            st.assignment = true;
             symbol = this.id.execute(st, output, errors);
+            st.assignment = false;
         }else{
             symbol = st.GetValue(Operation.NewOperationValue('variable', this.id, this.row, this.column), true);
         }

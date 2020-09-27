@@ -9,6 +9,7 @@ export class SymbolTable{
         this.symbols = [];
         this.next = null;
         this.scope = scope;
+        this.assignment = false;
     }
 
     //SAVE A VARIABLE IN THE SCOPE  -->BEHAVIOR 1 = EXECUTE, 0 = TRADUCTION --- type = 0 -> variable, type = 1 -> type, type = 2 -> function

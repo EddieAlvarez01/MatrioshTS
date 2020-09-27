@@ -1,5 +1,6 @@
 import Error from './Error';
 import { literal } from '../utilities/util';
+import { Symbol } from './Symbol';
 
 export class ArrayAccess{
 
@@ -24,7 +25,30 @@ export class ArrayAccess{
             }else{
                 value = symbol.value[exp.value];
             }
-            if(value === undefined) return new Error(literal.errorType.SEMANTIC, `El indice '${exp.value}' de el array no es correcto`, this.row, this.column);
+            if(value === undefined){
+                if(st.assignment){
+                    let newSymbol;
+                    switch(symbol.type){
+                        case literal.dataTypes.ARRAY_STRING:
+                            newSymbol = new Symbol('', literal.dataTypes.STRING, false, false, false, null, st.scope, 0, 0, false, false);
+                            break;
+                        case literal.dataTypes.ARRAY_NUMBER:
+                            newSymbol = new Symbol('', literal.dataTypes.NUMBER, false, false, false, null, st.scope, 0, 0, false, false);
+                            break;
+                        case literal.dataTypes.ARRAY_BOOLEAN:
+                            newSymbol = new Symbol('', literal.dataTypes.BOOLEAN, false, false, false, null, st.scope, 0, 0, false, false);
+                            break;
+                        case literal.dataTypes.ARRAY_ANY:
+                            newSymbol = new Symbol('', literal.dataTypes.ANY, false, false, false, null, st.scope, 0, 0, false, false);
+                            break;
+                        default:
+                            newSymbol = new Symbol('', symbol.type, false, false, false, null, st.scope, 0, 0, false, false);
+                    }
+                    symbol.value[exp.value] = newSymbol;
+                    return newSymbol;
+                }
+                return new Error(literal.errorType.SEMANTIC, `El indice '${exp.value}' de el array no es correcto`, this.row, this.column);
+            }
             return value;
         }else if(st.CheckType(symbol)){
             if(exp.type == literal.dataTypes.STRING){
