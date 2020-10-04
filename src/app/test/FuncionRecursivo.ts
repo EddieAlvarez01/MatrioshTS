@@ -22,7 +22,7 @@ result = result + hanoi(discos - 1, origen, destino, auxiliar);
 console.log(hanoi(4,1,5,3));  //648648648648648
 
 
-//TOO MUCH RECURSION
+//TOO MUCH RECURSION --> 800
 function ackermann( m:number,  n:number):number {
     if (m == 0) {
         return (n + 1);
@@ -36,7 +36,7 @@ function ackermann( m:number,  n:number):number {
     }
 
 }
-console.log(ackermann(3,8)); //2045 se tardo 6 segundos
+console.log(ackermann(3,4)); //2045 se tardo 6 segundos
 
 
 function par( nump:number):number {
@@ -70,7 +70,7 @@ function hofstaderMasculino( n:number):number {
         }
     }
 }
-console.log(hofstaderMasculino(1238)); // 619
+console.log(hofstaderMasculino(800)); // 619
 
 
 

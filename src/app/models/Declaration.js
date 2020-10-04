@@ -1,5 +1,5 @@
 import { Symbol } from './Symbol';
-import { literal } from '../utilities/util';
+import { literal, EvaluateArrays } from '../utilities/util';
 import Error from './Error';
 
 export class Declaration{
@@ -62,7 +62,19 @@ export class Declaration{
                         }
                     }
                     return st.Set(new Symbol(this.id, this.type, this.constant, this.dynamic, this.array, val.value, st.scope, this.row, this.column, false, false), 1, 0);
+                }else if(this.array && val.type == literal.dataTypes.ARRAY_ANY){
+                    const searchType = st.GetType(this.type, this.row, this.column);
+                    if(searchType instanceof Error) return searchType;
+                    const validate = EvaluateArrays(runningFunction.type, symbol, st, row, column);
+                    if(validate instanceof Error) return validate;
+                    if(!validate) return new Error(literal.errorType.SEMANTIC, `No se puede asignar a un tipo '${this.type}' un '${val.type}'`, this.row, this.column);
+                    return st.Set(new Symbol(this.id, this.type, this.constant, this.dynamic, this.array, val.value, st.scope, this.row, this.column, false, false), 1, 0);
                 }
+            }else if(this.array && val.type == literal.dataTypes.ARRAY_ANY){
+                const validate = EvaluateArrays(this.type, val, st, this.row, this.column);
+                if(validate instanceof Error) return validate;
+                if(!validate) return new Error(literal.errorType.SEMANTIC, `No se puede asignar a un tipo '${this.type}' un '${val.type}'`, this.row, this.column);
+                return st.Set(new Symbol(this.id, this.type, this.constant, this.dynamic, this.array, val.value, st.scope, this.row, this.column, false, false), 1, 0);
             }
             return new Error(literal.errorType.SEMANTIC, `No se puede asignar a un tipo '${this.type}' un '${val.type}'`, this.row, this.column);
         }

@@ -232,6 +232,12 @@ export class SymbolTable{
                             sProperty.dynamic = false;
                             sProperty.array = true;
                             sProperty.type = symbol.type;
+                        }else if(sProperty.type == literal.dataTypes.ARRAY_ANY){
+                            const validate = EvaluateArrays(symbol.type, sProperty, this, sProperty.row, sProperty.column);
+                            if(validate instanceof Error) return validate
+                            if(!validate) return new Error(literal.errorType.SEMANTIC, `No se puede asignar a un tipo '${symbol.type}' un '${sProperty.type}'`, sProperty.row, sProperty.column);
+                            sProperty.type = symbol.type;
+                            sProperty.array = true;
                         }else{
                             return new Error(literal.errorType.SEMANTIC, `No se puede asignar a un tipo '${symbol.type}' un '${sProperty.type}'`, sProperty.row, sProperty.column);
                         }

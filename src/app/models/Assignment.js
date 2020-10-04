@@ -39,6 +39,13 @@ export class Assignment{
                             if(symbol.dynamic) symbol.type = literal.dataTypes.ANY;
                             symbol.array = false;
                             break;
+                        case literal.dataTypes.ARRAY_ANY:
+                            const validate = EvaluateArrays(symbol.type, expl, st, this.row, this.column);
+                            if(validate instanceof Error) return validate;
+                            if(validate){
+                                symbol.value = expl.value;
+                                break;
+                            }
                         default:
                             return this.ReportErrorTypes(symbol.type, expl.type);
                     }
@@ -54,6 +61,13 @@ export class Assignment{
                             if(symbol.dynamic) symbol.type = literal.dataTypes.ANY;
                             symbol.array = false;
                             break;
+                        case literal.dataTypes.ARRAY_ANY:
+                            const validate = EvaluateArrays(symbol.type, expl, st, this.row, this.column);
+                            if(validate instanceof Error) return validate;
+                            if(validate){
+                                symbol.value = expl.value;
+                                break;
+                            }
                         default:
                             return this.ReportErrorTypes(symbol.type, expl.type);
                     }
@@ -69,6 +83,13 @@ export class Assignment{
                             if(symbol.dynamic) symbol.type = literal.dataTypes.ANY;
                             symbol.array = false;
                             break;
+                        case literal.dataTypes.ARRAY_ANY:
+                            const validate = EvaluateArrays(symbol.type, expl, st, this.row, this.column);
+                            if(validate instanceof Error) return validate;
+                            if(validate){
+                                symbol.value = expl.value;
+                                break;
+                            }
                         default:
                             return this.ReportErrorTypes(symbol.type, expl.type);
                     }
@@ -111,6 +132,14 @@ export class Assignment{
                             symbol.value = expl.value;
                             break;
                         default:
+                            if(expl.type == literal.dataTypes.ARRAY_ANY){
+                                const validate = EvaluateArrays(symbol.type, expl, st, this.row, this.column);
+                                if(validate instanceof Error) return validate;
+                                if(validate){
+                                    symbol.value = expl.value;
+                                    break;
+                                }
+                            }
                             return this.ReportErrorTypes(symbol.type, expl.type);
                     }
             }

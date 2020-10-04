@@ -227,6 +227,39 @@ export const literal = {
 
 };
 
+//CHECK ARRAY ANY
+export function EvaluateArrays(typeArray, symbol, st, rowArray, columnArray) {
+    switch(typeArray){
+        case literal.dataTypes.ARRAY_STRING:
+            for(let item of symbol.value){
+                if(item.type != literal.dataTypes.STRING) return false;
+            }
+            return true;
+        case literal.dataTypes.ARRAY_NUMBER:
+            for(let item of symbol.value){
+                if(item.type != literal.dataTypes.NUMBER) return false;
+            }
+            return true;
+        case literal.dataTypes.ARRAY_BOOLEAN:
+            for(let item of symbol.value){
+                if(item.type != literal.dataTypes.BOOLEAN) return false;
+            }
+            return true;
+        default:
+            for(let item of symbol.value){
+                if(item.type != typeArray){
+                    if(item.type != literal.dataTypes.OBJECT) return false;
+                    const searchType = st.GetType(typeArray, rowArray, columnArray);
+                    if(searchType instanceof Error) return searchType;
+                    const validate = st.CheckDataType(searchType, item);
+                    if(validate instanceof Error) return validate;
+                    item.type = typeArray;
+                }
+            }
+            return true;
+    }
+}
+
 //returns a string from the array
 function ParseArray(array){
     let chain = '';

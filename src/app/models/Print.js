@@ -14,7 +14,7 @@ export class Print{
     execute(st, output, errors){
         if(this.listExpressions != null){
             let exit = '';
-            this.listExpressions.forEach((expression) => {
+            for(let expression of this.listExpressions){
                 const value = expression.execute(st, output, errors);
                 if(value instanceof Error) return value;
                 if(Array.isArray(value.value)){
@@ -24,7 +24,7 @@ export class Print{
                 }else{
                     exit += ` ${value.value}`;
                 }
-            });
+            }
             output.push(exit);
         }else{
             output.push('');

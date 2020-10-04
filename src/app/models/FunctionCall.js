@@ -1,4 +1,4 @@
-import { literal } from '../utilities/util';
+import { literal, EvaluateArrays } from '../utilities/util';
 import { Symbol } from './Symbol';
 import { SymbolTable } from './SymbolTable';
 import { Return } from './Return';
@@ -75,6 +75,11 @@ export class FunctionCall{
                         newSt.Set(new Symbol(functionFound.parameters[i].id, functionFound.parameters[i].type, false, false, true, parametersValues[i].value, newSt.scope, parametersValues[i].row, parametersValues[i].column, false, false), 1, 2);
                     }else if(functionFound.parameters[i].array && parametersValues[i].type == literal.dataTypes.ARRAY_EMPTY){
                         newSt.Set(new Symbol(functionFound.parameters[i].id, functionFound.parameters[i].type, false, false, functionFound.parameters[i].array, parametersValues[i].value, newSt.scope, parametersValues[i].row, parametersValues[i].column, false, false), 1, 2);
+                    }else if(functionFound.parameters[i].array && parametersValues[i].type == literal.dataTypes.ARRAY_ANY){
+                        const validate = EvaluateArrays(functionFound.parameters[i].type, parametersValues[i], newSt, parametersValues[i].row, parametersValues[i].column);
+                        if(validate instanceof Error) return validate;
+                        if(!validate) return new Error(literal.errorType.SEMANTIC, `No se puede asignar a un tipo '${functionFound.parameters[i].type}' un tipo '${parametersValues[i].type}'`, parametersValues[i].row, parametersValues[i].column);
+                        newSt.Set(new Symbol(functionFound.parameters[i].id, functionFound.parameters[i].type, false, false, functionFound.parameters[i].array, parametersValues[i].value, newSt.scope, parametersValues[i].row, parametersValues[i].column, false, false), 1, 2);
                     }else{
                         return new Error(literal.errorType.SEMANTIC, `No se puede asignar a un tipo '${functionFound.parameters[i].type}' un tipo '${parametersValues[i].type}'`, parametersValues[i].row, parametersValues[i].column);
                     }
@@ -120,6 +125,14 @@ export class FunctionCall{
                 break;
                 default:
                     if(runningFunction.type != symbol.type){
+                        if(symbol.type == literal.dataTypes.ARRAY_ANY){
+                            const validate = EvaluateArrays(runningFunction.type, symbol, st, row, column)
+                            if(validate instanceof Error) return validate
+                            if(validate){
+                                symbol.type = runningFunction.type;
+                                break;
+                            }
+                        }
                         return new Error(literal.errorType.SEMANTIC, `No se puede retornar un tipo '${symbol.type}' en una funcion tipo '${runningFunction.type}'`, row, column);
                     }
             }
@@ -147,10 +160,30 @@ export class FunctionCall{
     }
 
     CheckFunction(st){
-        if(st.scope.includes('Function')){
-            const name = st.scope.substring(10, st.scope.length - 2);
+        if(this.CheckSTFunction(st)){
+            const tempSt = this.SearchSTFunction(st);
+            const name = tempSt.scope.substring(10, tempSt.scope.length - 2);
             return this.id.includes(name);
         }
         return false;
+    }
+
+    //CHECK ST FUNCTION
+    CheckSTFunction(st){
+        if(st.scope.includes('Function') && st.scope.substring(10, st.scope.length - 2) != this.id){
+            return true;
+        }
+        if(st.next != null){
+            return this.CheckSTFunction(st.next);
+        }
+        return false;
+    }
+
+    //SEARCH ST FOR FUNCTIONS
+    SearchSTFunction(st){
+        if(st.scope.includes('Function')){
+            return st;
+        }
+        return this.SearchSTFunction(st.next);
     }
 }
